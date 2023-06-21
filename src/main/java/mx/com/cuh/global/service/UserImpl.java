@@ -7,6 +7,8 @@ import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPersonas;
 import mx.com.cuh.global.repository.TbPersonasRepository;
 
+
+
 @Service
 
 public class UserImpl implements User{
@@ -22,7 +24,20 @@ public class UserImpl implements User{
 		return response;
 	}
 
-
+	@Override
+	public Respuesta<String> insertarPersona(PersonasDTO persona) {
+		Long idUserMax =tbPersonasRepository.obtenerMaximoId();
+		
+		TbPersonas NuevoRegistro = new TbPersonas();
+		NuevoRegistro.setIdUser(idUserMax);
+		NuevoRegistro.setName(persona.getName());
+		NuevoRegistro.setAge(persona.getAge());
+		NuevoRegistro.setSex(persona.getSex());
+		tbPersonasRepository.save(NuevoRegistro);
+		Respuesta<String> response = new Respuesta<>();
+		response.setMensaje("Se insertó correctamente");
+		return response;
+	}
 	
 
 	

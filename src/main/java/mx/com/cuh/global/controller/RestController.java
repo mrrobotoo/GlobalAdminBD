@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPersonas;
@@ -18,6 +18,14 @@ public class RestController {
     @GetMapping(value = "/persona")
     public Respuesta<TbPersonas> obtenerRegistros() {
         return user.obtenerRegistros();
+    }
+    
+    
+    @PostMapping(value = "/insertarPersonas")
+    public Respuesta insertarPersona(
+            @RequestBody PersonasDTO persona) {
+        return user.insertarPersona(persona);
+        
     }
 
 }

@@ -8,6 +8,6 @@ public interface User {
 
 	Respuesta<TbPersonas> obtenerRegistros();
 
-
+	Respuesta insertarPersona(PersonasDTO persona);
 
 }
