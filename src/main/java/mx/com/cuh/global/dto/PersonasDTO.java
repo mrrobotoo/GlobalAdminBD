@@ -1,5 +1,5 @@
 package mx.com.cuh.global.dto;
 
-public class PersonasDTO {
+public class PersonasDTO {	
 
 }
