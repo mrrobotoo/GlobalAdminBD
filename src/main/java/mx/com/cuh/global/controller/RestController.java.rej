@@ -1,7 +1,0 @@
-diff a/src/main/java/mx/com/cuh/global/controller/RestController.java b/src/main/java/mx/com/cuh/global/controller/RestController.java	(rejected hunks)
-@@ -0,0 +1,5 @@
-+package mx.com.cuh.global.controller;
-+
-+public class RestController {
-+
-+}
