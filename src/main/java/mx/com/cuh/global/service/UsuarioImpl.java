@@ -39,4 +39,21 @@ public class UsuarioImpl implements Usuario {
         
         
     }
+    
+	@Override
+	public Respuesta<String> insertarPersona(PersonaDTO persona) {
+		Long idPersonMaximo =tbPersonRepository.obtenerMaximoIdPerson();
+		
+		TbPerson personaFinal = new TbPerson();
+		personaFinal.setId(idPersonMaximo);
+		personaFinal.setNombre(persona.getNombre());
+		personaFinal.setEdad(persona.getEdad());
+		personaFinal.setSexo(persona.getSexo());
+
+		//Insert into person(id_person,login) values (?,?)
+		tbPersonRepository.save(personaFinal);
+		Respuesta<String> response = new Respuesta<>();
+		response.setMensaje("Se insertó correctamente");
+		return response;
+	}
 }
