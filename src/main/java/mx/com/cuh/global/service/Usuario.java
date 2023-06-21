@@ -8,5 +8,8 @@ public interface Usuario {
 	Respuesta<TbPerson> obtenerPersonas();
 	
 	Respuesta<String> borrarPersona(Long id);
+	
+	Respuesta<String> actualizarPersona(Long id);
+	
 
 }
