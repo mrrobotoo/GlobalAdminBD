@@ -7,15 +7,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Respuesta <T>{
 	private String mensaje;
-	private List<T> listasPersona;
+	private List<T> listaPersonas;
 	
-	public List<T> getListasPersonas(){
-		return listasPersona;
+	public List<T> getListaPersonas(){
+		return listaPersonas;
 	}
 	
 
-	public void setListasPersonas(List<T> listasPersona) {
-		this.listasPersona = listasPersona;
+	public void setListaPersonas(List<T> listasPersona) {
+		this.listaPersonas = listasPersona;
 	}
 
 	public String getMensaje() {
