@@ -3,12 +3,10 @@ package mx.com.cuh.global.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import mx.com.cuh.global.entity.TbPersonas;
 
 
-@org.springframework.stereotype.Repository
 
 public interface TbPersonasRepository 
 extends CrudRepository<TbPersonas, Long> {

@@ -10,16 +10,16 @@ import javax.persistence.Table;
 public class TbPersonas {
 
 	@Id
-	@Column (name = "ID")
+	@Column (name = "id")
 	private Long idUser;
 	
-	@Column (name = "NOMBRE")
+	@Column (name = "nombre")
 	private String name;
 	
-	@Column (name = "EDAD")
+	@Column (name = "edad")
 	private String age;
 	
-	@Column (name = "SEXO")
+	@Column (name = "sexo")
 	private String sex;
 
 	public Long getIdUser() {

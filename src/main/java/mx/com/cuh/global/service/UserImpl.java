@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPersonas;
-import mx.com.cuh.global.repository.TPbersonasRepository;
+import mx.com.cuh.global.repository.TbPersonasRepository;
+
 
 @Service
 public class UserImpl implements User{
 	@Autowired
-	private TPbersonasRepository tbPbersonasRepository;
+	private TbPersonasRepository tbPbersonasRepository;
 	
 @Override
   	public Respuesta<String> borrarPersona(Long IdPerson){
