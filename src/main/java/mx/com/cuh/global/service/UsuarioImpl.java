@@ -40,6 +40,7 @@ public class UsuarioImpl implements Usuario {
         
     }
     
+
 	@Override
 	public Respuesta<String> insertarPersona(PersonaDTO persona) {
 		Long idPersonMaximo =tbPersonRepository.obtenerMaximoIdPerson();
@@ -56,4 +57,22 @@ public class UsuarioImpl implements Usuario {
 		response.setMensaje("Se insertó correctamente");
 		return response;
 	}
+
+    @Override
+    public  Respuesta<String> actualizarPersona(Long id) {
+    	Optional<TbPerson> persona = 
+    			tbPersonRepository.findById(id); 
+    	 Respuesta<String> response = new Respuesta<>();
+    	
+    	String mensaje = (persona.isPresent()) ? "Se actualizó correctamente" : "El usuario " + id + " no exixte";
+    	
+    	tbPersonRepository.deleteById(id);
+    	response.setMensaje(mensaje);
+		
+        return response;
+        
+    }
+        
+        
+
 }
