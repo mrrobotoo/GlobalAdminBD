@@ -1,5 +1,11 @@
 package mx.com.cuh.global.service;
 
-public interface usuario {
+import mx.com.cuh.globlal.dto.Respuesta;
 
+public interface usuario {
+	Respuesta<String> borrarPersona(Long id);
+	
+
+    
+	
 }

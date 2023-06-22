@@ -2,27 +2,27 @@ package mx.com.cuh.globlal.dto;
 
 public class PersonasDTO {
 	
-	private String Nombre;
-	private String Edad;
-	private Long IdPerson;
+	private String nombre;
+	private String edad;
+	private Long id;
 	private String sexo;
 	public String getNombre() {
-		return Nombre;
+		return nombre;
 	}
 	public void setNombre(String nombre) {
-		Nombre = nombre;
+		this.nombre = nombre;
 	}
 	public String getEdad() {
-		return Edad;
+		return edad;
 	}
 	public void setEdad(String edad) {
-		Edad = edad;
+		this.edad = edad;
 	}
-	public Long getIdPerson() {
-		return IdPerson;
+	public Long getId() {
+		return id;
 	}
-	public void setIdPerson(Long idPerson) {
-		IdPerson = idPerson;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getSexo() {
 		return sexo;
@@ -30,6 +30,9 @@ public class PersonasDTO {
 	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
+	 
+		
+	
 	
 	
 
