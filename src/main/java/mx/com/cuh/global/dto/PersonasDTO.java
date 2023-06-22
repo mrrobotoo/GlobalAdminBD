@@ -34,4 +34,14 @@ public class PersonasDTO {
 		this.sex = sex;
 	}
 
+
+	@Override
+	public String toString() {
+		return "PersonasDTO{" +
+				"idUser=" + idUser +
+				", name='" + name + '\'' +
+				", age='" + age + '\'' +
+				", sex='" + sex + '\'' +
+				'}';
+	}
 }
