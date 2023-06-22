@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.service.User;
 
-public class RestController {
+@org.springframework.web.bind.annotation.RestController
 
-	@Autowired private User user;
+public class RestController {
+	@Autowired
+	private User user;
+	
 	
 	@DeleteMapping(value = "/person")
 	public Respuesta<String> borrarPersona(@RequestParam
