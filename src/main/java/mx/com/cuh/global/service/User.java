@@ -8,6 +8,11 @@ public interface User {
 
 	Respuesta<TbPersonas> obtenerRegistros();
 
+	Respuesta insertarPersona(PersonasDTO persona);
+
+	Respuesta<String> borrar(Long idPerson);
+
+	Respuesta<String> actualizarPersona(long idPerson, PersonasDTO personasDTO);
 
 
 }
