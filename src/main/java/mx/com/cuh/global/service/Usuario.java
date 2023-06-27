@@ -12,8 +12,7 @@ public interface Usuario {
 	
 	Respuesta<String> insertarPersona(PersonaDTO persona);
     
-	Respuesta<String> actualizarPersona(Long id);
-	
+	Respuesta<String> actualizarPersona(Long id, PersonaDTO persona);
 
 
 }
