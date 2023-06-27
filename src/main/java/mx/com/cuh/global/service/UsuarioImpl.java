@@ -1,6 +1,6 @@
 package mx.com.cuh.global.service;
 
-import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +65,7 @@ public class UsuarioImpl implements Usuario {
     	 Respuesta<String> response = new Respuesta<>();
     	
     	String mensaje = (persona.isPresent()) ? "Se actualizó correctamente" : "El usuario " + id + " no exixte";
-    	
-    	tbPersonRepository.deleteById(id);
+
     	response.setMensaje(mensaje);
 		
         return response;
