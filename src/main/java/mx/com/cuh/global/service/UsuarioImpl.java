@@ -16,9 +16,30 @@ public class UsuarioImpl implements Usuario {
 	@Autowired
 	private TbPersonRepository tbPersonRepository;
 	
+	@Override
+	public Respuesta <TbPerson> obtenerPersonas(){
+		Respuesta<TbPerson> response = new Respuesta <TbPerson>();
+		response.setListasPersona(tbPersonRepository.findAll());
+		response.setMensaje("ok");
+		return response;
+	}
 	
-	
-    //CREATE
+    @Override
+    public  Respuesta<String> borrarPersona(Long id) {
+    	Optional<TbPerson> persona = 
+    			tbPersonRepository.findById(id); 
+    	 Respuesta<String> response = new Respuesta<>();
+    	
+    	String mensaje = (persona.isPresent()) ? "Se eliminó correctamente" : "El usuario " + id + " no exixte";
+    	
+    	tbPersonRepository.deleteById(id);
+    	response.setMensaje(mensaje);
+		
+        return response;
+        
+        
+    }
+    
 
 	@Override
 	public Respuesta<String> insertarPersona(PersonaDTO persona) {
@@ -30,62 +51,28 @@ public class UsuarioImpl implements Usuario {
 		personaFinal.setEdad(persona.getEdad());
 		personaFinal.setSexo(persona.getSexo());
 
+		//Insert into person(id_person,login) values (?,?)
 		tbPersonRepository.save(personaFinal);
 		Respuesta<String> response = new Respuesta<>();
-		response.setMensaje("Usuario creado correctamente");
+		response.setMensaje("Se insertó correctamente");
 		return response;
 	}
-	
-	
-	//READ
-	
-	@Override
-	public Respuesta <TbPerson> obtenerPersonas(){
-		Respuesta<TbPerson> response = new Respuesta <TbPerson>();
-		response.setListasPersona(tbPersonRepository.findAll());
-		response.setMensaje("ok");
-		return response;
-	}
-	
-	
-	//UPDATE
 
-	@Override
-	public Respuesta<String> actualizarPersona(Long id, PersonaDTO persona) {
-	    TbPerson personaFinal = tbPersonRepository.findById(id).orElse(null);
-
-	    if (personaFinal != null) {
-	        personaFinal.setNombre(persona.getNombre());
-	        personaFinal.setEdad(persona.getEdad());
-	        personaFinal.setSexo(persona.getSexo());
-
-	        tbPersonRepository.save(personaFinal);
-	        Respuesta<String> response = new Respuesta<>();
-	        response.setMensaje("Usuario con id "+ id + " actualizado" );
-	        return response;
-	    } else {
-	        Respuesta<String> response = new Respuesta<>();
-	        response.setMensaje("El usuario con id "+ id +" no existe");
-	        return response;
-	    }
-	}
-	
-	
-	//DELETE
-	
     @Override
-    public  Respuesta<String> borrarPersona(Long id) {
+    public  Respuesta<String> actualizarPersona(Long id) {
     	Optional<TbPerson> persona = 
     			tbPersonRepository.findById(id); 
     	 Respuesta<String> response = new Respuesta<>();
-    	 
-    	if (persona.isPresent()) {
-    		tbPersonRepository.deleteById(id);
-    		response.setMensaje("Usuario eliminado correctamente");
-    	}else {
-    		response.setMensaje("El usuario "+ id+" no existe, favor de validar");
-    	}
-    	return response;
+    	
+    	String mensaje = (persona.isPresent()) ? "Se actualizó correctamente" : "El usuario " + id + " no exixte";
+    	
+    	tbPersonRepository.deleteById(id);
+    	response.setMensaje(mensaje);
+		
+        return response;
+        
     }
+        
+        
 
 }
