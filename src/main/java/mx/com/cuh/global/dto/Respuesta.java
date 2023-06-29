@@ -2,26 +2,30 @@ package mx.com.cuh.global.dto;
 
 import java.util.List;
 
-public class Respuesta {
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-	private String mensaje;
-	private List<PersonaDTO> listasPersona;
-
-	public List<PersonaDTO> getListasPersona() {
-		return listasPersona;
-	}
-
-	public void setListasPersona(List<PersonaDTO> listasPersona) {
-		this.listasPersona = listasPersona;
-	}
-
-	public String getMensaje() {
-		return mensaje;
-	}
-
-	public void setMensaje(String mensaje) {
-		this.mensaje = mensaje;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Respuesta <T>{
+	private String Mensaje;
+	private List<T> listaPersonas;
+	
+	public List<T> getListaPersonas(){
+		return listaPersonas;
 	}
 	
+
+	public void setListaPersonas(List<T> listasPersona) {
+		this.listaPersonas = listasPersona;
+
+	
+
+
+	}
+
+
+	public void setMensaje(String string) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
