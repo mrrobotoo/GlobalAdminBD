@@ -1,0 +1,24 @@
+diff a/pom.xml b/pom.xml	(rejected hunks)
+@@ -25,17 +25,16 @@
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-web</artifactId>
+ 		</dependency>
+-
++		<dependency>  
++			<groupId>org.springframework.boot</groupId>  
++			<artifactId>spring-boot-starter-thymeleaf</artifactId>  
++		</dependency>  
+ 		<dependency>
+ 			<groupId>com.oracle.database.jdbc</groupId>
+ 			<artifactId>ojdbc8</artifactId>
+ 			<scope>runtime</scope>
+ 		</dependency>
+-		<dependency>
+-			<groupId>org.springframework.boot</groupId>
+-			<artifactId>spring-boot-starter-test</artifactId>
+-			<scope>test</scope>
+-		</dependency>
++		
+ 	</dependencies>
+ 
+ 	<build>

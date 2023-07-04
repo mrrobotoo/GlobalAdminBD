@@ -12,7 +12,7 @@ public interface TbPersonasRepository
 extends CrudRepository<TbPersonas, Long> {
 
 	List<TbPersonas> findAll();
-    void deleteById(Long idPerson);
+    void deleteById(Long idUser);
     Optional<TbPersonas> findById(Long id); 
 
 }

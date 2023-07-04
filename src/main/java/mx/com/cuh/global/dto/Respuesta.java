@@ -14,5 +14,10 @@ public class Respuesta <T>{
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
+
+	public void getMensaje(Respuesta<String> borrarPersona) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 	

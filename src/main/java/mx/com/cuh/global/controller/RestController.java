@@ -1,5 +1,4 @@
 package mx.com.cuh.global.controller;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,11 +12,11 @@ public class RestController {
 	@Autowired
 	private User user;
 	
-	
 	@DeleteMapping(value = "/person")
 	public Respuesta<String> borrarPersona(@RequestParam
-			Long IdPerson){
-		return user.borrarPersona(IdPerson);
+			Long idUser){
+		return user.borrarPersona(idUser);
 	}
-	
 }
+
+//COPIAS EL @postMapping

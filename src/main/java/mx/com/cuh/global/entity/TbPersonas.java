@@ -2,6 +2,8 @@ package mx.com.cuh.global.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -10,16 +12,17 @@ import javax.persistence.Table;
 public class TbPersonas {
 
 	@Id
-	@Column (name = "id")
+	@Column (name = "ID")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idUser;
 	
-	@Column (name = "nombre")
+	@Column (name = "NOMBRE")
 	private String name;
 	
-	@Column (name = "edad")
+	@Column (name = "EDAD")
 	private String age;
 	
-	@Column (name = "sexo")
+	@Column (name = "SEXO")
 	private String sex;
 
 	public Long getIdUser() {
