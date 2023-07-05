@@ -31,12 +31,16 @@
 			<artifactId>ojdbc8</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+<<<<<<< HEAD
 		<!--<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>-->
 		<dependency>  
+=======
+<dependency>  
+>>>>>>> origin/Flor
 			<groupId>org.springframework.boot</groupId>  
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>  
 		</dependency>
