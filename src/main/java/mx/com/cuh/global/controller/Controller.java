@@ -1,6 +1,7 @@
 package mx.com.cuh.global.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,10 +23,15 @@ public class Controller {
 		return"index";    
 	} 
 	
+	@GetMapping("/inicio")    
+	public String inicio(){    
+		return"user";    
+	} 
 	@PostMapping(value = "/saveperson")
-    public Respuesta insertarPersona(
+    public String insertarPersona(
             @ModelAttribute PersonasDTO persona) {
-        return user.insertarPersona(persona);
+		 user.insertarPersona(persona);
+        return "user";
     }
 	
 	

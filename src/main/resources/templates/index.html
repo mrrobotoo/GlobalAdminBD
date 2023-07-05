@@ -1,32 +1,35 @@
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<title>Index Page</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </head>
 
 <body>
-	
+	<div th:include="navbar.html"></div> 
 
-	<form action="saveperson" method="post">
-		<table>
-			<tr>
-				<td><label for="user-name">User Name</label></td>
-				<td><input type="text" name="name"></input></td>
-			</tr>
-			<tr>
-				<td><label for="age">Age</label></td>
-				<td><input type="text" name="age"></input></td>
-			</tr>
-			<tr>
-				<td><label for="sex">Sex</label></td>
-				<td><input type="text" name="sex"></input></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="submit" value="Submit"></input></td>
-			</tr>
-		</table>
-	</form>
+	<div class="container">
+		<form action="saveperson" method="post" class="text-center">
+			<table class="table">
+				<tr>
+					<td><label for="user-name">User Name</label></td>
+					<td><input type="text" name="name" class="form-control"></input></td>
+				</tr>
+				<tr>
+					<td><label for="age">Age</label></td>
+					<td><input type="text" name="age" class="form-control"></input></td>
+				</tr>
+				<tr>
+					<td><label for="sex">Sex</label></td>
+					<td><input type="text" name="sex" class="form-control"></input></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" value="Submit" class="btn btn-primary"></input></td>
+				</tr>
+			</table>
+		</form>
+	</div>
 </body>
-
 </html>
