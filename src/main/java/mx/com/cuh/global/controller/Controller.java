@@ -20,9 +20,10 @@ public class Controller {
 		 return "index";
 	 }
  @PostMapping(value = "/saveperson")
- public Respuesta insertarPersona(
+ public String insertarPersona(
          @ModelAttribute PersonasDTO persona) {
-     return user.insertarPersona(persona);
- }
+     user.insertarPersona(persona);
+     return  "user";
+ 	}
  }
 
