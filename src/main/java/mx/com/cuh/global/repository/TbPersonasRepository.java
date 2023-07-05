@@ -17,7 +17,11 @@ extends CrudRepository<TbPersonas, Long> {
     void deleteById(Long idPerson);
     Optional<TbPersonas> findById(Long id); 
     
-    @Query(value = "select max(ID) +1 from personas",nativeQuery = true )
+    //@Query(value = "select max(ID) +1 from personas",nativeQuery = true )
+    //Long obtenerMaximoId();
+    
+    @Query(value = "SELECT COALESCE(MAX(ID) + 1, 1) FROM personas", nativeQuery = true)
     Long obtenerMaximoId();
+
 
 }
