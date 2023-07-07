@@ -3,6 +3,7 @@ package mx.com.cuh.global.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,14 +25,11 @@ public class Controller {
 		 return "index";
 	 }
  @GetMapping("/inicio")
- public String inicio() {
-	 Respuesta<TbPersonas>cosa=user.obtenerRegistros();
-	 List<TbPersonas> superLista = cosa.getListaPersonas();
-	 for(TbPersonas persona : superLista) {
-		 System.out.print(persona.getAge());
-		 
-	 }
+ public String inicio(Model model) {
+	 List<TbPersonas> listaPersonas= 
+	user.obtenerRegistros().getListaPersonas();		 
 	 
+	 model.addAttribute("listaPersonas",listaPersonas);
 	 return "inicio";
  }
  
