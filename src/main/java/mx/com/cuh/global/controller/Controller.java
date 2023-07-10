@@ -54,7 +54,7 @@ public class Controller {
 @GetMapping("/eliminar/{idUser}")
 	public String eliminar(@PathVariable
         Long idUser) {
-     user.borrar(idUser);
+     user.borrar(idUser); 
 		return "redirect:/inicio";
 	}
 
