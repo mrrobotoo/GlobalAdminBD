@@ -17,24 +17,27 @@
 						<th>Nombre</th>
 						<th>Edad</th>
 						<th>Sexo</th>
+						<th></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>John</td>
-						<td>25</td>
-						<td>Estados Unidos</td>
-					</tr>
+
 					<tr th:each="item : ${listaPersonas}">
 						<td th:text="${item.nombre}"></td>
 						<td th:text="${item.edad}"></td>
 						<td th:text="${item.sexo}"></td>
-
+						
+						<td>
+							<a class= "btn btn-danger">Eliminar</a>
+							<button type="button" class="btn btn-danger">Eliminar</button>
+						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<footer style="background-color: rgb(192, 192, 192); padding: 20px; text-align: center; font-size: 14px; color: #777;">
+		<footer
+			style="background-color: rgb(192, 192, 192); padding: 20px; text-align: center; font-size: 14px; color: #777;">
 			Derechos de autor &copy; 2023 | Dillan Solis
 		</footer>
 	</div>
