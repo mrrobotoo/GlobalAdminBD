@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import mx.com.cuh.global.dto.PersonasDTO;
@@ -28,7 +29,7 @@ public class Controller {
 	@GetMapping("/inicio")
 	public String inicio(Model model){
 		user.obtenerRegistros();
-		List<TbPersonas> listaPersonas = 
+		List<TbPersonas> listaPersonas= 
 				user.obtenerRegistros().getListaPersonas();
 		model.addAttribute("listaPersonas",listaPersonas);
 		return"inicio";
@@ -41,6 +42,12 @@ public class Controller {
         return "user";
     }
     
-
+    @GetMapping("/eliminar/{idUser}")
+    public String eliminar(@PathVariable
+    		Long idUser){
+    	user.borrar(idUser);
+    	
+    	return "redirect:/inicio";
+    	}
     
 }
