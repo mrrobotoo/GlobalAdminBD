@@ -1,0 +1,32 @@
+	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
+		
+		<table class = "table">
+			
+			<thead>
+				<tr>
+					<th>Nombre</th>
+				    <th>Edad</th>
+				    <th>Sexo</th>
+				 </tr>
+				<th></th>
+				<th></th>
+			</thead>
+			
+			<tbody>
+				<tr th:each = "item: ${listaPersonas}">
+					<td th:text = "${item.nombre}"></td>
+					<td th:text = "${item.edad}"></td>
+					<td th:text = "${item.sexo}"></td>
+					<td> <!-- COLUMNA PARA ELIMINAR DATOS -->
+						<a th:href = "@{/eliminar/{id}(id=${item.id})}" class = "btn btn-danger">Eliminar</a>
+					</td>
+				</tr>
+			</tbody>
+		
+		</table>
+	
+	<div th:include = "footer.html"></div> <!-- IMPORTAMOS EL FOOTER -->
+
+</body>
+	
+</html>
