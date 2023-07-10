@@ -2,21 +2,20 @@ package mx.com.cuh.global.service;
 
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
+import mx.com.cuh.global.entity.TbPersonas;
 
 public interface User {
 
-<<<<<<< HEAD
-	Respuesta<String> borrarPersona(Long idUser);
-	Respuesta<String> insertaPersona(PersonasDTO persona);
-=======
+
 	Respuesta<TbPersonas> obtenerRegistros();
 
-	Respuesta insertarPersona(PersonasDTO persona);
+	Respuesta<String> insertarPersona(PersonasDTO persona);
 
 	Respuesta<String> borrar(Long idPerson);
 
 	Respuesta<String> actualizarPersona(long idPerson, PersonasDTO personasDTO);
 
+	Respuesta<String> borrarPersona(Long idUser);
 
->>>>>>> origin/Jonathan_Emmanuel_Cruz_Altamirano
+
 }

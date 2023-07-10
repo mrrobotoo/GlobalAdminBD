@@ -1,0 +1,17 @@
+<div th:include="navbar.html"></div>
+<TABLE BORDER>
+	<TR>
+		<TD>Nombre</TD>
+		<TD>Edad</TD>
+		<TD>Sexo</TD>
+	</TR>
+
+</TABLE>
+
+<body>
+	<tr th:each="item : $(listaPersonas)"></tr>
+	<td th:text="$(item.age)"></td>
+	<td th:text="$(item.age)"></td>
+	<td th:text="$(item.age)"></td>
+</body>
+<div th:include="footer.html"></div>

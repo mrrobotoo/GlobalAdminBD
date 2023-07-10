@@ -2,55 +2,47 @@
 
 <head>
 	<title>Index Page</title>
-<<<<<<< HEAD
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+		crossorigin="anonymous"></script>
+
 </head>
 
 <body>
-	<form action="Saveperson" method="post">
-		<table>
-			<tr>
-				<td><label for="user-name">User Name</label></td>
-				<td><input type="text" name="name"></input></td>
-			</tr>
-			<tr>
-				<td><label for="age">edad</label></td>
-=======
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-</head>
-
-<body>
-	<button type="button" class="btn btn-primary">Primary</button>
-	<button type="button" class="btn btn-secondary">Secondary</button>
-	<button type="button" class="btn btn-success">Success</button>
-	<button type="button" class="btn btn-danger">Danger</button>
-	<button type="button" class="btn btn-warning">Warning</button>
-	<button type="button" class="btn btn-info">Info</button>
-	<button type="button" class="btn btn-light">Light</button>
-	<button type="button" class="btn btn-dark">Dark</button>
-
-	<button type="button" class="btn btn-link">Link</button>
-	<form action="saveperson" method="post">
-		<table>
-			<tr>
-				<td><label for="user-name">Nombre</label></td>
-				<td><input type="text" name="name"></input></td>
-			</tr>
-			<tr>
-				<td><label for="age">Edad</label></td>
->>>>>>> origin/Jonathan_Emmanuel_Cruz_Altamirano
-				<td><input type="text" name="age"></input></td>
-			</tr>
-			<tr>
-				<td><label for="sex">Sexo</label></td>
-				<td><input type="text" name="sex"></input></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="submit" value="Submit"></input></td>
-			</tr>
-		</table>
-	</form>
+	<div th:include="navbar.html"></div>
+	<hr>
+	<center>
+		<form action="saveperson" method="post">
+			<table>
+				<tr>
+					<td><label for="user-name" style="color: black;">
+							<h4><b>Nombre:</b></h4>
+						</label></td>
+					<td><input type="text" name="name"></input></td>
+				</tr>
+				<tr>
+					<td><label for="age" style="color: black;">
+							<h4><b>Edad:</b></h4>
+						</label></td>
+					<td><input type="text" name="age"></input></td>
+				</tr>
+			</table>
+		</form>
+		<form>
+			<div>
+				Sexo:
+				<select>
+					<option>Hombre</option>
+					<option>Mujer</option>
+					<option>No definido</option>
+				</select>
+			</div>
+		</form>
+		<td><button type="submit" class="btn btn-dark">Registrado</button></td>
+	</center>
+	<div th:include="footer.html"></div>
 </body>
 
 </html>
