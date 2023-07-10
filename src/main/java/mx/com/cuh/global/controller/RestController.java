@@ -1,42 +1,45 @@
 package mx.com.cuh.global.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PutMapping;
-import mx.com.cuh.global.dto.PersonaDTO;
-import mx.com.cuh.global.entity.TbPerson;
-import mx.com.cuh.global.service.Usuario;
+import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
+import mx.com.cuh.global.entity.TbPersonas;
+import mx.com.cuh.global.service.User;
 
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
-	
 	@Autowired
-	private Usuario usuario;
+	private User user;
 	
-	@GetMapping(value = "/person")
-	public Respuesta<TbPerson> listaPersonas() {
-		return usuario.obtenerPersonas();
-	}
+    @GetMapping(value = "/person")
+    public Respuesta<TbPersonas> obtenerRegistros() {
+        return user.obtenerRegistros();
+    }
+    
+    
+    @PostMapping(value = "/person")
+    public Respuesta insertarPersona(
+            @RequestBody PersonasDTO persona) {
+        return user.insertarPersona(persona);
+    }
+    
+    @DeleteMapping(value = "/person")
+    public Respuesta borrar(@RequestParam 
+            Long idUser) {
+        return user.borrar(idUser);    
+    }
+    
+    @PutMapping("/person")
+    public Respuesta<String> actualizarPersona(@RequestParam("idUser") Long idUser, @RequestBody PersonasDTO person) {
 
-	@PostMapping(value = "/person")
-	public Respuesta insertarPersonas(@RequestBody PersonaDTO persona) {
-		return usuario.insertarPersona(persona);
-	}
-	
-	@DeleteMapping(value = "/person")
-	public Respuesta borrarPersonas(@RequestParam Long id) {
-		return usuario.borrarPersona(id);
-	}
+        return user.actualizarPersona(idUser, person);
+    }
 
-	@PutMapping(value = "/person", params = "id")
-	public Respuesta actualizarpersonas(@RequestParam Long id, @RequestBody PersonaDTO persona) {
-	    return usuario.actualizarPersona(id, persona);
-	}
 }
- 

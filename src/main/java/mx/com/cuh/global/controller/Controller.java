@@ -1,38 +1,49 @@
 package mx.com.cuh.global.controller;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import mx.com.cuh.global.dto.PersonaDTO;
+import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
-import mx.com.cuh.global.service.Usuario;
-
+import mx.com.cuh.global.entity.TbPersonas;
+import mx.com.cuh.global.service.User;
 @org.springframework.stereotype.Controller
 public class Controller {
 	@Autowired
-	private Usuario user;
-			
-	@RequestMapping("/")
-	public String index() {
-		return"index";
-	}
+
+	private User user;
 	
-	@GetMapping("/inicio")
-	public String inicio() {
-		/*Respuesta<TbPersonas> cosa =user.obtenerPersonas();
-		List<TbPersonas> superLista = cosa.getListasPersona();*/
-		user.obtenerPersonas();
-		return"inicio";
-	}
-	@PostMapping(value = "/saveperson")
-	public String insertarPersonas(
-			@ModelAttribute PersonaDTO persona) {
-		user.insertarPersona(persona);
-		return "user";
-	}
-}
+ @RequestMapping("/")
+	 public String index() {
+		 return "index";
+	 }
+ @GetMapping("/inicio")
+ public String inicio(Model model) {
+	 List<TbPersonas> listaPersonas= 
+	user.obtenerRegistros().getListaPersonas();		 
+	 
+	 model.addAttribute("listaPersonas",listaPersonas);
+	 return "inicio";
+ }
+ 
+ @PostMapping(value = "/saveperson")
+ public String insertarPersona(
+         @ModelAttribute PersonasDTO persona) {
+     user.insertarPersona(persona);
+     return  "user";
+ 	}
+ 
+ 
+ @GetMapping("/eliminar/{idUser}")
+ public String eliminar(@PathVariable
+		 Long idUser) {
+	 user.borrar(idUser);
+	 return "inicio";
+ }
+ }
 

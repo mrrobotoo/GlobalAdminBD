@@ -8,6 +8,7 @@
 </head>
 
 <body>
+	
 	<div th:include="navbar.html"></div>
 	<div class="container">
 		<table class="table table-striped">
@@ -19,6 +20,15 @@
 				</tr>
 			</thead>
 			<tbody>
+				<tr th:each="item : ${listaPersona}">
+					<td th:text="${item.age}"></td>
+					<td th:text="${item.name}"></td>
+					<td th:text="${item.sex}"></td>
+
+					<td>
+						<a th:href="@{}" class="bnt btn-danger">ELIMINAR</a>
+					</td>
+				</tr>
 				<tr>
 					<td>John</td>
 					<td>25</td>
