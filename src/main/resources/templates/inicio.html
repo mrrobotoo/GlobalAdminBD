@@ -1,0 +1,31 @@
+<div th:include="navbar.html"></div>
+<th><button type="submit" class="btn btn-dark"></th>
+<th></th>
+
+ <div class="container">
+  <h2>Bordered Table</h2>
+  <p>The .table-bordered class adds borders to a table:</p>            
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Edad</th>
+        <th>Nombre</th>
+        <th>Sexo</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="item : $(listaPersonas)">
+        <td th:text="$(item.age)"></td>
+        <td th:text="$(item.name)"></td>
+        <td th:text="$(item.sex)"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
+
+
+<div th:include="footer.html"></div>
