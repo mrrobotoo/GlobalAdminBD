@@ -29,8 +29,8 @@
 						<td th:text="${item.sexo}"></td>
 						
 						<td>
-							<a class= "btn btn-danger">Eliminar</a>
-							<button type="button" class="btn btn-danger">Eliminar</button>
+							<a th:href="@{/borrarPersona/{id}(id=${item.id})}" class= "btn btn-danger">Eliminar</a>
+							
 						</td>
 					</tr>
 				</tbody>
