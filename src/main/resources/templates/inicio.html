@@ -1,0 +1,27 @@
+<div class="container">
+	<div th:include="navbar.html"></div>
+	<table class="table">
+		<thead>
+			
+			<tr>
+				<th>Edad</th>
+				<th>Nombre</th>
+				<th>Sexo</th>
+				<th></th>
+				<th></th>
+
+			</tr>
+		</thead>
+	<tbody>
+			<tr th:each="item : ${listaPersonas}">
+				<td th:text="${item.age}"></td>
+				<td th:text="${item.name}"></td>
+				<td th:text="${item.sex}"></td>
+				<td>
+					<a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}"    class="btn btn-danger">Eliminar</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div th:include="footer.html"></div>
