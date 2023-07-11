@@ -17,7 +17,7 @@ extends CrudRepository<Tbpersonas, Long> {
     void deleteById(Long id);
     Optional<Tbpersonas> findById(Long id); 
     @Query(value = "select nvl(max(id) +1, 1) from personas",nativeQuery = true )
-    Long obtenerMaximoid();
+    Long obtenerMaximoid(); 
 
 }
 

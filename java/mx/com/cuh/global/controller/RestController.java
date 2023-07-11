@@ -24,7 +24,7 @@ import mx.com.cuh.globlal.dto.Respuesta;
 	            @RequestBody PersonasDTO personas) {
 	        return usuario.insertarPersona(personas);
 	    }
-	    
+	     
 	    
 	    @DeleteMapping(value = "/borrarPersona")
 		public Respuesta<String> borrarPersona(@RequestParam 
