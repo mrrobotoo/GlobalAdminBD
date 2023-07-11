@@ -1,17 +1,14 @@
 package mx.com.cuh.global.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.service.Usuario;
@@ -29,17 +26,17 @@ public class RestController {
 	}
 
 	@PostMapping(value = "/person")
-	public Respuesta insertarPersonas(@RequestBody PersonaDTO persona) {
+	public Respuesta<String> insertarPersonas(@RequestBody PersonaDTO persona) {
 		return usuario.insertarPersona(persona);
 	}
 	
 	@DeleteMapping(value = "/person")
-	public Respuesta borrarPersonas(@RequestParam Long id) {
+	public Respuesta<String> borrarPersonas(@RequestParam Long id) {
 		return usuario.borrarPersona(id);
 	}
 
 	@PutMapping(value = "/person", params = "id")
-	public Respuesta actualizarpersonas(@RequestParam Long id, @RequestBody PersonaDTO persona) {
+	public Respuesta<String> actualizarpersonas(@RequestParam Long id, @RequestBody PersonaDTO persona) {
 	    return usuario.actualizarPersona(id, persona);
 	}
 }
