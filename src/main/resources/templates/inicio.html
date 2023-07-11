@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html>
 
 <head>
@@ -8,51 +8,35 @@
 </head>
 
 <body>
-	
-	<div th:include="navbar.html"></div>
-	<div class="container">
-		<table class="table table-striped">
+	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
+		
+		<table class = "table">
+			
 			<thead>
 				<tr>
 					<th>Nombre</th>
-					<th>Edad</th>
-					<th>País</th>
-				</tr>
+				    <th>Edad</th>
+				    <th>Sexo</th>
+				 </tr>
+				<th></th>
+				<th></th>
 			</thead>
+			
 			<tbody>
-				<tr th:each="item : ${listaPersona}">
-					<td th:text="${item.age}"></td>
-					<td th:text="${item.name}"></td>
-					<td th:text="${item.sex}"></td>
-
-					<td>
-						<a th:href="@{}" class="bnt btn-danger">ELIMINAR</a>
+				<tr th:each = "item: ${listaPersonas}">
+					<td th:text = "${item.nombre}"></td>
+					<td th:text = "${item.edad}"></td>
+					<td th:text = "${item.sexo}"></td>
+					<td> <!-- COLUMNA PARA ELIMINAR DATOS -->
+						<a th:href = "@{/eliminar/{id}(id=${item.id})}" class = "btn btn-danger">Eliminar</a>
 					</td>
 				</tr>
-				<tr>
-					<td>John</td>
-					<td>25</td>
-					<td>Estados Unidos</td>
-				</tr>
-				<tr>
-					<td>Lisa</td>
-					<td>30</td>
-					<td>Canadá</td>
-				</tr>
-				<tr>
-					<td>Pablo</td>
-					<td>28</td>
-					<td>España</td>
-				</tr>
 			</tbody>
+		
 		</table>
-	</div>
-
-	<!-- Incluir el script de jQuery -->
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	<!-- Incluir los scripts de Bootstrap -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
 	
+	<div th:include = "footer.html"></div> <!-- IMPORTAMOS EL FOOTER -->
+
 </body>
-<div th:include="footer.html"></div>
+	
 </html>

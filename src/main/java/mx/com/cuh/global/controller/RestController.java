@@ -8,7 +8,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.dto.PersonasDTO;
+import mx.com.cuh.global.entity.TbPerson;
+import mx.com.cuh.global.service.Usuario;
+
 import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPersonas;
 import mx.com.cuh.global.service.User;
