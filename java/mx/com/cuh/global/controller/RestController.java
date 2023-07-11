@@ -36,6 +36,7 @@ import mx.com.cuh.globlal.dto.Respuesta;
 	    public Respuesta<String> actualizarPersonas(@RequestParam Long id, @RequestBody Tbpersonas personaActualizada) {
 	        return usuario.actualizarPersona(id, personaActualizada); 
 	    }
+	    
 
 	}
 	
