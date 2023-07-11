@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPersonas;
@@ -28,35 +27,25 @@ public class Controller {
 	 }
  
  @GetMapping("inicio")
-//	 Respuesta<TbPersonas> cosa =user.obtenerRegistros();
-//	 List<TbPersonas>superLista = cosa.getListaPersonas();
-//	 for (TbPersonas persona : superLista) {
-//		 System.out.println(persona.getAge());
-//		 System.out.println(persona.getName());
-//		 System.out.println(persona.getSex());
 	 public String inicio(Model model) {
 		 List<TbPersonas> listaPersonas= 
-		user.obtenerRegistros().getListaPersonas();		 
-		 
+		user.obtenerRegistros().getListaPersonas();		 	 
 		 model.addAttribute("listaPersonas",listaPersonas);
-//	 }
 	 return "inicio";
- }
+ 	}
 
- 
  @PostMapping(value = "/saveperson")
  public String insertarPersona(
          @ModelAttribute PersonasDTO persona) {
      user.insertarPersona(persona);
      return  "user";
- 	}
+ 	} 
  
 @GetMapping("/eliminar/{idUser}")
 	public String eliminar(@PathVariable
         Long idUser) {
-     user.borrar(idUser); 
+     user.borrar(idUser);
 		return "redirect:/inicio";
 	}
 
  }
-
