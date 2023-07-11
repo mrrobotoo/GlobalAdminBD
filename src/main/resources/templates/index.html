@@ -1,29 +1,77 @@
+<head>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: Arial, sans-serif;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 90vh;
+			background-color: #f2f2f2;
+		}
+
+		form {
+			width: 300px;
+			padding: 20px;
+			background-color: #ffffff;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		.form-group {
+			margin-bottom: 15px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 5px;
+			font-weight: bold;
+		}
+
+		input[type="text"] {
+			width: 100%;
+			padding: 5px;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+		}
+
+		button {
+			padding: 8px 15px;
+			background-color: #333;
+			color: #fff;
+			border: none;
+			border-radius: 3px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #555;
+		}
+	</style>
+</head>
 
 <body>
 	<div th:include="navbar.html"></div>
-	<center>
+	<div class="container">
 		<form action="saveperson" method="post">
-			<br>
-			<table>
-				<tr>
-					<td><label for="user-name">Nombre</label></td>
-					<td><input type="text" name="name"></input></td>
-				</tr>
-				<tr>
-					<td><label for="age">Edad</label></td>
-					<td><input type="text" name="age"></input></td>
-				</tr>
-				<tr>
-					<td><label for="sex">Sexo</label></td>
-					<td><input type="text" name="sex"></input></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><button type="submit" class="btn btn-dark">Submit</button>
-</td>
-				</tr>
-			</table>
-
+			<div class="form-group">
+				<label for="user-name">Nombre</label>
+				<input type="text" name="name" />
+			</div>
+			<div class="form-group">
+				<label for="age">Edad</label>
+				<input type="text" name="age" />
+			</div>
+			<div class="form-group">
+				<label for="sex">Sexo</label>
+				<input type="text" name="sex" />
+			</div>
+			<button type="submit">Registrar</button>
 		</form>
-	</center>
-		<div th:include="footer.html"></div>
+	</div>
+	<div th:include="footer.html"></div>

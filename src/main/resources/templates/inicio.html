@@ -15,9 +15,9 @@
 				<td th:text="${item.age}"></td>
 				<td th:text="${item.name}"></td>
 				<td th:text="${item.sex}"></td>
-				<td><a href="" class="btn btn-danger" role="button" aria-pressed="true">Eliminar</a>
-				</td>
-
+				<td> <!-- COLUMNA PARA ELIMINAR DATOS -->
+               		<a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}" class="btn btn-danger">Eliminar</a>
+                </td>
 			</tr>
 		</tbody>
 	</table>
