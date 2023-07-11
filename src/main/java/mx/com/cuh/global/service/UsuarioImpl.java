@@ -1,6 +1,5 @@
 package mx.com.cuh.global.service;
 
-
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class UsuarioImpl implements Usuario {
 
 	@Override
 	public Respuesta<String> insertarPersona(PersonaDTO persona) {
-		Long idPersonMaximo =tbPersonRepository.obtenerMaximoIdPerson();
+		Long idPersonMaximo = tbPersonRepository.obtenerMaximoIdPerson();
 		
 		TbPerson personaFinal = new TbPerson();
 		personaFinal.setId(idPersonMaximo);
