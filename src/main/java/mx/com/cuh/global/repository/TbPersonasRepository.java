@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+
 import mx.com.cuh.global.entity.TbPersonas;
 
 
@@ -16,11 +17,6 @@ extends CrudRepository<TbPersonas, Long> {
     void deleteById(Long idUser);
     Optional<TbPersonas> findById(Long id); 
     
-    //@Query(value = "select max(ID) +1 from personas",nativeQuery = true )
-    //Long obtenerMaximoId();
-    
-    @Query(value = "SELECT COALESCE(MAX(ID) + 1, 1) FROM personas", nativeQuery = true)
+    @Query(value = "select nvl(max(id)+1, 1) from personas", nativeQuery = true )
     Long obtenerMaximoId();
-
-
-}
+    }
