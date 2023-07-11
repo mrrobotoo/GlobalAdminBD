@@ -1,24 +1,28 @@
 	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
 		
-		<table class = "table">
+		<table class = "table table-dark">
 			
-			<thead>
+			<thead class = "thead-dark">
 				<tr>
-					<th>Nombre</th>
-				    <th>Edad</th>
-				    <th>Sexo</th>
+					<th style = "text-align: center;">Nombre</th>
+				    <th style = "text-align: center;">Edad</th>
+				    <th style = "text-align: center;">Sexo</th>
+				    <th></th>
+				    <th></th>
 				 </tr>
-				<th></th>
-				<th></th>
+
 			</thead>
 			
 			<tbody>
 				<tr th:each = "item: ${listaPersonas}">
-					<td th:text = "${item.nombre}"></td>
-					<td th:text = "${item.edad}"></td>
-					<td th:text = "${item.sexo}"></td>
+					<td style = "text-align: center;" th:text = "${item.nombre}"></td>
+					<td style = "text-align: center;" th:text = "${item.edad}"></td>
+					<td style = "text-align: center;" th:text = "${item.sexo}"></td>
 					<td> <!-- COLUMNA PARA ELIMINAR DATOS -->
 						<a th:href = "@{/eliminar/{id}(id=${item.id})}" class = "btn btn-danger">Eliminar</a>
+					</td>
+					<td>
+						<a class = "btn btn-info">Actualizar</a>
 					</td>
 				</tr>
 			</tbody>

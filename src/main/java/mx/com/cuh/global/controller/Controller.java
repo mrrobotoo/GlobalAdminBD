@@ -24,7 +24,7 @@ public class Controller {
 	@Autowired
 	private Usuario usuario;
 	
-	@RequestMapping("/")
+	@RequestMapping("/index")
 	public String index() {
 		return "index";
 	}

@@ -10,29 +10,31 @@
 <body>
 	
 	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
-	<center>
-		<form action="saveperson" class="p-3 mb-2 bg-info text-dark" method="post">
-			<table>
-				<tr>
-					<td><label for="user-name" class="label label-pimary">Nombre: </label></td>
-					<td><input placeholder = "Ingresa un nombre" type="text" name="nombre"></input></td>
-				</tr>
-				<tr>
-					<td><label align = "right" for="edad">Edad: </label></td>
-					<td><input placeholder = "Ingresa la edad"  type="text" name="edad"></input></td>
-				</tr>
-				<tr>
-					<td><label for="sexo">Sexo: </label></td>
-					<td><input placeholder = "Ingresa el sexo"  type="text" name="sexo"></input></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input type="submit" value="Submit" class="btn btn-info"></input></td>
-				</tr>
-			</table>
-		</form>
+		<center>
+			<form style = "padding: 10px;" action="saveperson" class="p-3 mb-2 bg-dark text-white" method="post">
+				<table border="10px" style="padding: 10px; border-style: solid;">
+					<tr>
+						<td style = "text-align: right; padding: 10px;"><label for="user-name" class="label label-pimary" style = "text-align: right">Nombre: </label></td>
+						<td style = "padding-right: 10px; padding-top: 10px;"><input style = "text-align: center;" placeholder = "Ingresa un nombre" type="text" name="nombre"></input></td>
+					</tr>
+					<tr>
+						<td style = "text-align: right; padding: 10px;"><label align = "right" for="edad" style = "text-align: right">Edad: </label></td>
+						<td><input style = "text-align: center" placeholder = "Ingresa la edad"  type="text" name="edad"></input></td>
+					</tr>
+					<tr>
+						<td style = "text-align: right; padding: 10px;"><label for="sexo" style = "text-align: right">Sexo: </label></td>
+						<td><input style = "text-align: center" placeholder = "H/M/NB"  type="text" name="sexo"></input></td>
+					</tr>
+					<tr>
+						<td align = "center"></td>
+						<td style = "padding-left: 0px;
+										padding-top: 10px;
+										padding-bottom: 10px;"><input type="submit" value="Submit" class="btn btn-success"></input></td>
+					</tr>
+				</table>
+			</form>
 		<div th:include = "footer.html"></div> <!-- SE IMPORTA EL FOOTER -->
-	</center>
+		</center>
 	
 </body>
 
