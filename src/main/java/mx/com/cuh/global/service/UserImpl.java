@@ -19,7 +19,7 @@ public class UserImpl implements User{
 	@Override
 	public Respuesta <TbPersonas> obtenerRegistros(){
 		Respuesta<TbPersonas> response = new Respuesta <>();
-		response.setListaPersonas(tbPersonasRepository.findAll());
+		response.setListasPersona(tbPersonasRepository.findAll());
 		response.setMensaje("Se muestra la información");
 	
 		return response;

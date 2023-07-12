@@ -30,13 +30,16 @@
 					<td> <!-- COLUMNA PARA ELIMINAR DATOS -->
 						<a th:href = "@{/eliminar/{id}(id=${item.id})}" class = "btn btn-danger">Eliminar</a>
 					</td>
+					<td> <!-- COLUMNA PARA ACTUALIZAR DATOS -->
+						<a th:href = "@{/eliminar/{id}(id=${item.id})}" class = "btn btn-info">ACTUALIZAR</a>
+					</td>
 				</tr>
 			</tbody>
 		
 		</table>
 	
 	<div th:include = "footer.html"></div> <!-- IMPORTAMOS EL FOOTER -->
-
+	
 </body>
 	
 </html>

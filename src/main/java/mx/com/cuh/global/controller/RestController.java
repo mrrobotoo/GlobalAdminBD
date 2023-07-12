@@ -42,7 +42,8 @@ public class RestController {
     }
     
     @PutMapping("/person")
-    public Respuesta<String> actualizarPersona(@RequestParam("idUser") Long idUser, @RequestBody PersonasDTO person) {
+    public Respuesta<String> actualizarPersona(@RequestParam("idUser")
+    Long idUser, @RequestBody PersonasDTO person) {
 
         return user.actualizarPersona(idUser, person);
     }
