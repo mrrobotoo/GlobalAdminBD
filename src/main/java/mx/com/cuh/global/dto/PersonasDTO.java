@@ -1,7 +1,7 @@
 package mx.com.cuh.global.dto;
 
 public class PersonasDTO {
-<<<<<<< HEAD
+
 	private String id;
 	private String nombre;
 	private Long edad;
@@ -33,7 +33,7 @@ public class PersonasDTO {
 	
 	
 	
-=======
+
 	private Long idUser;
 	private String name;
 	private String age;
@@ -67,5 +67,5 @@ public class PersonasDTO {
 		this.sex = sex;
 	}
 
->>>>>>> origin/Flor
+
 }

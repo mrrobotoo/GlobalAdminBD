@@ -2,14 +2,12 @@ package mx.com.cuh.global.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-<<<<<<< HEAD
+
 import org.springframework.web.bind.annotation.RequestParam;
-=======
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPersonas;
@@ -38,26 +36,13 @@ public class RestController {
         return user.borrar(idUser);    
     }
     
-    @PutMapping("/person")
-    public Respuesta<String> actualizarPersona(@RequestParam("idUser") Long idUser, @RequestBody PersonasDTO person) {
-
+    @PutMapping("/person") 	
+    public Respuesta<String> actualizarPersona(@RequestParam("idUser") 
+    Long idUser, @RequestBody 
+    PersonasDTO person) {
         return user.actualizarPersona(idUser, person);
     }
->>>>>>> origin/Flor
-
-
-import mx.com.cuh.global.dto.Respuesta;
-import mx.com.cuh.global.service.Usuario;
-
-@org.springframework.web.bind.annotation.RestController
-public class RestController {
-	@Autowired
-	private Usuario usuario;
-	
-	@DeleteMapping(value = "/borrarPersona")
-	public Respuesta<String> borrarPersona(@RequestParam 
-			Long id) {
-		return usuario.borrarPersona(id);	
-	}
 }
+
+
 
