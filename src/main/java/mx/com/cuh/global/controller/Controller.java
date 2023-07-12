@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import mx.com.cuh.global.dto.PersonaDTO;
-import mx.com.cuh.global.dto.Respuesta;
+
 import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.service.Usuario;
 
@@ -51,6 +51,8 @@ public class Controller {
 		model.addAttribute("listaPersonas", listaPersonas);
 		return "redirect:/inicio";
 	}
+	
+	
 	
 }
 

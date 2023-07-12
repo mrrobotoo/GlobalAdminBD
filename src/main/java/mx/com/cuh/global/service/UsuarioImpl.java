@@ -49,7 +49,6 @@ public class UsuarioImpl implements Usuario {
 	
 	//UPDATE
 
-	@Override
 	public Respuesta<String> actualizarPersona(Long id, PersonaDTO persona) {
 	    TbPerson personaFinal = tbPersonRepository.findById(id).orElse(null);
 
@@ -86,5 +85,12 @@ public class UsuarioImpl implements Usuario {
     	}
     	return response;
     }
+
+
+	@Override
+	public Respuesta<String> actualizarPersona(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
