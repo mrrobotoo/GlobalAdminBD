@@ -1,7 +1,6 @@
 package mx.com.cuh.global.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +22,6 @@ public class RestController {
         return user.obtenerRegistros();
     }
     
-    
     @PostMapping(value = "/person")
     public Respuesta insertarPersona(
             @RequestBody PersonasDTO persona) {
@@ -37,9 +35,11 @@ public class RestController {
     }
     
     @PutMapping("/person")
-    public Respuesta<String> actualizarPersona(@RequestParam("idUser") Long idUser, @RequestBody PersonasDTO person) {
-
+    public Respuesta<String> actualizarPersona(@RequestParam("idUser") 
+    Long idUser, @RequestBody 
+    PersonasDTO person) {
         return user.actualizarPersona(idUser, person);
     }
 
 }
+

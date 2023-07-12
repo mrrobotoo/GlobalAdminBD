@@ -12,16 +12,10 @@ public class Respuesta <T>{
 	public List<T> getListaPersonas(){
 		return listaPersonas;
 	}
-	
 
 	public void setListaPersonas(List<T> listasPersona) {
 		this.listaPersonas = listasPersona;
-
-	
-
-
 	}
-
 
 	public void setMensaje(String string) {
 		// TODO Auto-generated method stub
