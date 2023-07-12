@@ -39,10 +39,15 @@
             background-color: rgb(255, 128, 192); /* Color de fondo del botón al pasar el mouse */
             border-color: rgb(128, 128, 255); /* Color del borde del botón al pasar el mouse */
         }
-        
+        .navbar{
+			position: fixed;
+			top: 0;
+			margin: 0;
+			width: 100%;
+			min-width: 100%;
+}
     </style>
-    <link rel="stylesheet" href="../static/style.css" /> //th:ref="@{/style.css}"
-</head>
+    <link rel="stylesheet" th:href="@{/style.css}" />
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -67,8 +72,6 @@
       </ul>
     </div>
   </nav>
-
-  <!-- Scripts de Bootstrap -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

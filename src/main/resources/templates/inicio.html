@@ -1,27 +1,137 @@
+<style>body {font-family: Arial, Helvetica, sans-serif;}
+
+/* The Modal (background) */ 
+.modal {   
+    display: none; /* Lo oculta de la vista inicial*/   
+    position: fixed; /* Lo fija en un lugar */   
+    z-index: 1; /* Lo sobrepone respecto a los demas elementos*/
+   	padding-top: 200px; /* Location of the box */
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%; /* ancho de 100%*/   
+    height: 100%; /* Toda la altura disponible*/
+    overflow: auto; /* Scroll Habilitado */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */ 
+}
+
+/* Modal Content */ 
+.modal-content {   
+    background-color: #fefefe;   
+    margin: auto;   
+    padding: 20px;   
+    border: 1px solid #888;   
+    width: 80%; 
+}
+
+/* The Close Button */ 
+.close {   
+    color: #aaaaaa;   
+    float: right;   
+    font-size: 28px;   
+    font-weight: bold; 
+}
+
+.close:hover, .close:focus {   
+    color: #000;   
+    text-decoration: none;   
+    cursor: pointer; 
+} 
+
+
+</style>
+<div th:include="navbar.html"></div>
 <div class="container">
-	<div th:include="navbar.html"></div>
 	<table class="table">
-		<thead>
-			
-			<tr>
-				<th>Edad</th>
-				<th>Nombre</th>
-				<th>Sexo</th>
-				<th></th>
-				<th></th>
+    <thead>
+        <tr>
+            <th>Edad</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="item : ${listaPersonas}" th:data-age="${item.age}" th:data-name="${item.name}" th:data-sex="${item.sex}">
+            <td th:text="${item.age}"></td>
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.sex}"></td>
+            <td>
+                <a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}" class="btn btn-danger">Eliminar</a>
+            </td>
+            <td>
+                <a class="btn btn-info btn-actualizar" data-idUser="${item.idUser}">Actualizar</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <table class="table">
+            <tr>
+                <th>Edad</th>
+                <th>Nombre</th>
+                <th>Sexo</th>
+            </tr>
+            <tr>
+                <td id="modal-edad"></td>
+                <td id="modal-nombre"></td>
+                <td id="modal-sexo"></td>
+            </tr>
+            <tr>
+				<td></td>
+				<td><center><a class="btn btn-info">Actualizar</a></center></td>
+				<td><a class="btn btn-danger">Cancelar</a></td>								
 			</tr>
-		</thead>
-	<tbody>
-			<tr th:each="item : ${listaPersonas}">
-				<td th:text="${item.age}"></td>
-				<td th:text="${item.name}"></td>
-				<td th:text="${item.sex}"></td>
-				<td>
-					<a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}"    class="btn btn-danger">Eliminar</a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+        </table>
+    </div>
+</div>
 
-	<div th:include="footer.html"></div>
+<script>
+    var modal = document.getElementById("myModal");
+    var botonesActualizar = document.querySelectorAll('.btn-actualizar');
+    var span = document.getElementsByClassName("close")[0];
+
+    botonesActualizar.forEach(function(boton) {
+        boton.addEventListener('click', function() {
+            var fila = this.parentNode.parentNode; // Get the row containing the button
+            var edad = fila.getAttribute('data-age');
+            var nombre = fila.getAttribute('data-name');
+            var sexo = fila.getAttribute('data-sex');
+
+            // Set the content of cells in the modal
+            document.getElementById('modal-edad').textContent = edad;
+            document.getElementById('modal-nombre').textContent = nombre;
+            document.getElementById('modal-sexo').textContent = sexo;
+
+            modal.style.display = "block";
+        });
+    });
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+
+
+	</div>
+	<div th:include="footer.html" name="footer"></div>
+	
+	
+	
+	
+	
+	
+	
+	

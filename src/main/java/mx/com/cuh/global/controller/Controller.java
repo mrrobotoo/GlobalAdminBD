@@ -33,6 +33,7 @@ public class Controller {
 		 model.addAttribute("listaPersonas",listaPersonas);
 	 return "inicio";
  	}
+ 
 
  @PostMapping(value = "/saveperson")
  public String insertarPersona(
