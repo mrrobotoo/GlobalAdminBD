@@ -39,6 +39,6 @@ public class RestController {
     Long idUser, @RequestBody 
     PersonasDTO person) {
         return user.actualizarPersona(idUser, person);
-    }
-
+    }   
+    
 }
