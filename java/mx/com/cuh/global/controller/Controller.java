@@ -55,11 +55,11 @@ public class Controller {
     
     }
     
-    @PutMapping("/actualizarpersona/{id}")
-    public String actualizarPersona(@PathVariable 
-    		Long id, @ModelAttribute PersonasDTO persona) {
-        usuario.actualizarPersona(id, persona);
-        return "redirect:/inicio";
+    @PostMapping(value = "/actualizarpersona/{id}")
+    public String listo(@PathVariable Long id, 
+    	@ModelAttribute PersonasDTO personas) {
+    	usuario.actualizarPersona(id, personas);
+        return "redirect:/Inicio";
     }
     
 }
