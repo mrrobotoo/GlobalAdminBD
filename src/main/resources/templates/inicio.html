@@ -1,31 +1,196 @@
-<div th:include="navbar.html"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Persona</title>
+    <style>
+        .upd {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 70vh;
+            background-color: #f2f2f2;
+        }
 
-<div class="container">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>Edad</th>
-				<th>Nombre</th>
-				<th>Sexo</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="item : ${listaPersonas}">
-				<td th:text="${item.age}"></td>
-				<td th:text="${item.name}"></td>
-				<td th:text="${item.sex}"></td>
-				<td> <!-- COLUMNA PARA ELIMINAR DATOS -->
-               		<a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}" class="btn btn-danger">Eliminar</a>
-                </td>
-			</tr>
-		</tbody>
-	</table>
-</div>
+        form {
+            width: 300px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-</body>
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-</html>
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
 
-<div th:include="footer.html"></div>
+        button {
+            padding: 8px 15px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .popup {
+            position: fixed;
+            font-family: Arial, Helvetica, sans-serif;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 99999;
+            opacity: 0;
+            transition: opacity 400ms ease-in;
+            pointer-events: none;
+        }
+
+        .popup input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .popup > div {
+            width: 400px;
+            position: relative;
+            margin: 10% auto;
+            padding: 5px 20px 13px 20px;
+            border-radius: 10px;
+            background: #fff;
+            background: -moz-linear-gradient(#fff, #999);
+            background: -webkit-linear-gradient(#fff, #999);
+            background: -o-linear-gradient(#fff, #999);
+            transition: opacity 400ms ease-in;
+        }
+
+        .close {
+            background: #606061;
+            color: #FFFFFF;
+            line-height: 25px;
+            position: absolute;
+            right: -12px;
+            text-align: center;
+            top: -10px;
+            width: 24px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 12px;
+            box-shadow: 1px 1px 3px #000;
+        }
+
+        .close:hover {
+            background: #00d9ff;
+        }
+    </style>
+</head>
+    <div th:include="navbar.html"></div>
+
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Edad</th>
+                    <th>Nombre</th>
+                    <th>Sexo</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${listaPersonas}">
+                    <td th:text="${item.age}"></td>
+                    <td th:text="${item.name}"></td>
+                    <td th:text="${item.sex}"></td>
+                    <td>
+                        <!-- COLUMNA PARA ELIMINAR DATOS -->
+                        <a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="actualizarUsuario(this)">Actualizar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="popup" class="popup">
+            <div>
+                <a onclick="closePopup()" title="Close" class="close">X</a>
+                <h3>Actualizar Persona</h3>
+                <form method="post" id="updateForm" >
+                    <div class="form-group">
+                        <label for="name">Nombre:</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Edad:</label>
+                        <input type="number" class="form-control" id="age" name="age" placeholder="age" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sex">Sexo:</label>
+                        <input type="text" class="form-control" id="sex" name="sex" placeholder="sex" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Listo</button>
+                </form>
+
+            </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        function actualizarUsuario(button) {
+            var popup = document.getElementById('popup');
+            var form = popup.querySelector('form');
+            form.reset();
+            var row = button.closest('tr');
+            var name = row.cells[1].innerText;
+            var age = row.cells[0].innerText;
+            var sex = row.cells[2].innerText;
+            form.elements.name.value = name;
+            form.elements.age.value = age;
+            form.elements.sex.value = sex;
+            popup.style.opacity = '1';
+            popup.style.pointerEvents = 'auto';
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                var nombreActualizado = form.elements.name.value;
+                var edadActualizada = form.elements.age.value;
+                var sexoActualizado = form.elements.sex.value;
+
+                console.log('Nombre actualizado:', nombreActualizado);
+                console.log('Edad actualizada:', edadActualizada);
+                console.log('Sexo actualizado:', sexoActualizado);
+                closePopup();
+            });
+        }
+
+        function closePopup() {
+            var popup = document.getElementById('popup');
+            popup.style.opacity = '0';
+            popup.style.pointerEvents = 'none';
+        }
+    </script>
+  <div th:include="footer.html"></div>
