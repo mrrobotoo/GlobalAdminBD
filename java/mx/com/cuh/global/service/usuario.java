@@ -14,5 +14,6 @@ public interface usuario {
 
 	Respuesta<String> actualizarPersona(Long id);
     
+	Respuesta<String> actualizarPersona(long id, PersonasDTO personasDTO);
 	
 }

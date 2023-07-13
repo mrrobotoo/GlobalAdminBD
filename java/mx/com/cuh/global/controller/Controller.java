@@ -1,6 +1,8 @@
 package mx.com.cuh.global.controller;
 
-import java.util.List; 
+import java.util.List;
+
+import javax.persistence.Id;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam; 
 
@@ -51,5 +54,12 @@ public class Controller {
     	return "redirect:/Inicio";
     
     }
-
+    
+    @PutMapping("/actualizarpersona/{id}")
+    public String actualizarPersona(@PathVariable 
+    		Long id, @ModelAttribute PersonasDTO persona) {
+        usuario.actualizarPersona(id, persona);
+        return "redirect:/inicio";
+    }
+    
 }

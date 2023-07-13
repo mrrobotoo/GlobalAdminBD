@@ -3,8 +3,29 @@
 
 <head>
 	<title>Ejemplo de tabla HTML con Bootstrap</title>
-	<!-- Incluir los estilos de Bootstrap -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<style>
+		.popup {
+			display: none;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 300px;
+			padding: 20px;
+			background-color: #f1f1f1;
+			text-align: center;
+		}
+
+		.popup input {
+			width: 100%;
+			margin-bottom: 10px;
+		}
+
+		.popup button {
+			margin-top: 10px;
+		}
+	</style>
 </head>
 
 <body>
@@ -20,17 +41,17 @@
 						<th></th>
 						<th></th>
 					</tr>
-				</thead> 
+				</thead>
 				<tbody>
-
 					<tr th:each="item : ${listaPersonas}">
 						<td th:text="${item.nombre}"></td>
 						<td th:text="${item.edad}"></td>
 						<td th:text="${item.sexo}"></td>
-						
 						<td>
-							<a th:href="@{/borrarPersona/{id}(id=${item.id})}" class= "btn btn-danger">Eliminar</a>
-							
+							<a th:href="@{/borrarPersona/{id}(id=${item.id})}" class="btn btn-danger">Eliminar</a>
+						</td>
+						<td>
+							<button class="btn btn-primary" onclick="actualizarUsuario(this)">Actualizar</button>
 						</td>
 					</tr>
 				</tbody>
@@ -46,6 +67,75 @@
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 	<!-- Incluir los scripts de Bootstrap -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+
+	<div id="popup" class="popup">
+		<h3>Actualizar Persona</h3>
+		<form method="post" id="updateForm">
+			<div class="form-group">
+				<input type="text" class="form-control" name="nombre" placeholder="Nombre" required>
+			</div>
+			<div class="form-group">
+				<input type="number" class="form-control" name="edad" placeholder="Edad" required>
+			</div>
+			<div class="form-group">
+				<input type="text" class="form-control" name="sexo" placeholder="Sexo" required>
+			</div>
+			<button type="button" class="btn btn-primary" onclick="actualizarDatos()">Listo</button>
+		</form>
+		<button class="btn btn-secondary"
+			onclick="document.getElementById('popup').style.display = 'none'">Cancelar</button>
+	</div>
+
+	<script>
+		function actualizarUsuario(button) {
+			var popup = document.getElementById('popup');
+			var form = popup.querySelector('form');
+			form.reset();
+			var row = button.closest('tr');
+			var nombre = row.cells[0].innerText;
+			var edad = row.cells[1].innerText;
+			var sexo = row.cells[2].innerText;
+			form.elements.nombre.value = nombre;
+			form.elements.edad.value = edad;
+			form.elements.sexo.value = sexo;
+			popup.style.display = 'block';
+		}
+
+		function actualizarDatos() {
+			var popup = document.getElementById('popup');
+			var form = popup.querySelector('form');
+			var nombreActualizado = form.elements.nombre.value;
+			var edadActualizada = form.elements.edad.value;
+			var sexoActualizado = form.elements.sexo.value;
+
+			var row = form.closest('tr');
+			var id = row.getAttribute('data-id');
+
+			// Crear un objeto con los datos actualizados
+			var datosActualizados = {
+				nombre: nombreActualizado,
+				edad: edadActualizada,
+				sexo: sexoActualizado
+			};
+
+			// Realizar una solicitud AJAX al controlador para actualizar los datos
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState === 4 && this.status === 200) {
+					// Actualizar la fila en la tabla con los nuevos datos
+					row.cells[0].innerText = nombreActualizado;
+					row.cells[1].innerText = edadActualizada;
+					row.cells[2].innerText = sexoActualizado;
+
+					// Cerrar el popup
+					popup.style.display = 'none';
+				}
+			};
+			xhttp.open("POST", "/actualizarpersona/" + id, true);
+			xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			xhttp.send(JSON.stringify(datosActualizados));
+		}
+	</script>
 </body>
 
 </html>

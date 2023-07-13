@@ -74,6 +74,11 @@ public Respuesta<String> actualizarPersona(Long id) {
 	// TODO Auto-generated method stub
 	return null;
 }
+@Override
+public Respuesta<String> actualizarPersona(long id, PersonasDTO personasDTO) {
+	// TODO Auto-generated method stub
+	return null;
+}
 
 
 
