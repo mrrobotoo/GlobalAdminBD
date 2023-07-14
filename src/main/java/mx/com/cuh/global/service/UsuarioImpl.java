@@ -88,7 +88,7 @@ public class UsuarioImpl implements Usuario {
 
 
 	@Override
-	public Respuesta<String> actualizarPersona(Long id) {
+	public Respuesta<String> actualizarPersoRespuesta(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

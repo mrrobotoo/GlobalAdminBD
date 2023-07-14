@@ -25,7 +25,7 @@ public class Controller {
 	@Autowired
 	private Usuario usuario;
 	
-	@RequestMapping("/")
+	@RequestMapping("/index")
 	public String index() {
 		return "index";
 	}
@@ -52,9 +52,35 @@ public class Controller {
 		return "redirect:/inicio";
 	}
 	
+	@PostMapping(value = "/actualizar/{id}") //ACTUALIZAR PERSONA
+	public String actualizarPersona( @PathVariable Long id, @ModelAttribute PersonaDTO persona){
+		List<TbPerson> listaPersonas = usuario.obtenerPersonas().getListasPersona();
+		usuario.actualizarPersona(id,persona);
+			return "redirect:/inicio";
+		}
+	//@PostMapping(value = "/actualizar", method=RequestMethod.POST)
+	//public String actualizarPersona( @Valid Usuario usuario, BindingResult bindi
+		//	if (bindingResult.hasErrors()) {
+				//mp.put"usuarios", uc.findAll());
+	//return "redirect:/inicio";
+			//}
+	//Usuario user = uc.findOne(usuario.getId());
+	//Usuario.setNombre(usuario.getNombre());
+	//Usuario.setNombre(usuario.getNombre());
+	//Usuario.setNombre(usuario.getNombre());
+	//uc.save(user);
+	//mp.put("usuario", user);
+	//return "redirect:/inicio";
 	
 	
-}
+	//@PostMapping(value = "/actualizar/{id}", method=RequestMethod.POST)
+	//public String actualizarPersona( @Valid ) 
+	
+    }
+	
+	
+	
+
 
 	
 
