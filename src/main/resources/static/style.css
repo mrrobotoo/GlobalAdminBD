@@ -1,0 +1,9 @@
+style.css
+footer{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(0, 0, 0);
+  color: white;
+  text-align: center;
+}

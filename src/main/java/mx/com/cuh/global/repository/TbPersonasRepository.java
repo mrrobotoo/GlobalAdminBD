@@ -23,4 +23,3 @@ extends CrudRepository<TbPersonas, Long> {
    
     }
 
-
