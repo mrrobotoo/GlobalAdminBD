@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,26 +25,26 @@ public class Controller {
 	@Autowired
 	private Usuario usuario;
 	
-	@RequestMapping("/")
+	@RequestMapping("/index") //INICIO / INDEX
 	public String index() {
 		return "index";
 	}
 	
-	@GetMapping("/inicio")
+	@GetMapping("/inicio") //OBTENER PERSONAS
 	public String inicio(Model model){
 		List<TbPerson> listaPersonas = usuario.obtenerPersonas().getListasPersona();
 		model.addAttribute("listaPersonas", listaPersonas);
 		return "inicio";
 	}
 	
-	@PostMapping(value = "/saveperson")
+	@PostMapping(value = "/saveperson") //INSERTAR PERSONA
 	public String insertarPersonas(
 			@ModelAttribute PersonaDTO persona) {
 		usuario.insertarPersona(persona);
 		return "user";
 	}
 	
-	@GetMapping("/eliminar/{id}")
+	@GetMapping("/eliminar/{id}") //ELIMINAR PERSONA
 	public String eliminar(Model model, @PathVariable Long id){
 		usuario.borrarPersona(id);
 		List<TbPerson> listaPersonas = usuario.obtenerPersonas().getListasPersona();
@@ -52,10 +52,10 @@ public class Controller {
 		return "redirect:/inicio";
 	}
 	
+	@PostMapping(value = "/actualizar/{id}") //ACTUALIZAR PERSONA
+	public String actualizarPersona(@PathVariable("id") Long id, @ModelAttribute PersonaDTO persona) {
+		usuario.actualizarPersona(id, persona);
+		return "redirect:/inicio";
+	}
+	
 }
-
-
-
-
-
-
