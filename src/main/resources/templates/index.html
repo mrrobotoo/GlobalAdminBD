@@ -9,7 +9,7 @@
         body {
 			background-color: rgb(192, 192, 192); /* Color de fondo del cuerpo */
             font-family: Arial, sans-serif; /* Fuente del texto */
-            color: #333; /* Color del texto */
+            color: rgb(255, 255, 255); /* Color del texto */
             
         }
 
@@ -23,22 +23,22 @@
         }
 
         .form-label {
-            color: #333; /* Color del texto de las etiquetas del formulario */
+            color: rgb(255, 255, 255); /* Color del texto de las etiquetas del formulario */
             font-weight: bold; /* Negrita en las etiquetas del formulario */
             text-transform: uppercase; /* Mayúsculas en las etiquetas del formulario */
         }
 
         .btn-primary {
-            background-color: rgb(255, 128, 255); /* Color de fondo del botón */
-            border-color: rgb(128, 0, 64); /* Color del borde del botón */
+            background-color: rgb(0, 0, 0); /* Color de fondo del botón */
+            border-color: rgb(255, 0, 0); /* Color del borde del botón */
             text-transform: uppercase; /* Mayúsculas en el texto del botón */
             color: #333; /* Color del texto */
             font-weight: bold; /*Letra negrita*/
         }
 
         .btn-primary:hover {
-            background-color: rgb(255, 128, 192); /* Color de fondo del botón al pasar el mouse */
-            border-color: rgb(128, 128, 255); /* Color del borde del botón al pasar el mouse */
+            background-color: rgb(255, 0, 0); /* Color de fondo del botón al pasar el mouse */
+            border-color: rgb(255, 0, 0); /* Color del borde del botón al pasar el mouse */
         }
         
     </style>
@@ -53,15 +53,15 @@
                 <form action="saveperson" method="post">
                     <div class="mb-3">
                         <label for="user-name" class="form-label">User Name</label>
-                        <input type="text" class="form-control" name="Nombre">
+                        <input type="text" class="form-control" name="name">
                     </div>
                     <div class="mb-3">
                         <label for="age" class="form-label">Age</label>
-                        <input type="text" class="form-control" name="Edad">
+                        <input type="text" class="form-control" name="age">
                     </div>
                     <div class="mb-3">
                         <label for="sex" class="form-label">Sex</label>
-                        <input type="text" class="form-control" name="Sexo">
+                        <input type="text" class="form-control" name="sex">
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Ingresar</button>
