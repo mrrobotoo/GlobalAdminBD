@@ -52,7 +52,7 @@ public class Controller {
 		return "redirect:/inicio";
 	}
 	
-	@PostMapping(value = "/actualizar/{id}")
+	@PostMapping(value = "/actualizar/{id}") //ACTUALIZAR PERSONA
 	public String actualizarPersona(@PathVariable("id") Long id, @ModelAttribute PersonaDTO persona) {
 		usuario.actualizarPersona(id, persona);
 		return "redirect:/inicio";
