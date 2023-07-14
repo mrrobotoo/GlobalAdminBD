@@ -1,0 +1,85 @@
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Prueba</title>
+</head>
+<body>
+    <button id = "btn-abrir-modal">Click On</button>
+
+    <dialog id = "modal">
+
+        <form style = "max-width: 50ch; padding: 10px;" action="saveperson" class="p-3 mb-2 bg-dark text-white" method="put">
+            <table border="10px" style="padding: 10px; border-style: solid;">
+                <tr>
+                    <td style = "text-align: right; padding: 10px; color: white;"><label for="user-name" class="label label-pimary" style = "text-align: right">Nombre: </label></td>
+                    <td style = "padding-right: 10px; padding-top: 10px;"><input style = "text-align: center;" placeholder = "Ingresa un nombre" type="text" name="nombre"></input></td>
+                </tr>
+                <tr>
+                    <td style = "text-align: right; padding: 10px; color: white"><label align = "right" for="edad" style = "text-align: right">Edad: </label></td>
+                    <td><input style = "text-align: center" placeholder = "Ingresa la edad"  type="text" name="edad"></input></td>
+                </tr>
+                <tr>
+                    <td style = "text-align: right; padding: 10px; color: white"><label for="sexo" style = "text-align: right">Sexo: </label></td>
+                    <td><input style = "text-align: center" placeholder = "H/M/NB"  type="text" name="sexo"></input></td>
+                </tr>
+                <tr>
+                    <td align = "center"></td>
+                    <td style = "padding-left: 0px;
+                                    padding-top: 10px;
+                                    padding-bottom: 10px;"><input type="submit" value="Submit" class="btn btn-success"></input></td>
+                </tr>
+            </table>
+        </form>
+
+        <button id="btn-cerrar-modal">Cerrar Modal</button>
+
+    </dialog>
+    <script src = "modal.js"></script>
+
+</body>
+</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="EstiloModal.css">
+    <title>Ventana Modal</title>
+</head>
+    <body>
+        <button id="open">Hacer Click</button>
+
+        <div class = "modal-container" id = "modal_container">
+            <div class = "modal">
+                <form style = "max-width: 50ch; padding: 10px;" action="saveperson" class="p-3 mb-2 bg-dark text-white" method="post">
+                    <table border="10px" style="padding: 10px; border-style: solid;">
+                        <tr>
+                            <td style = "text-align: right; padding: 10px; color: white;"><label for="user-name" class="label label-pimary" style = "text-align: right">Nombre: </label></td>
+                            <td style = "padding-right: 10px; padding-top: 10px;"><input style = "text-align: center;" placeholder = "Ingresa un nombre" type="text" name="nombre"></input></td>
+                        </tr>
+                        <tr>
+                            <td style = "text-align: right; padding: 10px; color: white"><label align = "right" for="edad" style = "text-align: right">Edad: </label></td>
+                            <td><input style = "text-align: center" placeholder = "Ingresa la edad"  type="text" name="edad"></input></td>
+                        </tr>
+                        <tr>
+                            <td style = "text-align: right; padding: 10px; color: white"><label for="sexo" style = "text-align: right">Sexo: </label></td>
+                            <td><input style = "text-align: center" placeholder = "H/M/NB"  type="text" name="sexo"></input></td>
+                        </tr>
+                        <tr>
+                            <td align = "center"></td>
+                            <td style = "padding-left: 0px;
+                                            padding-top: 10px;
+                                            padding-bottom: 10px;"><input type="submit" value="Actualizar" class="btn btn-success"></input></td>
+                        </tr>
+                    </table>
+                </form>
+                <button id = "close">Cerrar</button>
+            </div>
+        </div>
+        <script src="Modal.js"></script>
+
+    </body>
+</html>

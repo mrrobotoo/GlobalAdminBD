@@ -1,36 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+		crossorigin="anonymous"></script>
+	<title>Registros</title>
+</head>
+
+<body>
 	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
-		
-		<table class = "table table-dark">
-			
-			<thead class = "thead-dark">
-				<tr>
-					<th style = "text-align: center;">Nombre</th>
-				    <th style = "text-align: center;">Edad</th>
-				    <th style = "text-align: center;">Sexo</th>
-				    <th></th>
-				    <th></th>
-				 </tr>
 
-			</thead>
-			
-			<tbody>
-				<tr th:each = "item: ${listaPersonas}">
-					<td style = "text-align: center;" th:text = "${item.nombre}"></td>
-					<td style = "text-align: center;" th:text = "${item.edad}"></td>
-					<td style = "text-align: center;" th:text = "${item.sexo}"></td>
-					<td> <!-- COLUMNA PARA ELIMINAR DATOS -->
-						<a th:href = "@{/eliminar/{id}(id=${item.id})}" class = "btn btn-danger">Eliminar</a>
-					</td>
-					<td>
-						<a class = "btn btn-info">Actualizar</a>
-					</td>
-				</tr>
-			</tbody>
-		
-		</table>
-	
-	<div th:include = "footer.html"></div> <!-- IMPORTAMOS EL FOOTER -->
+	<table class="table table-dark">
+		<thead class="thead-dark">
+			<tr>
+				<th style="text-align: center;">Nombre</th>
+				<th style="text-align: center;">Edad</th>
+				<th style="text-align: center;">Sexo</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item: ${listaPersonas}">
+				<td style="text-align: center;" th:text="${item.nombre}"></td>
+				<td style="text-align: center;" th:text="${item.edad}"></td>
+				<td style="text-align: center;" th:text="${item.sexo}"></td>
+				<td>
+					<a th:href="@{/eliminar/{id}(id=${item.id})}" class="btn btn-danger">Eliminar</a> <!-- BUTTON ELIMINAR PERSONAS -->
+				</td>
+				<td>
+					<div>
+						<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalContainer" th:attr="data-id=${item.id}">Actualizar</button> <!-- BUTTON ACTUALIZAR PARA CADA FILA -->
+						<!-- EL 'TH:ATTRIB' HACE QUE SE LE ASIGNE UN VALOR DINAMICO A 'DATA-ID' QUE ES EL ATRIBUTO DE DATOS Y REPRESENTA EL ID ÚNICO DE LA PERSONA DEPENDIENDO DE LA FILA EN LA QUE SE ENCUENTRA EL BOTÓN -->
+						<div class="modal fade" id="modalContainer" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" style="color: black;" id="modalTitle">Actualizar Datos</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<center> <!-- CENTRAMOS EL CONTENIDO -->
+											<form style="padding: 10px;" th:action="@{/actualizar}" class="p-3 mb-2 bg-dark text-white" method="post"> <!-- FORMULARIO PARA ACTUALIZAR -->
+												<input type="hidden" name="id" th:value="${item.id}"/> <!-- CAMPO OCULTO PARA TRAER EL ID DE LA PERSONA (AQUÍ ESTÁ LA CLAVE :D) -->
+												<table border="10px" style="padding: 10px; border-style: solid;">
+													<tr>
+														<td style="text-align: right; padding: 10px;"><label for="user-name" class="label label-pimary" style="text-align: right">Nombre: </label></td>
+														<td style="padding-right: 10px; padding-top: 10px;"><input style="text-align: center;" placeholder="Ingresa un nombre" type="text" name="nombre" /></td>
+													</tr>
+													<tr>
+														<td style="text-align: right; padding: 10px;"><label align="right" for="edad" style="text-align: right">Edad: </label></td>
+														<td><input style="text-align: center" placeholder="Ingresa la edad" type="text" name="edad"/></td>
+													</tr>
+													<tr>
+														<td style="text-align: right; padding: 10px;"><label for="sexo" style="text-align: right">Sexo: </label></td>
+														<td><input style="text-align: center" placeholder="H/M/NB" type="text" name="sexo" /></td>
+													</tr>
+													<tr>
+														<td align="center"></td>
+														<td style="padding-left: 0px; padding-top: 10px; padding-bottom: 10px;">
+															<input type="submit" value="Actualizar" class="btn btn-success" />
+														</td>
+													</tr>
+												</table>
+											</form>
+										</center>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
+	<div th:include="footer.html"></div>
+
+	<script>
+		const openModalButtons = document.querySelectorAll('.btn-primary[data-bs-toggle="modal"]'); //OBTIENE TODOS LOS BOTONES QUE ABREN EL MODAL
+		const modalContainer = document.querySelector('.modal-container'); //OBTIENE EL CONTENEDOR (CUERPO) DEL MODAL
+		const closeModalButtons = document.querySelectorAll('.btn-close[data-bs-dismiss="modal"]'); // OBTIENE EL BOTÓN DE CIERRE DEL MODAL
+
+		openModalButtons.forEach((button) => { //AGREGA EL EVENTO 'LISTENER' A CADA BUTTON DE APERTURA DEL MODAL
+			button.addEventListener('click', () => { 
+				const id = button.getAttribute('data-id'); //OBTIENE EL ID DE LA PERSONA
+				const form = document.querySelector('form'); //OBTIENE EL FORMULARIO
+				form.action = `/actualizar/${id}`; //DENTRO DEL FORMULARIO ACTUALIZA LA INFORMACIÓN DEL USUARIO DEPENDIENDO DEL ID DE LA PERSONA
+				form.reset(); //REGRESA LOS VALORES PREDETERMINADOS DEL FORMULARIO
+				modalContainer.classList.add('show'); //ABRE EL MODAL CUANDO EL USUARIO DA CLIC SOBRE ÉL
+			});
+		});
+
+		closeModalButtons.forEach((button) => { //AGREGA EL EVENTO 'LISTENER' A CADA BUTTON DE CIERRE DEL MODAL
+			button.addEventListener('click', () => { 
+				modalContainer.classList.remove('show'); //CIERRE DEL MODAL
+			});
+		});
+	</script>
 </body>
-	
+
 </html>
