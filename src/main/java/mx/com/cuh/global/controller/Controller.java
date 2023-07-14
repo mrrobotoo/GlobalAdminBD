@@ -1,62 +1,65 @@
 package mx.com.cuh.global.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-/*import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;*/
 
-import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.entity.TbPersonas;
 import mx.com.cuh.global.service.User;
 
 @org.springframework.stereotype.Controller
 
+
 public class Controller {
+
 	@Autowired
-	private User user;
-	
-	 @RequestMapping("/")
-		 public String index() {
-			 return "index";
-		 }
-	 @GetMapping("/inicio")
-	 public String inicio(Model model) {
-	 List<TbPersonas> listaPersonas= 
-			 user.obtenerRegistros().getListaPersonas();		 
-	 model.addAttribute("listaPersonas",listaPersonas);
-	 return "inicio";
- }
- 
-	 @PostMapping(value = "/saveperson")
-	 public String insertarPersona(
-	         @ModelAttribute PersonasDTO persona) {
-	     user.insertarPersona(persona);
-	     return "redirect:/inicio";
-	 	}
- 
-	 
-	@GetMapping("/eliminar/{idUser}")
-	public String eliminar( @PathVariable
-            Long idUser) {
-         user.borrar(idUser);   
-		 return "redirect:/inicio";
+	private User servicio;
+
+	@GetMapping({ "/personas", "/" })
+	public String listaDePersonas(Model modelo) {
+		modelo.addAttribute("personas", servicio.listaDeTodasLasPersonas());
+		return "personas";
 	}
-	 
-	 /*@GetMapping("/eliminar/{idUser}")
-	 @ResponseBody
-	 public String eliminar(@ModelAttribute PersonasDTO producto, RedirectAttributes redirectAttrs, 
-			 Long idUser) {
-	     user.borrar(idUser);
-	     redirectAttrs
-	             .addFlashAttribute("mensaje", "Eliminado correctamente")
-	             .addFlashAttribute("clase", "success");
-	     return "redirect:/inicio";
-	 }*/
+
+	@GetMapping("/personas/nuevo")
+	public String mostrarPersonasRegistradas(Model modelo) {
+		TbPersonas personas = new TbPersonas();
+		modelo.addAttribute("personas", personas); 
+		return ("crear_personas");
+	}
+
+	@PostMapping("/personas")
+	public String guardarPersonas(@ModelAttribute("personas") TbPersonas personas) {
+		servicio.guardarPersonas(personas);
+		return ("redirect:/personas");
+	}
+/*----------mostrar-----------*/
+	@GetMapping("/personas/editar/{id}")
+	public String mostrarPersonasAEditar(@PathVariable Long id, Model modelo) {
+		modelo.addAttribute("personas", servicio.obtenerPersonas(id));
+		return "/editar_personas";
+	}
+
+	@PostMapping("/personas/{id}")
+	public String actualizarPersona(@PathVariable Long id, @ModelAttribute("personas") TbPersonas personas,
+			Model modelo) {
+		TbPersonas personaExistente = servicio.obtenerPersonas(id);
+		personaExistente.setId(id);
+		personaExistente.setNombre(personas.getNombre());
+		personaExistente.setEdad(personas.getEdad());
+		personaExistente.setSexo(personas.getSexo());
+
+		servicio.actualizarPersonas(personaExistente);
+		return "redirect:/personas";
+	}
+
+	@GetMapping("/personas/{id}")
+	public String eliminarPersonas(@PathVariable Long id) {
+		servicio.eliminarPersonas(id);
+		return "redirect:/personas";
+	}
+
 }
