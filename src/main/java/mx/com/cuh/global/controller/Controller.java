@@ -47,5 +47,11 @@ public class Controller {
      user.borrar(idUser);
 		return "redirect:/inicio";
 	}
-
+@PostMapping(value = "/actualizar/{idUser}")
+public String actualizarPersona(@PathVariable
+		Long idUser, 
+	@ModelAttribute PersonasDTO persona) {
+	user.actualizarPersona(idUser, persona);
+    return "redirect:/inicio";
+}
  }
