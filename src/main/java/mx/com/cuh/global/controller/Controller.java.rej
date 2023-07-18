@@ -1,0 +1,9 @@
+diff a/src/main/java/mx/com/cuh/global/controller/Controller.java b/src/main/java/mx/com/cuh/global/controller/Controller.java	(rejected hunks)
+@@ -53,5 +53,6 @@
+     	
+     	return "redirect:/inicio";
+     	}
++
+     
+ }
+\ No newline at end of file

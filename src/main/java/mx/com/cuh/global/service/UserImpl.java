@@ -4,6 +4,8 @@ import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
@@ -15,6 +17,11 @@ import mx.com.cuh.global.repository.TbPersonasRepository;
 public class UserImpl implements User{
 	@Autowired
 	private TbPersonasRepository tbPersonasRepository;
+	
+	@Override
+    public Page<TbPersonas> obtenerRegistrosPaginados(Pageable pageable) {
+        return tbPersonasRepository.findAll(pageable);
+    }
 	
 	@Override
 	public Respuesta <TbPersonas> obtenerRegistros(){
