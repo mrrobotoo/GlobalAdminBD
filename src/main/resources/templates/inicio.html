@@ -128,6 +128,33 @@
 			background-color: #a71d2a;
 			border: 1px solid #a71d2a;
 		}
+
+		/* Pagination Styles */
+		.pagination {
+			display: flex;
+			justify-content: center;
+			margin-top: 20px;
+		}
+
+		.pagination button {
+			margin: 0 5px;
+			padding: 5px 10px;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		.pagination button.active {
+			background-color: #007bff;
+			border: 1px solid #007bff;
+			color: #fff;
+		}
+
+		.pagination button:hover:not(.active) {
+			background-color: #17a2b8;
+			border: 1px solid #17a2b8;
+			color: #fff;
+		}
 	</style>
 </head>
 
@@ -170,7 +197,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="item : ${listaPersonas}" th:data-idUser="${item.idUser}">
+					<tr th:each="item, iterStat : ${listaPersonas}" th:data-idUser="${item.idUser}">
 						<td th:text="${item.name}"></td>
 						<td th:text="${item.age}"></td>
 						<td th:text="${item.sex}"></td>
@@ -208,6 +235,9 @@
 					</form>
 				</div>
 			</div>
+
+			<!-- Pagination -->
+			<div id="pagination" class="pagination"></div>
 		</div>
 	</div>
 
@@ -288,7 +318,58 @@
 		document.querySelector('.cancelar').addEventListener('click', function () {
 			popup.style.display = "none";
 		});
+
+		// Función para generar los botones de paginación
+		function renderPagination(totalUsers, usersPerPage) {
+			const paginationContainer = document.getElementById("pagination");
+			paginationContainer.innerHTML = ""; // Limpiar los botones existentes
+
+			const totalPages = Math.ceil(totalUsers / usersPerPage);
+
+			if (totalPages > 1) {
+				const currentPageNumber = getCurrentPageNumber();
+				const remainingUsers = totalUsers % usersPerPage;
+				const lastPageUsers = remainingUsers > 0 ? remainingUsers : usersPerPage;
+
+				for (let i = 1; i <= totalPages; i++) {
+					const button = document.createElement("button");
+					button.innerText = i;
+					button.addEventListener("click", function () {
+						// Redirigir a la página correspondiente al hacer clic en el botón
+						window.location.href = "/?page=" + i;
+					});
+
+					if (i === currentPageNumber) {
+						button.classList.add("active");
+					}
+
+					paginationContainer.appendChild(button);
+				}
+
+				if (remainingUsers > 0 && lastPageUsers >= 7 && currentPageNumber !== totalPages) {
+					const nextPageButton = document.createElement("button");
+					nextPageButton.innerText = totalPages + 1;
+					nextPageButton.addEventListener("click", function () {
+						// Redirigir a la siguiente página al hacer clic en el botón
+						window.location.href = "/?page=" + (totalPages + 1);
+					});
+
+					paginationContainer.appendChild(nextPageButton);
+				}
+			}
+		}
+
+		// Obtener el número de página actual de la URL
+		function getCurrentPageNumber() {
+			const urlParams = new URLSearchParams(window.location.search);
+			const pageParam = urlParams.get("page");
+			return pageParam ? parseInt(pageParam) : 1;
+		}
+
+		// Llama a la función renderPagination con los valores adecuados
+		renderPagination(50, 10); // Cambia los valores según corresponda
 	</script>
+
 	<div th:include="footer.html"></div>
 </body>
 

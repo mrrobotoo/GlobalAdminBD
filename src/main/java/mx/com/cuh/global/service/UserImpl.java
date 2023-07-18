@@ -1,9 +1,11 @@
 package mx.com.cuh.global.service;
 
+import java.util.List;
 import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
@@ -76,4 +78,19 @@ public class UserImpl implements User{
 
         return response;
     }
+
+	@Override
+	public List<TbPersonas> obtenerRegistrosPaginados(int offset, int usersPerPage) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int obtenerTotalRegistros() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	
+	
 }
