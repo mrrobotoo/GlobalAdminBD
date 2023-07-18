@@ -40,6 +40,11 @@
             border-radius: 3px;
         }
 
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+
         button {
             padding: 8px 15px;
             background-color: #333;
@@ -58,21 +63,59 @@
 <body>
     <div th:include="navbar.html"></div>
     <div class="container">
-        <form action="saveperson" method="post">
+        <form action="saveperson" method="post" onsubmit="return validateForm()">
             <div class="form-group">
                 <label for="user-name">Nombre</label>
-                <input type="text" name="name" />
+                <input type="text" name="name" id="name" required />
+                <div class="error-message" id="name-error"></div>
             </div>
             <div class="form-group">
                 <label for="age">Edad</label>
-                <input type="text" name="age" />
+                <input type="text" name="age" id="age" required />
+                <div class="error-message" id="age-error"></div>
             </div>
             <div class="form-group">
                 <label for="sex">Sexo</label>
-                <input type="text" name="sex" />
+                <input type="text" name="sex" id="sex" required />
+                <div class="error-message" id="sex-error"></div>
             </div>
 
             <button type="submit">Registrar</button>
         </form>
     </div>
     <div th:include="footer.html"></div>
+
+    <script>
+        function validateForm() {
+            var name = document.getElementById('name').value;
+            var age = document.getElementById('age').value;
+            var sex = document.getElementById('sex').value;
+
+            var nameError = document.getElementById('name-error');
+            var ageError = document.getElementById('age-error');
+            var sexError = document.getElementById('sex-error');
+
+            nameError.innerHTML = '';
+            ageError.innerHTML = '';
+            sexError.innerHTML = '';
+
+            var isValid = true;
+
+            if (name.trim() === '') {
+                nameError.innerHTML = 'Por favor, ingrese un nombre válido.';
+                isValid = false;
+            }
+
+            if (age.trim() === '') {
+                ageError.innerHTML = 'Por favor, ingrese una edad válida.';
+                isValid = false;
+            }
+
+            if (sex.trim() === '') {
+                sexError.innerHTML = 'Por favor, ingrese un sexo válido.';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+    </script>
