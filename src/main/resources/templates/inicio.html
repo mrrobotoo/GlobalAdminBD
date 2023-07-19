@@ -7,7 +7,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
 		crossorigin="anonymous"></script>
-		<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="styles.css">
 
 	<title>Registros</title>
 </head>
@@ -34,6 +34,7 @@
 					<a th:href="@{/eliminar/{id}(id=${item.id})}" class="btn btn-danger">Eliminar</a>
 					<!-- BUTTON ELIMINAR PERSONAS -->
 				</td>
+				<!-- MODAL -->
 				<td>
 					<div>
 						<button class="btn btn-primary" data-bs-toggle="modal"
@@ -45,13 +46,16 @@
 							<div class="modal-dialog" role="document">
 								<div class="modal-content"> <!-- CONTENEDOR DE MODAL -->
 									<div class="modal-header" style="text-align: center;"> <!-- CABECERA DEL MODAL -->
-										<h4 class="modal-title" style="color: black; text-align: center; margin: auto auto;;">Actualizar Datos</h4>
+										<h4 class="modal-title"
+											style="color: black; text-align: center; margin: auto auto;;">Actualizar
+											Datos</h4>
 										<button type="button" class="btn-close" data-bs-dismiss="modal"
 											aria-label="Close"></button> <!-- BUTTON 'X' PARA CERRAR EL MODAL -->
 									</div>
 									<div class="modal-body"> <!-- CUERPO DEL MODAL -->
 										<center> <!-- CENTRAMOS EL CONTENIDO -->
-											<form style="max-width: max-content;" th:action="@{/actualizar/{id}(id=${item.id})}"
+											<form style="max-width: max-content;"
+												th:action="@{/actualizar/{id}(id=${item.id})}"
 												class="p-3 mb-2 bg-dark text-white" method="post">
 												<!-- FORMULARIO PARA ACTUALIZAR -->
 												<input type="hidden" name="id" th:value="${item.id}" />
@@ -100,7 +104,43 @@
 		</tbody>
 	</table>
 
-	<div th:include="footer.html"></div>
+	<!-- PAGINADOR -->
+
+	<div class="d-flex justify-content-center"> <!-- CENTRAR EL PAGINADOR -->
+		<ul class="pagination"> <!-- 'ul' DEFINE UNA LISTA NO ORDENADA QUE CONTIENE LOS ELEMENTOS DEL PAGINADOR -->
+			<li th:if="${currentPage > 0}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES SUPERIOR A CERO, ENTONCES APARECERÁ EL BOTÓN DE INICIO (PÁGINA 1) -->
+				<a class="page-link" th:href="@{/inicio(page=0)}">Inicio</a> <!-- REFERENCIA QUE DIRIGE A MI PÁGINA POR DEFAULT, EN ESTE CASO, LA SETEAMOS CON EL NÚMERO CERO EN NUESTRO CONTROLLER -->
+			</li>
+			<li th:if="${currentPage > 0}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES SUPERIOR A CERO, SE MUESTRA EL BOTÓN DE ANTERIOR -->
+				<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">Anterior</a> <!-- VERIFICA LA PÁGINA ACTUAL Y LE RESTA UN NÚMERO PARA IR A LA PÁGINA ANTERIOR -->
+			</li>
+			<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'"> <!-- ITERA SOBRE EL NÚMERO TOTAL DE PÁGINAS DESDE EL CERO
+																																										HASTA EL NÚMERO TOTAL DE PÁGINAS Y LE RESTA 1 Y CADA NÚMERO
+																																										QUE ITERE SERÁ UNA PÁGINA EN EL PAGINADOR
+																																										SI LA PAGINA ACTUAL ES IGUAL AL NUMERO QUE ITERÓ, ENTONCES
+																																										LE DAREMOS LA PROPIEDAD DE 'page-item active' AL NÚMERO DE
+																																										PÁGINA DENTRO DEL PÁGINADOR Y HARÁ QUE SEA RESALTADO -->
+				<a class="page-link" th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}">1</a> <!-- UTILIZAMOS LA VARIABLE 'pageNumber' PARA GENERAR UN NÚMERO
+																														CON LA PÁGINA CORRECTA Y SE LO SETEAMOS A "th:href" PARA
+																														MOSTRAR EL NÚMERO CORRECTO DE PÁGINA, DESPUÉS SETEAMSO EL TEXTO DENTRO
+																														DE LOS BOTONES DEL PAGINADOR Y LE SUMAMOS UNO, YA QUE AL MOMENTO DE
+																														DECLARARLO EN EL CONTROLLER LO HICIMOS CON UN CERO (DEFAULT) Y LE SETEAMOS
+																														EL NÚMERO 1 PARA QUE AL USUARIO NO LE APAREZCA UN CERO COMO DEFAULT -->
+			</li>
+			<li th:if="${currentPage < totalPages - 1}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES MENOR AL NÚMERO TOTAL DE PÁGINAS
+																					Y LE RESTA UNO, DEJANDO EL MISMO NÚMERO, POR EJEMPLO: 2<(3-1) = 2<2 -->
+				<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">Siguiente</a> <!-- SI SE VALIDA, ENTONCES SE VUELVE A SETEAR Y SE LE VUELVE A SUMAR, Y SE ASEGURA DE QUE NO APAREZCA EL BUTTON "SIGUIENTE" CUANDO ESTÁ EL LA ÚLTIMA PÁGINA -->
+			</li>
+			<li th:if="${currentPage < totalPages - 1}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES MENOR AL NÚMERO TOTAL DE PÁGINAS
+																					Y LE RESTA UNO, DEJANDO EL MISMO NÚMERO, POR EJEMPLO: 2<(3-1) = 2<2 -->
+				<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">Final</a> <!-- SI SE VALIDA, ENTONCES MI TOTAL DE PÁGINAS SE LE RESTARÁ UNO Y HARÁ QUE APAREZCA EL BOTÓN PARA IR A LA PÁGINA FINAL -->
+			</li>
+		</ul>
+	</div>
+
+	<!-- FIN PAGINADOR -->
+
+	<div th:include="footer.html"></div> <!-- SE INCLUYE EL FOOTER -->
 
 	<script>
 		const openModalButtons = document.querySelectorAll('.btn-primary[data-bs-toggle="modal"]');
@@ -136,6 +176,8 @@
 			});
 		});
 	</script>
+
+
 
 </body>
 
