@@ -1,13 +1,20 @@
 package mx.com.cuh.global.service;
 
+import java.awt.print.Pageable;
 import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
+import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.entity.TbPersonas;
+import mx.com.cuh.global.repository.TbPersonRepository;
 import mx.com.cuh.global.repository.TbPersonasRepository;
 
 @Service
@@ -19,13 +26,12 @@ public class UserImpl implements User{
 	@Override
 	public Respuesta <TbPersonas> obtenerRegistros(){
 		Respuesta<TbPersonas> response = new Respuesta <>();
-		response.setListasPersona(tbPersonasRepository.findAll());
+		response.setListaPersonas(tbPersonasRepository.findAll());
 		response.setMensaje("Se muestra la información");
 	
 		return response;
 	}
 
-	@Override
 	public Respuesta<String> insertarPersona(PersonasDTO persona) {
 		Long idUserMax =tbPersonasRepository.obtenerMaximoId();
 		
@@ -40,8 +46,7 @@ public class UserImpl implements User{
 		return response;
 	}
 	
-	@Override
-    public Respuesta<String> borrar(Long idUser) {
+	public Respuesta<String> borrar(Long idUser) {
         Optional<TbPersonas> persona =
                 tbPersonasRepository.findById(idUser);
         Respuesta<String> response = new Respuesta<>();
@@ -56,7 +61,6 @@ public class UserImpl implements User{
         return response;
    }
 	
-    @Override
     public Respuesta<String> actualizarPersona(long idUser, PersonasDTO personasDTO) {
         Optional<TbPersonas> persona = tbPersonasRepository.findById(idUser);
         Respuesta<String> response = new Respuesta<>();
@@ -76,4 +80,29 @@ public class UserImpl implements User{
 
         return response;
     }
+
+	@Override
+	public Respuesta<String> borrarPersona(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Respuesta<String> insertarPersona(PersonaDTO persona) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Respuesta<String> actualizarPersona(Long id, PersonasDTO personas) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Page<TbPersonas> getAll(Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
+	

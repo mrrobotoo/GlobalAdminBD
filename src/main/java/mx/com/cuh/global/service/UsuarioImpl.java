@@ -3,6 +3,8 @@ package mx.com.cuh.global.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import mx.com.cuh.global.dto.Respuesta;
@@ -14,6 +16,11 @@ import mx.com.cuh.global.repository.TbPersonRepository;
 public class UsuarioImpl implements Usuario {
 	@Autowired
 	private TbPersonRepository tbPersonRepository;
+	
+	@Override // SE INCLUYÓ MÉTODO PARA OBTENER A LAS PERSONAS POR PÁGINA
+	public Page<TbPerson> obtenerPersonasPorPagina(PageRequest pageRequest) { 
+		return tbPersonRepository.findAll(pageRequest); 
+	}
 	
 	
 	
@@ -49,7 +56,6 @@ public class UsuarioImpl implements Usuario {
 	
 	//UPDATE
 
-	@Override
 	public Respuesta<String> actualizarPersona(Long id, PersonaDTO persona) {
 	    TbPerson personaFinal = tbPersonRepository.findById(id).orElse(null);
 
@@ -86,5 +92,7 @@ public class UsuarioImpl implements Usuario {
     	}
     	return response;
     }
+
+
 
 }

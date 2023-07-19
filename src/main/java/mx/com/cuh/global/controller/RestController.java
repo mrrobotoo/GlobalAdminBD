@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.dto.PersonasDTO;
-import mx.com.cuh.global.entity.TbPerson;
-import mx.com.cuh.global.service.Usuario;
-
 import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPersonas;
 import mx.com.cuh.global.service.User;
@@ -30,22 +27,23 @@ public class RestController {
     
     
     @PostMapping(value = "/person")
-    public Respuesta insertarPersona(
-            @RequestBody PersonasDTO persona) {
+    public Respuesta<String> insertarPersona(
+            @RequestBody PersonaDTO persona) {
         return user.insertarPersona(persona);
     }
     
     @DeleteMapping(value = "/person")
-    public Respuesta borrar(@RequestParam 
+    public Respuesta<String> borrar(@RequestParam 
             Long idUser) {
-        return user.borrar(idUser);    
+        return user.borrarPersona(idUser);    
     }
     
     @PutMapping("/person")
-    public Respuesta<String> actualizarPersona(@RequestParam("idUser")
-    Long idUser, @RequestBody PersonasDTO person) {
+    public Respuesta<String> actualizarPersona(@RequestParam("idUser") Long idUser, @RequestBody PersonasDTO person) {
+    	return user.actualizarPersona(idUser, person);
 
-        return user.actualizarPersona(idUser, person);
-    }
+	}
 
 }
+
+
