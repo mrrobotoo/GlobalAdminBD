@@ -77,12 +77,47 @@
 			border-radius: 3px;
 			cursor: pointer;
 		}
+
+		  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination .page-link {
+    color: #ffffff;
+    background-color: #333333;
+    border: none;
+    padding: 8px 16px;
+    margin: 0 4px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  
+  .pagination .page-link:hover {
+    background-color: #555555;
+  }
+  
+  .pagination .page-link:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  
+  .pagination .page-item.disabled .page-link {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .pagination .page-item.active .page-link {
+    background-color: #007bff;
+  }
 	</style>
 </head>
 
 <body>
-	<div th:include="navbar.html"></div>
-	<div class="container">
+	 <div th:include="navbar.html"></div>
+	 	<div class="container">
 		<table class="table">
 			<thead>
 				<tr>
@@ -90,7 +125,7 @@
 					<th>Nombre</th>
 					<th>Sexo</th>
 					<th></th>
-					<th></th>
+					<th><a href="/exportar-pdf-zip">Exportar a PDF y ZIP</a></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -135,36 +170,25 @@
 			</div>
 		</div>
 
-		<div id="pagination" class="pagination">
-			<nav aria-label="Page navigation">
-				<ul class="pagination pagination-sm">
-					<!-- Se verifica si la página actual es mayor que 1 -->
-					<li th:if="${currentPage > 1}" th:class="${currentPage > 1} ? 'page-item' : 'page-item disabled'">
-						<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}" aria-label="Previous">
-							<span aria-hidden="true">&laquo;</span> 
-							<!-- &laquo representa el carácter de comillas anguladas dobles hacia la izquierda («)-->
-							<span class="sr-only">Anterior</span>
-						</a>
-					</li>
+		<nav aria-label="Page navigation"> 
+			<ul class="pagination justify-content-end">
+				<li th:if="${currentPage > 0}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">&laquo;</a>
+				</li>
 
-					<!-- Se itera a través de una secuencia de números del 1 al totalPages -->
-					<li th:each="page : ${#numbers.sequence(1, totalPages)}"
-						th:classappend="${page == currentPage} ? 'page-item active' : 'page-item'">
-						<a class="page-link" th:href="@{/inicio(page=${page})}" th:text="${page}"></a>
-					</li>
+				
+				<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
+					<a th:class="${pageNumber == currentPage ? 'page-link disabled' : 'page-link'}"
+						th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+				</li>
 
-					<!-- Se verifica si la página actual es menor que totalPages -->
-					<li th:if="${currentPage < totalPages}"
-						th:class="${currentPage < totalPages} ? 'page-item' : 'page-item disabled'">
-						<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}" aria-label="Next">
-							<span aria-hidden="true">&raquo;</span>
-							<!-- &raquo representa el carácter de comillas anguladas dobles hacia la derecha (»)-->
-							<span class="sr-only">Siguiente</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
+				<li th:if="${currentPage < totalPages - 1}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">&raquo;</a>
+					
+				</li>
+			</ul>
+		</nav>
+
 
 		<div th:include="footer.html"></div>
 
@@ -247,7 +271,3 @@
 				popup.style.display = "none";
 			}
 		</script>
-
-</body>
-
-</html>
