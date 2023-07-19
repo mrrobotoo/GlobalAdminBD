@@ -4,6 +4,8 @@ import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
@@ -21,10 +23,14 @@ public class UserImpl implements User{
 		Respuesta<TbPersonas> response = new Respuesta <>();
 		response.setListaPersonas(tbPersonasRepository.findAll());
 		response.setMensaje("Se muestra la información");
-	
 		return response;
 	}
 
+	@Override
+	public Page<TbPersonas> obtenerRegistroPaginados(Pageable pageable){
+		return tbPersonasRepository.findAll(pageable);
+	}
+	
 	@Override
 	public Respuesta<String> insertarPersona(PersonasDTO persona) {
 		Long idUserMax =tbPersonasRepository.obtenerMaximoId();
