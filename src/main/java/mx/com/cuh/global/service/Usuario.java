@@ -1,11 +1,11 @@
 package mx.com.cuh.global.service;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageRequest; //NUEVA LIBRERÍA
 
 import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.dto.Respuesta;
-import mx.com.cuh.global.entity.TbPerson;
-import org.springframework.data.domain.Page;
+import mx.com.cuh.global.entity.TbPerson; //SE IMPORTAN LIBRERIAS
+import org.springframework.data.domain.Page; //NUEVAS LIBRERIAS
 
 public interface Usuario {
 	

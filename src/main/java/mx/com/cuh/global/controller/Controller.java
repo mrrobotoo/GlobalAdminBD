@@ -32,11 +32,11 @@ public class Controller {
 	}
 	
 	//SE MODIFICÓ PARA LA IMPLEMENTACIÓN DEL PAGINADOR
-	@GetMapping("/inicio") 
+	@GetMapping("/inicio")
 	public String inicio(Model model, @RequestParam(defaultValue = "0") int page) { //MÉTODO QUE TOMA DOS PARAMETROS (MODEL) QUE TOMA DATOS AL MODELO PARA SU REPRESENTACIÓN GRÁFICA.
 																					//EL VALOR POR DEFAULT SERÁ DE CERO
 																					//"INT PAGE" ES UN PARAMETRO DE CONSULTA PARA ESPECIFICAR LA PÁGINA QUE SE VAMOS A CONSULTAR
-	    int registrosCount = 5; //VARIABLE QUE ALMACENA LA CANTIDAD DE REGISTROS POR PÁGINA
+	    int registrosCount = 10; //VARIABLE QUE ALMACENA LA CANTIDAD DE REGISTROS POR PÁGINA
 	    Page<TbPerson> paginaPersonas = usuario.obtenerPersonasPorPagina(PageRequest.of(page, registrosCount)); //MANDAMOS LLAMAR A NUESTRO MÉTODO 'ObtenerPersonasPorPagina' QUE IMPLEMENTAMOS EN 'Usuario.java'
 	    																										//UTILIZAMOS 'PageRequest' PARA ESPECIFICAR LA PÁGINA A LA QUE VAMOS A ENTRAR (USAMOS 'page' PARA ESPECIFICAR ESTO
 	    																										//FINALMENTE, USAMOS 'registrosCount' PARA ESPECIFICAR LA CANTIDAD DE REGISTROS POR PÁGINA.
