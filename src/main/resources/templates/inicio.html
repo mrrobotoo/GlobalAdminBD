@@ -211,7 +211,29 @@
 					</tr>
 				</tbody>
 			</table>
+			<!-- Navegación de paginación -->
+			<nav aria-label="Page navigation">
+				<ul class="pagination justify-content-center">
+					<li th:if="${currentPage > 0}" class="page-item">
+						<a class="page-link btn btn-sm btn-secondary" th:href="@{/inicio(page=${currentPage - 1})}"
+							Georgia-label="Anterior">
+							Anterior
+						</a>
+					</li>
 
+					<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
+						<a th:class="${pageNumber == currentPage ? 'page-link btn btn-sm btn-primary active' : 'page-link btn btn-sm btn-secondary'}"
+							th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+					</li>
+
+					<li th:if="${currentPage < totalPages - 1}" class="page-item">
+						<a class="page-link btn btn-sm btn-secondary" th:href="@{/inicio(page=${currentPage + 1})}"
+							Georgia-label="Siguiente">
+							Siguiente
+						</a>
+					</li>
+				</ul>
+			</nav>
 			<!-- The Popup -->
 			<div id="popup" class="popup">
 				<div class="popup-content">
@@ -236,8 +258,7 @@
 				</div>
 			</div>
 
-			<!-- Pagination -->
-			<div id="pagination" class="pagination"></div>
+
 		</div>
 	</div>
 
@@ -327,7 +348,6 @@
 			const totalPages = Math.ceil(totalUsers / usersPerPage);
 
 			if (totalPages > 1) {
-				const currentPageNumber = getCurrentPageNumber();
 				const remainingUsers = totalUsers % usersPerPage;
 				const lastPageUsers = remainingUsers > 0 ? remainingUsers : usersPerPage;
 
@@ -339,14 +359,10 @@
 						window.location.href = "/?page=" + i;
 					});
 
-					if (i === currentPageNumber) {
-						button.classList.add("active");
-					}
-
 					paginationContainer.appendChild(button);
 				}
 
-				if (remainingUsers > 0 && lastPageUsers >= 7 && currentPageNumber !== totalPages) {
+				if (remainingUsers > 0 && lastPageUsers >= 7) {
 					const nextPageButton = document.createElement("button");
 					nextPageButton.innerText = totalPages + 1;
 					nextPageButton.addEventListener("click", function () {
@@ -357,13 +373,6 @@
 					paginationContainer.appendChild(nextPageButton);
 				}
 			}
-		}
-
-		// Obtener el número de página actual de la URL
-		function getCurrentPageNumber() {
-			const urlParams = new URLSearchParams(window.location.search);
-			const pageParam = urlParams.get("page");
-			return pageParam ? parseInt(pageParam) : 1;
 		}
 
 		// Llama a la función renderPagination con los valores adecuados

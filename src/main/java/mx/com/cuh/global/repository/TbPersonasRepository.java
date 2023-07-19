@@ -3,16 +3,16 @@ package mx.com.cuh.global.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import mx.com.cuh.global.entity.TbPersonas;
-
-
-@org.springframework.stereotype.Repository
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 public interface TbPersonasRepository 
-extends CrudRepository<TbPersonas, Long> {
-
+extends JpaRepository<TbPersonas, Long> {
 	List<TbPersonas> findAll();
     void deleteById(Long idPerson);
     Optional<TbPersonas> findById(Long id); 
@@ -22,4 +22,6 @@ extends CrudRepository<TbPersonas, Long> {
     
    
     }
+
+
 
