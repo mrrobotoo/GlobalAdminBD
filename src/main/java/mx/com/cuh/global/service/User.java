@@ -1,8 +1,13 @@
 package mx.com.cuh.global.service;
 
+import java.awt.print.Pageable;
+
+import org.springframework.data.domain.Page;
+
 import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
+import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.entity.TbPersonas;
 
 public interface User {
@@ -20,6 +25,8 @@ public interface User {
 	Respuesta<String> actualizarPersona(long idUser, PersonasDTO personasDTO);
 
 	Respuesta<String> insertarPersona(PersonasDTO persona);
+	
+	Page<TbPersonas> getAll(Pageable pageable); 
 
 
 }

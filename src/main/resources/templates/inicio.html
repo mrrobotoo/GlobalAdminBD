@@ -24,7 +24,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:each="item: ${listaPersonas}">
+			<tr th:each="item, itemStatus: ${listaPersonas}">
 				<td th:text="${item.nombre}"></td>
 				<td th:text="${item.edad}"></td>
 				<td th:text="${item.sexo}"></td>
@@ -47,18 +47,18 @@
 												<table >
 													<div class="mb-3">
 														<label for="user-name" class="label label-pimary">NOMBRE </label>
-														<input class="form-control" placeholder="Ingresa el nombre" type="text" name="nombre" >
+														<input class="form-control" th:value="${item.nombre}" type="text" name="nombre" >
 													</div>
 					
 														
 													<div class="mb-3">
 														<label for="edad">EDAD </label>
-														<input class="form-control" placeholder="Ingresa la edad" type="text" name="edad"/>
+														<input class="form-control"  th:value="${item.edad}" type="text" name="edad"/>
 													</div>
 					
 													<div class="mb-3">
 														<label for="sexo">Sexo: </label>
-														<input class="form-control" placeholder="Ingresa el sexo" type="text" name="sexo" />
+														<input class="form-control"  th:value="${item.sexo}" type="text" name="sexo" />
 													</div>
 					
 													<tr>
@@ -80,21 +80,51 @@
 			</tr>
 		</tbody>
 	</table>
+	
+
 
 	<div th:include="footer.html"></div>
+	
+	
+<div class="d-flex justify-content-end"> 
+		<ul class="pagination"> <!-- ul lista no ordenada -->
+			<li th:if="${currentPage > 0}" class="page-item"> <!-- Si la página actual es mayor a 0 aparecera un bóton para volver a la hoja número 1 -->
+				<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">ANTERIOR</a> <!-- La acción que se hace es un -1 para que se regrese a la página anterior -->
+			</li>
+			<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'"> <!-- En caso que exista menos registros que los establecidos en el Controller aparecera resaltado el número de página -->
+				<a class="page-link" th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}">1</a> 
+			</li>
+				<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">FINAL</a> <!-- Para que se deslice hasta la última página se hace un conteo de todas las páginas y le resta 1 -->
+			</li>
+		</ul>
+	</div>
+
+
 
 	<script>
 		const openModalButtons = document.querySelectorAll('.btn-primary[data-bs-toggle="modal"]'); //Botones del modal.
 		const modalContainer = document.querySelector('.modal-container'); //Se llama lo que tendra el modal agregado
-		const closeModalButtons = document.querySelectorAll('.btn-close[data-bs-dismiss="modal"]'); // Botón de cerrar modal.
+		
 
 		openModalButtons.forEach((button) => { 
 			button.addEventListener('click', () => { 
 				const id = button.getAttribute('data-id'); //Se obtiene el ID.
+				const modalContainer = document.getElementById(`modalContainer-${id}`);
 				const form = document.querySelector('form'); //Se llama el formulario.
 				form.action = `/actualizar/${id}`; //Se actualiza dependiendo del ID.
 				form.reset(); 
-				modalContainer.classList.add('show'); //Se abre la pantalla emergente al momento de seleccionar.
+				const nombreInput = form.querySelector('input[name="nombre"]');
+				const edadInput = form.querySelector('input[name="edad"]');
+				const sexoInput = form.querySelector('input[name="sexo"]');
+
+				const filaSeleccionada = event.currentTarget.closest('tr');
+				const nombre = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
+				const edad = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
+				const sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent;
+
+				nombreInput.value = nombre;
+				edadInput.value = edad;
+				sexoInput.value = sexo;
 			});
 		});
 
