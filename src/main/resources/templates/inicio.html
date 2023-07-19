@@ -1,177 +1,271 @@
 <style>
-        /* Estilos para el popup */
-        .popup {
-			display: none;
-            position: fixed; /* Permite que el popup se posicione de forma fija */
-            z-index: 1; /* Asegura que el popup esté en la parte superior */
-            left: 50%; /* Coloca el popup en el centro horizontalmente */
-            top: 50%; /* Coloca el popup en el centro verticalmente */
-            transform: translate(-50%, -50%); /* Centra el popup exactamente en el medio */
-            width:auto;
-            background-color: #fefefe;
-            padding: 20px;
-            border: 1px solid #888;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Agrega una sombra alrededor del popup */
-        }
+	/* Estilos para el popup */
+	.popup {
+		display: none;
+		position: fixed;
+		/* Permite que el popup se posicione de forma fija */
+		z-index: 1;
+		/* Asegura que el popup esté en la parte superior */
+		left: 50%;
+		/* Coloca el popup en el centro horizontalmente */
+		top: 50%;
+		/* Coloca el popup en el centro verticalmente */
+		transform: translate(-50%, -50%);
+		/* Centra el popup exactamente en el medio */
+		width: auto;
+		background-color: rgb(255, 128, 255);
+		padding: 20px;
+		border: 1px solid rgb(255, 0, 255);
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+		/* Agrega una sombra alrededor del popup */
+	}
 
-        /* Estilos para el contenido del popup */
-        .popup-content {
-            text-align: center;
-        }
+	/* Estilos para el contenido del popup */
+	.popup-content {
+		text-align: center;
+	}
 
-        /* Estilos para el botón de cierre (x) */
-        .close {
-            color: #aaaaaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+	/* Estilos para el botón de cierre (x) */
+	.close {
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+		cursor: pointer;
+	}
 
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
-</head>
+	.close:hover,
+	.close:focus {
+		color: #000;
+		text-decoration: none;
+		cursor: pointer;
+	}
+	
+	.custom-page-link {
+  color: #ffffff;
+  background-color: rgb(255, 0, 255);
+  border-color: rgb(255, 128, 255);
+}
+
+.custom-page-link:hover {
+  color: rgb(255, 128, 255);
+  background-color: rgb(255, 255, 255);
+}
+
+.custom-page-link.active {
+  color: #ffffff;
+  background-color: rgb(255, 0, 255);
+  border-color: rgb(0, 0, 0);
+}
+/* Estilos generales de la paginación */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+    }
+
+    .pagination li {
+        margin: 0 5px;
+    }
+
+    .pagination li a {
+        display: block;
+        padding: 10px 15px;
+        text-decoration: none;
+        color: rgb(0, 0, 0);
+        background-color: rgb(255, 164, 255);
+        border: 1px solid rgb(255, 0, 128);
+        border-radius: 4px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .pagination li a.active {
+        font-weight: bold;
+        background-color: rgb(0, 128, 255);
+        border-color: rgb(128, 128, 192);
+    }
+
+    .pagination li a:hover {
+        background-color: rgb(204, 0, 204);
+        border-color: rgb(128, 128, 128);
+    }
+
+    .pagination li:first-child a,
+    .pagination li:last-child a {
+        padding: 15px;
+    }
+
+    .pagination li.disabled a {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+</style>
+
 <body>
-    <div th:include="navbar.html"></div>
-    <div class="container">
-        <!-- Tabla -->
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Edad</th>
-                    <th>Nombre</th>
-                    <th>Sexo</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="item : ${listaPersonas}" th:data-idUser="${item.idUser}">
-                    <td th:text="${item.age}"></td>
-                    <td th:text="${item.name}"></td>
-                    <td th:text="${item.sex}"></td>
-                    <td>
-                        <a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}" class="btn btn-danger">Eliminar</a>
-                    </td>
-                    <td>
-                        <button class="btn btn-info btn-actualizar">Actualizar</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+	<div th:include="navbar.html"></div>
+	<div class="container">
+		<!-- Tabla -->
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Edad</th>
+					<th>Nombre</th>
+					<th>Sexo</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item : ${listaPersonas}" th:data-idUser="${item.idUser}">
+					<td th:text="${item.age}"></td>
+					<td th:text="${item.name}"></td>
+					<td th:text="${item.sex}"></td>
+					<td>
+						<a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}" class="btn btn-danger">Eliminar</a>
+					</td>
+					<td>
+						<button class="btn btn-info btn-actualizar">Actualizar</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		
+		
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li th:if="${currentPage > 0}" class="page-item">
+            <a class="page-link custom-prev-link" th:href="@{/inicio(page=${currentPage - 1})}">← Anterior</a>
+        </li>
+        <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
+            <a th:class="${pageNumber == currentPage ? 'page-link active' : 'page-link custom-page-link'}"
+                th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+        </li>
+        <li th:if="${currentPage < totalPages - 1}" class="page-item">
+            <a class="page-link custom-next-link" th:href="@{/inicio(page=${currentPage + 1})}">Siguiente →</a>
+        </li>
+    </ul>
+</nav>
 
-        <!-- The Popup -->
-        <div id="myPopup" class="popup">
-            <div class="popup-content">
-                <span class="close">&times;</span>
-                <table class="table">
-                    <tr class="table-secondary">
-                        <th colspan="2">Edad</th>
-                    </tr><tr>
-                        <td colspan="2"><input type="text" id="popup-edad" required style="border: none;"></td>
-                    </tr ><tr class="table-secondary">
-                        <th colspan="2">Nombre</th>
-                    </tr><tr>
-                        <td colspan="2"><input type="text" id="popup-nombre" required style="border: none;"></td>
-                    </tr><tr class="table-secondary">   
-                        <th colspan="2">Sexo</th>
-                    </tr><tr>    
-                        <td colspan="2"><input type="text" id="popup-sexo" required style="border: none;"></td>
-                    </tr>
-                    <tr>
-                        <td><a class="btn btn-info guardar">Guardar</a></td>
-                        <td><a class="btn btn-danger cancelar">Cancelar</a></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        var popup = document.getElementById("myPopup");
-        var botonesActualizar = document.querySelectorAll('.btn-actualizar');
-        var span = document.getElementsByClassName("close")[0];
-        var inputsEdad = document.getElementById('popup-edad');
-        var inputsNombre = document.getElementById('popup-nombre');
-        var inputsSexo = document.getElementById('popup-sexo');
 
-        botonesActualizar.forEach(function (boton) {
-            boton.addEventListener('click', function () {
-                var filaSeleccionada = this.parentNode.parentNode;
-                var idUser = filaSeleccionada.getAttribute('data-idUser');
-                var edad = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
-                var nombre = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
-                var sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent;
 
-                inputsEdad.value = edad;
-                inputsNombre.value = nombre;
-                inputsSexo.value = sexo;
+		<!-- Agrega más enlaces según sea necesario -->
+	</div>
 
-                // Almacenar la id del usuario en el botón de guardar
-                document.querySelector('.guardar').setAttribute('data-idUser', idUser);
+	<!-- The Popup -->
+	<div id="myPopup" class="popup">
+		<div class="popup-content">
+			<span class="close">&times;</span>
+			<table class="table">
+				<tr class="table-secondary">
+					<th colspan="2">Edad</th>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="text" id="popup-edad" required style="border: none;"></td>
+				</tr>
+				<tr class="table-secondary">
+					<th colspan="2">Nombre</th>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="text" id="popup-nombre" required style="border: none;"></td>
+				</tr>
+				<tr class="table-secondary">
+					<th colspan="2">Sexo</th>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="text" id="popup-sexo" required style="border: none;"></td>
+				</tr>
+				<tr>
+					<td><a class="btn btn-info guardar">Guardar</a></td>
+					<td><a class="btn btn-danger cancelar">Cancelar</a></td>
+				</tr>
+			</table>
 
-                popup.style.display = "block";
-            });
-        });
+		</div>
+	</div>
+	</div>
 
-        span.onclick = function () {
-            popup.style.display = "none";
-        }
+	<script>
+		var popup = document.getElementById("myPopup");
+		var botonesActualizar = document.querySelectorAll('.btn-actualizar');
+		var span = document.getElementsByClassName("close")[0];
+		var inputsEdad = document.getElementById('popup-edad');
+		var inputsNombre = document.getElementById('popup-nombre');
+		var inputsSexo = document.getElementById('popup-sexo');
 
-        window.onclick = function (event) {
-            if (event.target == popup) {
-                popup.style.display = "none";
-            }
-        }
+		botonesActualizar.forEach(function (boton) {
+			boton.addEventListener('click', function () {
+				var filaSeleccionada = this.parentNode.parentNode;
+				var idUser = filaSeleccionada.getAttribute('data-idUser');
+				var edad = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
+				var nombre = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
+				var sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent;
 
-        document.querySelector('.guardar').addEventListener('click', function () {
-            var idUser = this.getAttribute('data-idUser');
-            var filaSeleccionada = document.querySelector('tr[data-idUser="' + idUser + '"]');
-            var edad = inputsEdad.value;
-            var nombre = inputsNombre.value;
-            var sexo = inputsSexo.value;
+				inputsEdad.value = edad;
+				inputsNombre.value = nombre;
+				inputsSexo.value = sexo;
 
-            var data = {
-                idUser: idUser,
-                name: nombre,
-                age: edad,
-                sex: sexo
-            };
+				// Almacenar la id del usuario en el botón de guardar
+				document.querySelector('.guardar').setAttribute('data-idUser', idUser);
 
-            // Realizar petición AJAX para actualizar los datos en el servidor
-            fetch('/person?idUser=' + idUser, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(function (response) {
-                if (response.ok) {
-                    // Actualizar los datos en la tabla
-                    filaSeleccionada.querySelector('td:nth-child(1)').textContent = edad;
-                    filaSeleccionada.querySelector('td:nth-child(2)').textContent = nombre;
-                    filaSeleccionada.querySelector('td:nth-child(3)').textContent = sexo;
-                    popup.style.display = "none";
-                } else {
-                    console.error('Error al realizar la petición');
-                }
-            })
-            .catch(function (error) {
-                console.error('Error en la petición:', error);
-            });
-        });
+				popup.style.display = "block";
+			});
+		});
 
-        document.querySelector('.cancelar').addEventListener('click', function () {
-            popup.style.display = "none";
-        });
-    </script>
+		span.onclick = function () {
+			popup.style.display = "none";
+		}
 
-    <script src="extensions/editable/bootstrap-table-editable.js"></script>
+		window.onclick = function (event) {
+			if (event.target == popup) {
+				popup.style.display = "none";
+			}
+		}
 
-    <div th:include="footer.html" name="footer"></div>
+		document.querySelector('.guardar').addEventListener('click', function () {
+			var idUser = this.getAttribute('data-idUser');
+			var filaSeleccionada = document.querySelector('tr[data-idUser="' + idUser + '"]');
+			var edad = inputsEdad.value;
+			var nombre = inputsNombre.value;
+			var sexo = inputsSexo.value;
+
+			var data = {
+				idUser: idUser,
+				name: nombre,
+				age: edad,
+				sex: sexo
+			};
+
+			// Realizar petición AJAX para actualizar los datos en el servidor
+			fetch('/person?idUser=' + idUser, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+				.then(function (response) {
+					if (response.ok) {
+						// Actualizar los datos en la tabla
+						filaSeleccionada.querySelector('td:nth-child(1)').textContent = edad;
+						filaSeleccionada.querySelector('td:nth-child(2)').textContent = nombre;
+						filaSeleccionada.querySelector('td:nth-child(3)').textContent = sexo;
+						popup.style.display = "none";
+					} else {
+						console.error('Error al realizar la petición');
+					}
+				})
+				.catch(function (error) {
+					console.error('Error en la petición:', error);
+				});
+		});
+
+		document.querySelector('.cancelar').addEventListener('click', function () {
+			popup.style.display = "none";
+		});
+	</script>
+	<script src="extensions/editable/bootstrap-table-editable.js"></script>
+	<div th:include="footer.html" name="footer"></div>
+</body>

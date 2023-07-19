@@ -42,6 +42,11 @@
 			<groupId>org.springframework.boot</groupId>  
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>  
 		</dependency>
+		<dependency>
+			<groupId>mx.com.cuh</groupId>
+			<artifactId>cuh</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
