@@ -1,8 +1,10 @@
- package mx.com.cuh.global.service;
+package mx.com.cuh.global.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import mx.com.cuh.global.entity.TbPersonas;
@@ -38,13 +40,13 @@ public class UserImpl implements User {
 		repository.deleteById(id);
 		
 	}
-	
 
-	
+	/*PAGINACION*/
+	@Override
+	public Page<TbPersonas> obtenerPaginaDeLasPersonas(Pageable pageable) {
+		return repository.findAll(pageable);
+	}
+
+
+		
 }
-
-
-
-
-
-

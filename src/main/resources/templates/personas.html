@@ -185,6 +185,31 @@
 		</script>
 
 		</td>
+		<br>
+		<!--INICIO DEL CODIGO DE PAGINACION-->
+		<nav aria-label="Page navigation">
+			<ul class="pagination justify-content-center">
+
+				<!-- Enlace a la página anterior -->
+				<li th:if="${currentPage > 0}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">&laquo;</a>
+				</li>
+
+				<!-- Enlaces a las páginas -->
+				<li th:each="pageNumber : ${#numbers.sequence(startPageIndex, endPageIndex)}" class="page-item">
+					<a th:class="${pageNumber == currentPage ? 'page-link disabled' : 'page-link'}"
+						th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+				</li>
+
+				<!-- Enlace a la página siguiente -->
+				<li th:if="${currentPage < totalPages - 1}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">&raquo;</a>
+				</li>
+
+			</ul>
+		</nav>
+
+		<!--FIN DEL CODIGO DE PAGINACION-->
 
 </body>
 
