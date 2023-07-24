@@ -8,22 +8,24 @@
 		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
 		crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="styles.css">
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
 	<title>Registros</title>
 </head>
 
 <body>
 	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
 
-	<table class="table table-dark" style="margin-bottom: 3.95%;">
+	<table class="table table-dark" id="data-table" style="margin-bottom: 3.95%;">
 		<thead class="thead-dark">
 			<tr>
 				<th style="text-align: center;">Nombre</th>
 				<th style="text-align: center;">Edad</th>
 				<th style="text-align: center;">Sexo</th>
-				<th></th>
-				<th>
-					<a id = "btnExport" type="button" class="btn btn-warning" style = "padding-left: 17px; padding-right: 17px;">Exportar</a>
+				<th class="hide-on-pdf"></th>
+				<th class="hide-on-pdf">
+					<center>
+						<a class="btn btn-warning" href="/exportar-pdf">Exportar</a> <!-- BUTTON PARA EXPORTAR CANTIDAD DE ELEMENTOS -->
+					</center>
 				</th>
 			</tr>
 		</thead>
@@ -32,38 +34,56 @@
 				<td style="text-align: center;" th:text="${item.nombre}"></td>
 				<td style="text-align: center;" th:text="${item.edad}"></td>
 				<td style="text-align: center;" th:text="${item.sexo}"></td>
-				<td>
-					<a style="text-align: center;" th:href="@{/eliminar/{id}(id=${item.id})}" class="btn btn-danger">Eliminar</a>
-					<!-- BUTTON ELIMINAR PERSONAS -->
+				<!-- BUTTON ELIMINAR PERSONAS -->
+				<td class="hide-on-pdf">
+					<center>
+						<a style="text-align: center;" th:href="@{/eliminar/{id}(id=${item.id})}" class="btn btn-danger">Eliminar</a>
+					</center>
 				</td>
 				<!-- MODAL -->
-				<td>
+				<td class="hide-on-pdf">
 					<div>
-						<button class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#modalContainer-' + ${item.id}" th:attr="data-id=${item.id}">Actualizar</button> <!-- BUTTON ACTUALIZAR PARA CADA FILA -->
+						<center>
+							<button class="btn btn-primary" data-bs-toggle="modal"
+								th:data-bs-target="'#modalContainer-' + ${item.id}"
+								th:attr="data-id=${item.id}">Actualizar</button> <!-- BUTTON ACTUALIZAR PARA CADA FILA -->
+						</center>
 						<!-- EL 'TH:ATTR' HACE QUE SE LE ASIGNE UN VALOR DINÁMICO AL 'DATA-ID' QUE ES EL ATRIBUTO DE DATOS Y REPRESENTA EL ID ÚNICO DE LA PERSONA DEPENDIENDO DE LA FILA EN LA QUE SE ENCUENTRA EL BOTÓN -->
 						<div class="modal fade" th:id="'modalContainer-' + ${item.id}" tabindex="-1" role="dialog"
 							aria-labelledby="modalTitle" aria-hidden="true"> <!-- CONTENEDOR DEL MODAL -->
 							<div class="modal-dialog" role="document">
 								<div class="modal-content"> <!-- CONTENEDOR DE MODAL -->
 									<div class="modal-header" style="text-align: center;"> <!-- CABECERA DEL MODAL -->
-										<h4 class="modal-title" style="color: black; text-align: center; margin: auto auto;;">Actualizar Datos</h4>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> <!-- BUTTON 'X' PARA CERRAR EL MODAL -->
+										<h4 class="modal-title"
+											style="color: black; text-align: center; margin: auto auto;;">Actualizar Datos</h4>
+										<button type="button" class="btn-close" data-bs-dismiss="modal"
+											aria-label="Close"></button> <!-- BUTTON 'X' PARA CERRAR EL MODAL -->
 									</div>
 									<div class="modal-body"> <!-- CUERPO DEL MODAL -->
 										<center> <!-- CENTRAMOS EL CONTENIDO -->
-											<form style="max-width: max-content;" th:action="@{/actualizar/{id}(id=${item.id})}" class="p-3 mb-2 bg-dark text-white" method="post">
+											<form style="max-width: max-content;"
+												th:action="@{/actualizar/{id}(id=${item.id})}"
+												class="p-3 mb-2 bg-dark text-white" method="post">
 												<!-- FORMULARIO PARA ACTUALIZAR -->
 												<input type="hidden" name="id" th:value="${item.id}" />
 												<!-- CAMPO OCULTO PARA TRAER EL ID DE LA PERSONA -->
 												<table border="10px" style="padding: 10px; border-style: solid;">
 													<tr>
-														<td style="text-align: right; padding: 10px;"><label for="nombre" class="label label-primary" style="text-align: right">Nombre: </label></td>
-														<td style="padding-right: 10px; padding-top: 10px;"><input style="text-align: center;" id="NombreInput" placeholder="Ingresa un nombre" type="text" name="nombre" th:value="${item.nombre}" /></td>
+														<td style="text-align: right; padding: 10px;"><label
+																for="nombre" class="label label-primary"
+																style="text-align: right">Nombre: </label></td>
+														<td style="padding-right: 10px; padding-top: 10px;"><input
+																style="text-align: center;" id="NombreInput"
+																placeholder="Ingresa un nombre" type="text"
+																name="nombre" th:value="${item.nombre}" /></td>
 													</tr>
 													<tr>
-														<td style="text-align: right; padding: 10px;"><label for="edad" style="text-align: right">Edad: </label></td>
+														<td style="text-align: right; padding: 10px;"><label for="edad"
+																style="text-align: right">Edad: </label></td>
 														<td>
-															<input style="text-align: center" placeholder="Ingresa la edad" type="text" name="edad" th:value="${item.edad}" />
+															<input style="text-align: center"
+																placeholder="Ingresa la edad" type="text" name="edad"
+																th:value="${item.edad}" />
 														</td>
 													</tr>
 													<tr>
@@ -71,13 +91,16 @@
 															<label for="sexo" style="text-align: right">Sexo: </label>
 														</td>
 														<td>
-															<input style="text-align: center" placeholder="H/M/NB" type="text" name="sexo" th:value="${item.sexo}" />
+															<input style="text-align: center" placeholder="H/M/NB"
+																type="text" name="sexo" th:value="${item.sexo}" />
 														</td>
 													</tr>
 													<tr>
 														<td align="center"></td>
-														<td style="padding-left: 0px; padding-top: 10px; padding-bottom: 10px;">
-															<input type="submit" value="Actualizar" class="btn btn-success" />
+														<td
+															style="padding-left: 0px; padding-top: 10px; padding-bottom: 10px;">
+															<input type="submit" value="Actualizar"
+																class="btn btn-success" />
 														</td>
 													</tr>
 												</table>
@@ -95,15 +118,21 @@
 
 	<!-- PAGINADOR -->
 
-	<div class="d-flex justify-content-center"> <!-- CENTRAR EL PAGINADOR -->
+	<div class="d-flex justify-content-center" style="margin-bottom: 10%; position: relative; z-index: 0">
+		<!-- CENTRAR EL PAGINADOR -->
 		<ul class="pagination"> <!-- 'ul' DEFINE UNA LISTA NO ORDENADA QUE CONTIENE LOS ELEMENTOS DEL PAGINADOR -->
-			<li th:if="${currentPage > 0}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES SUPERIOR A CERO, ENTONCES APARECERÁ EL BOTÓN DE INICIO (PÁGINA 1) -->
-				<a class="page-link" th:href="@{/inicio(page=0)}">Inicio</a> <!-- REFERENCIA QUE DIRIGE A MI PÁGINA POR DEFAULT, EN ESTE CASO, LA SETEAMOS CON EL NÚMERO CERO EN NUESTRO CONTROLLER -->
+			<li th:if="${currentPage > 0}" class="page-item">
+				<!-- VALIDA SI MI PÁGINA ACTUAL ES SUPERIOR A CERO, ENTONCES APARECERÁ EL BOTÓN DE INICIO (PÁGINA 1) -->
+				<a class="page-link" th:href="@{/inicio(page=0)}">Inicio</a>
+				<!-- REFERENCIA QUE DIRIGE A MI PÁGINA POR DEFAULT, EN ESTE CASO, LA SETEAMOS CON EL NÚMERO CERO EN NUESTRO CONTROLLER -->
 			</li>
-			<li th:if="${currentPage > 0}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES SUPERIOR A CERO, SE MUESTRA EL BOTÓN DE ANTERIOR -->
-				<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">Anterior</a> <!-- VERIFICA LA PÁGINA ACTUAL Y LE RESTA UN NÚMERO PARA IR A LA PÁGINA ANTERIOR -->
+			<li th:if="${currentPage > 0}" class="page-item">
+				<!-- VALIDA SI MI PÁGINA ACTUAL ES SUPERIOR A CERO, SE MUESTRA EL BOTÓN DE ANTERIOR -->
+				<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">Anterior</a>
+				<!-- VERIFICA LA PÁGINA ACTUAL Y LE RESTA UN NÚMERO PARA IR A LA PÁGINA ANTERIOR -->
 			</li>
-			<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'"> <!-- ITERA SOBRE EL NÚMERO TOTAL DE PÁGINAS DESDE EL CERO
+			<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+				th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'"> <!-- ITERA SOBRE EL NÚMERO TOTAL DE PÁGINAS DESDE EL CERO
 																																										HASTA EL NÚMERO TOTAL DE PÁGINAS Y LE RESTA 1 Y CADA NÚMERO
 																																										QUE ITERE SERÁ UNA PÁGINA EN EL PAGINADOR
 																																										SI LA PAGINA ACTUAL ES IGUAL AL NUMERO QUE ITERÓ, ENTONCES
@@ -118,16 +147,21 @@
 			</li>
 			<li th:if="${currentPage < totalPages - 1}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES MENOR AL NÚMERO TOTAL DE PÁGINAS
 																					Y LE RESTA UNO, DEJANDO EL MISMO NÚMERO, POR EJEMPLO: 2<(3-1) = 2<2 -->
-				<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">Siguiente</a> <!-- SI SE VALIDA, ENTONCES SE VUELVE A SETEAR Y SE LE VUELVE A SUMAR, Y SE ASEGURA DE QUE NO APAREZCA EL BUTTON "SIGUIENTE" CUANDO ESTÁ EL LA ÚLTIMA PÁGINA -->
+				<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">Siguiente</a>
+				<!-- SI SE VALIDA, ENTONCES SE VUELVE A SETEAR Y SE LE VUELVE A SUMAR, Y SE ASEGURA DE QUE NO APAREZCA EL BUTTON "SIGUIENTE" CUANDO ESTÁ EL LA ÚLTIMA PÁGINA -->
 			</li>
 			<li th:if="${currentPage < totalPages - 1}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES MENOR AL NÚMERO TOTAL DE PÁGINAS
 																					Y LE RESTA UNO, DEJANDO EL MISMO NÚMERO, POR EJEMPLO: 2<(3-1) = 2<2 -->
-				<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">Final</a> <!-- SI SE VALIDA, ENTONCES MI TOTAL DE PÁGINAS SE LE RESTARÁ UNO Y HARÁ QUE APAREZCA EL BOTÓN PARA IR A LA PÁGINA FINAL -->
+				<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">Final</a>
+				<!-- SI SE VALIDA, ENTONCES MI TOTAL DE PÁGINAS SE LE RESTARÁ UNO Y HARÁ QUE APAREZCA EL BOTÓN PARA IR A LA PÁGINA FINAL -->
 			</li>
 		</ul>
 	</div>
 
 	<!-- FIN PAGINADOR -->
+
+
+
 
 	<div th:include="footer.html"></div> <!-- SE INCLUYE EL FOOTER -->
 
@@ -165,13 +199,49 @@
 			});
 		});
 	</script>
-	
-	
-	
-	<script src = "html2pdf.bundle.min.js"></script> <!-- LIBRERÍA EN 'PAQUETE' -->
-    <script src = "scriptPDF.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+	<!-- Al final del cuerpo del documento HTML -->
+	<script>
+        document.getElementById('exportPdfButton').addEventListener('click', function () {
+            // Clonar la tabla original
+            const originalTable = document.getElementById('data-table');
+            const clonedTable = originalTable.cloneNode(true);
+
+            // Eliminar las columnas de botones del clon
+            const rows = clonedTable.querySelectorAll('tr');
+            rows.forEach((row) => {
+                const cellsToRemove = row.querySelectorAll('.hide-on-pdf');
+                cellsToRemove.forEach((cell) => {
+                    cell.parentNode.removeChild(cell);
+                });
+            });
+
+            // Crear una instancia de la librería html2pdf
+            const opt = {
+                margin: 10,
+                filename: 'registros.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+            };
+
+            const pdfPromise = html2pdf().set(opt).from(clonedTable).outputPdf();
+
+            // Crear el archivo ZIP y agregar el PDF dentro de él
+            const zip = new JSZip();
+            zip.file('registros.pdf', pdfPromise);
+
+            // Generar el archivo ZIP y descargarlo
+            zip.generateAsync({ type: 'blob' }).then((content) => { //Se crea un archivo ZIP en formato Binaty Large Object.
+                const linkDescarga = document.createElement('a'); //En la constante 'linkDescarga' creamos nuevo documento de tipo 'a' (enlace).
+                linkDescarga.href = URL.createObjectURL(content); //Creamos un enlace y lo asignamos a nuestra variable.
+                linkDescarga.download = 'registros.zip'; //Al momento de descargarlo se le asigna el nombre.
+                linkDescarga.click(); //Activamos el enlace recien creado.
+            });
+        });
+    </script>	 
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </body>
 

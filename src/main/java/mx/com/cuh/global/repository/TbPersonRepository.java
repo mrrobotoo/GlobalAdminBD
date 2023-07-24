@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository; //ANTERIOR REPOSITORIO (SE PUEDE ELIMINAR)
 import org.springframework.data.repository.PagingAndSortingRepository; //NUEVO REPOSITORIO (RECUPERA ENTIDADES MEDIANTE LA PÁGINACIÓN Y ABSTRACCIÓN DE CLASIFICACIÓN)
 
 import mx.com.cuh.global.entity.TbPerson;
