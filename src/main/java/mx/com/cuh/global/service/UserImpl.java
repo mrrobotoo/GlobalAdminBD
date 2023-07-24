@@ -25,6 +25,11 @@ public class UserImpl implements User{
 	public Page<TbPersonas> obtenerRegistroPaginados(Pageable pageable){
 		return tbPersonasRepository.findAll(pageable);
 	}
+	@Override
+	public List<TbPersonas> obtenerTodosLosRegistros() {
+	    return tbPersonasRepository.findAll();
+	}
+
 	
 	@Override
 	public Respuesta <TbPersonas> obtenerRegistros(){

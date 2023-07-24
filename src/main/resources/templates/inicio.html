@@ -78,46 +78,46 @@
 			cursor: pointer;
 		}
 
-		  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .pagination .page-link {
-    color: #ffffff;
-    background-color: #333333;
-    border: none;
-    padding: 8px 16px;
-    margin: 0 4px;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-  }
-  
-  .pagination .page-link:hover {
-    background-color: #555555;
-  }
-  
-  .pagination .page-link:focus {
-    outline: none;
-    box-shadow: none;
-  }
-  
-  .pagination .page-item.disabled .page-link {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
-  .pagination .page-item.active .page-link {
-    background-color: #007bff;
-  }
+		.pagination {
+			display: flex;
+			justify-content: center;
+			margin-top: 20px;
+		}
+
+		.pagination .page-link {
+			color: #ffffff;
+			background-color: #333333;
+			border: none;
+			padding: 8px 16px;
+			margin: 0 4px;
+			border-radius: 4px;
+			text-decoration: none;
+			transition: background-color 0.3s;
+		}
+
+		.pagination .page-link:hover {
+			background-color: #555555;
+		}
+
+		.pagination .page-link:focus {
+			outline: none;
+			box-shadow: none;
+		}
+
+		.pagination .page-item.disabled .page-link {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		.pagination .page-item.active .page-link {
+			background-color: #007bff;
+		}
 	</style>
 </head>
 
 <body>
-	 <div th:include="navbar.html"></div>
-	 	<div class="container">
+	<div th:include="navbar.html"></div>
+	<div class="container">
 		<table class="table">
 			<thead>
 				<tr>
@@ -170,21 +170,32 @@
 			</div>
 		</div>
 
-		<nav aria-label="Page navigation"> 
+		<nav aria-label="Page navigation">
 			<ul class="pagination justify-content-end">
+				<!-- Botón para ir a la primera página -->
+				<li th:if="${currentPage > 0}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=0)}">&laquo;&laquo;</a>
+				</li>
+
+				<!-- Enlace a la página anterior -->
 				<li th:if="${currentPage > 0}" class="page-item">
 					<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">&laquo;</a>
 				</li>
 
-				
-				<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
+				<!-- Enlaces a las páginas -->
+				<li th:each="pageNumber : ${#numbers.sequence(startPageIndex, endPageIndex)}" class="page-item">
 					<a th:class="${pageNumber == currentPage ? 'page-link disabled' : 'page-link'}"
 						th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
 				</li>
 
+				<!-- Enlace a la página siguiente -->
 				<li th:if="${currentPage < totalPages - 1}" class="page-item">
 					<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">&raquo;</a>
-					
+				</li>
+
+				<!-- Botón para ir a la última página -->
+				<li th:if="${currentPage < totalPages - 1}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">&raquo;&raquo;</a>
 				</li>
 			</ul>
 		</nav>

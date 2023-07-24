@@ -22,4 +22,6 @@ public interface User {
 	
 	Page<TbPersonas> obtenerRegistroPaginados(Pageable pageable);
 
+	List<TbPersonas> obtenerTodosLosRegistros();
+
 }

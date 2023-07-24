@@ -85,37 +85,42 @@
     </div>
     <div th:include="footer.html"></div>
 
-    <script>
-        function validateForm() {
-            var name = document.getElementById('name').value;
-            var age = document.getElementById('age').value;
-            var sex = document.getElementById('sex').value;
+<script>
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var age = document.getElementById('age').value;
+        var sex = document.getElementById('sex').value;
 
-            var nameError = document.getElementById('name-error');
-            var ageError = document.getElementById('age-error');
-            var sexError = document.getElementById('sex-error');
+        var nameError = document.getElementById('name-error');
+        var ageError = document.getElementById('age-error');
+        var sexError = document.getElementById('sex-error');
 
-            nameError.innerHTML = '';
-            ageError.innerHTML = '';
-            sexError.innerHTML = '';
+        nameError.innerHTML = '';
+        ageError.innerHTML = '';
+        sexError.innerHTML = '';
 
-            var isValid = true;
+        var isValid = true;
 
-            if (name.trim() === '') {
-                nameError.innerHTML = 'Por favor, ingrese un nombre válido.';
-                isValid = false;
-            }
-
-            if (age.trim() === '') {
-                ageError.innerHTML = 'Por favor, ingrese una edad válida.';
-                isValid = false;
-            }
-
-            if (sex.trim() === '') {
-                sexError.innerHTML = 'Por favor, ingrese un sexo válido.';
-                isValid = false;
-            }
-
-            return isValid;
+        if (name.trim() === '') {
+            nameError.innerHTML = 'Por favor, ingrese un nombre válido.';
+            isValid = false;
         }
-    </script>
+
+        if (age.trim() === '') {
+            ageError.innerHTML = 'Por favor, ingrese una edad válida.';
+            isValid = false;
+        }
+
+        if (sex.trim() === '') {
+            sexError.innerHTML = 'Por favor, ingrese un sexo válido.';
+            isValid = false;
+        }
+
+        if (isValid) {
+            // Agregar aquí el código para mostrar la alerta
+            alert('Usuario registrado correctamente');
+        }
+
+        return isValid;
+    }
+</script>
