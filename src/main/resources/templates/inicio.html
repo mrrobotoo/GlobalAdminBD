@@ -13,15 +13,21 @@
 <body>
 	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
 
-	<table class = "table">
+	<table class="table">
 		<thead>
 			<tr>
 				<th>Nombre</th>
 				<th>Edad</th>
 				<th>Sexo</th>
 				<th></th>
-				<th></th>
+				<th>
+					<center>
+						<a class="btn btn-danger" href="/exportar-pdf">Exportar</a> <!-- BUTTON PARA EXPORTAR CANTIDAD DE ELEMENTOS -->
+					</center>
+				</th>
+				
 			</tr>
+			
 		</thead>
 		<tbody>
 			<tr th:each="item, itemStatus: ${listaPersonas}">
@@ -29,46 +35,57 @@
 				<td th:text="${item.edad}"></td>
 				<td th:text="${item.sexo}"></td>
 				<td>
-					<a th:href="@{/eliminar/{id}(id=${item.id})}" class="btn btn-danger">ELIMINAR</a> 
+					<a th:href="@{/eliminar/{id}(id=${item.id})}" class="btn btn-danger">ELIMINAR</a>
 				</td>
 				<td>
 					<div>
-						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalContainer" th:attr="data-id=${item.id}">Actualizar</button> 
-						<div class="modal fade" id="modalContainer" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+						<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+							data-bs-target="#modalContainer" th:attr="data-id=${item.id}">Actualizar</button>
+						<div class="modal fade" id="modalContainer" tabindex="-1" role="dialog"
+							aria-labelledby="modalTitle" aria-hidden="true">
 							<div class="modal-dialog" role="document">
 								<div class="modal-content">
 									<div class="modal-header">
-										<h5 class="modal-title" style="color: black;" id="modalTitle">ACTUALIZAR DATOS</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										<h5 class="modal-title" style="color: black;" id="modalTitle">ACTUALIZAR DATOS
+										</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal"
+											aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
-											<form  th:action="@{/actualizar}" class="p-3 mb-2 bg-white text-black" method="post"> <!-- Se realiza un formulario para actualizar -->
-												<input type="hidden" name="id" th:value="${item.id}"/> <!-- Se llama el  ID-->
-												<table >
-													<div class="mb-3">
-														<label for="user-name" class="label label-pimary">NOMBRE </label>
-														<input class="form-control" th:value="${item.nombre}" type="text" name="nombre" >
-													</div>
-					
-														
-													<div class="mb-3">
-														<label for="edad">EDAD </label>
-														<input class="form-control"  th:value="${item.edad}" type="text" name="edad"/>
-													</div>
-					
-													<div class="mb-3">
-														<label for="sexo">Sexo: </label>
-														<input class="form-control"  th:value="${item.sexo}" type="text" name="sexo" />
-													</div>
-					
-													<tr>
-														<td align="center"></td>
-														<td style="padding-left: 0px; padding-top: 10px; padding-bottom: 10px;">
-															<input type="submit" value="ACTUALIZAR" class="btn btn-primary" />
-														</td>
-													</tr>
-												</table>
-											</form>
+										<form th:action="@{/actualizar}" class="p-3 mb-2 bg-white text-black"
+											method="post"> <!-- Se realiza un formulario para actualizar -->
+											<input type="hidden" name="id" th:value="${item.id}" />
+											<!-- Se llama el  ID-->
+											<table>
+												<div class="mb-3">
+													<label for="user-name" class="label label-pimary">NOMBRE </label>
+													<input class="form-control" th:value="${item.nombre}" type="text"
+														name="nombre">
+												</div>
+
+
+												<div class="mb-3">
+													<label for="edad">EDAD </label>
+													<input class="form-control" th:value="${item.edad}" type="text"
+														name="edad" />
+												</div>
+
+												<div class="mb-3">
+													<label for="sexo">Sexo: </label>
+													<input class="form-control" th:value="${item.sexo}" type="text"
+														name="sexo" />
+												</div>
+
+												<tr>
+													<td align="center"></td>
+													<td
+														style="padding-left: 0px; padding-top: 10px; padding-bottom: 10px;">
+														<input type="submit" value="ACTUALIZAR"
+															class="btn btn-primary" />
+													</td>
+												</tr>
+											</table>
+										</form>
 									</div>
 									<div class="modal-footer">
 									</div>
@@ -80,39 +97,41 @@
 			</tr>
 		</tbody>
 	</table>
-	
 
-
-	<div th:include="footer.html"></div>
-	
-	
-<div class="d-flex justify-content-end"> 
+	<div class="d-flex justify-content-end">
 		<ul class="pagination"> <!-- ul lista no ordenada -->
-			<li th:if="${currentPage > 0}" class="page-item"> <!-- Si la página actual es mayor a 0 aparecera un bóton para volver a la hoja número 1 -->
-				<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">ANTERIOR</a> <!-- La acción que se hace es un -1 para que se regrese a la página anterior -->
+			<li th:if="${currentPage > 0}" class="page-item">
+				<!-- Si la página actual es mayor a 0 aparecera un bóton para volver a la hoja número 1 -->
+				<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">ANTERIOR</a>
+				<!-- La acción que se hace es un -1 para que se regrese a la página anterior -->
 			</li>
-			<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'"> <!-- En caso que exista menos registros que los establecidos en el Controller aparecera resaltado el número de página -->
-				<a class="page-link" th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}">1</a> 
+			<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+				th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'">
+				<!-- En caso que exista menos registros que los establecidos en el Controller aparecera resaltado el número de página -->
+				<a class="page-link" th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}">1</a>
 			</li>
-				<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">FINAL</a> <!-- Para que se deslice hasta la última página se hace un conteo de todas las páginas y le resta 1 -->
+			<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">FINAL</a>
+			<!-- Para que se deslice hasta la última página se hace un conteo de todas las páginas y le resta 1 -->
 			</li>
 		</ul>
 	</div>
 
 
 
+	<div th:include="footer.html"></div>
+
 	<script>
 		const openModalButtons = document.querySelectorAll('.btn-primary[data-bs-toggle="modal"]'); //Botones del modal.
 		const modalContainer = document.querySelector('.modal-container'); //Se llama lo que tendra el modal agregado
-		
 
-		openModalButtons.forEach((button) => { 
-			button.addEventListener('click', () => { 
+
+		openModalButtons.forEach((button) => {
+			button.addEventListener('click', () => {
 				const id = button.getAttribute('data-id'); //Se obtiene el ID.
 				const modalContainer = document.getElementById(`modalContainer-${id}`);
 				const form = document.querySelector('form'); //Se llama el formulario.
 				form.action = `/actualizar/${id}`; //Se actualiza dependiendo del ID.
-				form.reset(); 
+				form.reset();
 				const nombreInput = form.querySelector('input[name="nombre"]');
 				const edadInput = form.querySelector('input[name="edad"]');
 				const sexoInput = form.querySelector('input[name="sexo"]');
@@ -128,8 +147,8 @@
 			});
 		});
 
-		closeModalButtons.forEach((button) => { 
-			button.addEventListener('click', () => { 
+		closeModalButtons.forEach((button) => {
+			button.addEventListener('click', () => {
 				modalContainer.classList.remove('show'); //Cerrar modal
 			});
 		});
