@@ -6,15 +6,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
-import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.entity.TbPersonas;
-import mx.com.cuh.global.repository.TbPersonRepository;
 import mx.com.cuh.global.repository.TbPersonasRepository;
 
 @Service

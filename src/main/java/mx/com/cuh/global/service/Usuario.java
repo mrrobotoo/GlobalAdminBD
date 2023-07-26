@@ -18,5 +18,7 @@ public interface Usuario {
 	Respuesta<String> actualizarPersona(Long id, PersonaDTO persona);
 
 	Page<TbPerson> obtenerPersonasPorPagina(PageRequest pageRequest);
+	
+	
 
 }

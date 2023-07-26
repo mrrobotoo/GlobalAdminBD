@@ -1,5 +1,6 @@
 package mx.com.cuh.global.entity;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -53,4 +54,6 @@ public class TbPerson {
 	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
+	         
+	  
 }

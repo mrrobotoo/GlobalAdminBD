@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.dto.PersonasDTO;
 import mx.com.cuh.global.dto.Respuesta;
-import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.entity.TbPersonas;
 
 public interface User {

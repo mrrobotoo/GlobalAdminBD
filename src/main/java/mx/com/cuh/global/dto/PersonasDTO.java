@@ -1,6 +1,11 @@
 package mx.com.cuh.global.dto;
 
+import java.util.List;
+
 public class PersonasDTO {
+	
+	
+	
 	private Long idUser;
 	private String name;
 	private String age;
@@ -32,6 +37,10 @@ public class PersonasDTO {
 	}
 	public void setSex(String sex) {
 		this.sex = sex;
+	}
+	public static List<PersonaDTO> listarTodos() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
