@@ -1,273 +1,392 @@
-<style>body {font-family: Arial, Helvetica, sans-serif;}
+<style>
+	/* The Modal (Ventana Emergente) */
+	.modal {
+		display: none; 		/* Lo oculta de la vista inicial*/
+		position: fixed;	/* Lo fija en un lugar */
+		z-index: 1;			/* Lo sobrepone respecto a los demas elementos*/
+		width: 100%; 		/* ancho de 100%*/
+		height: 100%;		/* Toda la altura disponible*/
+		overflow: auto;		/* Scroll Habilitado */
+		background-color: rgba(0, 0, 0, 0.4);
+	}
 
-/* The Modal (background) */ 
-.modal {   
-    display: none; /* Lo oculta de la vista inicial*/   
-    position: fixed; /* Lo fija en un lugar */   
-    z-index: 1; /* Lo sobrepone respecto a los demas elementos*/
-   	padding-top: 200px; /* Location of the box */
-    padding-left: 20px;
-    padding-right: 20px;
-    width: 100%; /* ancho de 100%*/   
-    height: 100%; /* Toda la altura disponible*/
-    overflow: auto; /* Scroll Habilitado */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */ 
-}
+	/* Contenido de la ventana emergente (modal) */
+	.modal-content {
+		background-color: #fefefe;
+		border: 1px solid #888;
+		width: 80%;			/* El contenido ocupará el 80% del ancho del modal */
+		padding: 10px;
+		overflow-y: auto;	/*Scroll Vertical Habilitado*/
+		overflow-x: auto;
+	}
 
-/* Modal Content */ 
-.modal-content {   
-    background-color: #fefefe;   
-    margin: auto;   
-    padding: 20px;   
-    border: 1px solid #888;   
-    width: 80%; 
-}
+	/* Boton para cerrar el modal */
+	.close {
+		color: #aaaaaa;
+		float: left;
+		font-size: 28px;
+		font-weight: bold;
+	}
 
-/* The Close Button */ 
-.close {   
-    color: #aaaaaa;   
-    float: right;   
-    font-size: 28px;   
-    font-weight: bold; 
-}
+	/* Cuando se sobreponga el puntero */
+	.close:hover,
+	.close:focus {
+		color: #000;
+		text-decoration: none;
+		cursor: pointer;
+	}
 
-.close:hover, .close:focus {   
-    color: #000;   
-    text-decoration: none;   
-    cursor: pointer; 
-} 
-
-.id-column {
-  display: none;
-}
-
-
+	
+	/* Paginador archivos .Zip */
+	.pagination-button {
+		background-color: #4CAF50;	/* Fondo color verde */
+		border: none;					/* Sin bordes */
+		color: white;					/* Tecto color blanco */
+		padding: 10px 16px;				/* Espaciado 10 px (superior, inferior) y 16 px (izquierda, derecha)*/
+		font-size: 18px;				/* Tamaño de fuente */
+		cursor: pointer;				/* Agrega un tipo de puntero diferente (dedo señalando) */
+		border-radius: 8px;				/* Esquinas redondeadas */
+		margin: 5px;					/* Espacio entre botones */
+	}
+	
+	/* Cuando se sobreponga el puntero */
+	.pagination-button:hover {
+		background-color: #45a049;	/* Tono verde mas intenso */
+	}
 </style>
 
 
 <!-- Inclusión de una plantilla de barra de navegación -->
 <div th:include="navbar.html"></div>
-
 <!-- Contenedor principal -->
 <div class="container">
+	<div style="display: flex; justify-content: flex-end; padding-bottom: 10px;">
+		<!-- Boton para exportar registros -->
+		<a th:href="@{/exportar-pdf}" class="btn btn-secondary" style="margin-right: 20px;">Exportar</a>
+		<!--Boton para descargar archivos (abre ventana emergente)-->
+		<a class="btn btn-secondary btn-descargar" style="margin-right: 20px;"
+			onclick="mostrarVentanaEmergente()">Descargar</a>
+	</div>
+	<!-- Tabla -->
+	<table class="table table-striped table-hover ">
+		<thead class="table-dark">
+			<tr>
+				<th>Edad</th>
+				<th>Nombre</th>
+				<th>Sexo</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- Iteración sobre una lista de personas para mostrar los datos en las filas -->
+			<tr th:each="item : ${listaPersonas}" th:data-idUser="${item.idUser}">
+				<td th:text="${item.age}"></td>
+				<td th:text="${item.name}"></td>
+				<td th:text="${item.sex}"></td>
+				<td>
+					<!-- Enlace "Eliminar" -->
+					<a th:href="@{/eliminar/{idUser}(idUser=${item.idUser}, page=${currentPage})}"
+						class="btn btn-danger">Eliminar</a>
+				</td>
+				<td>
+					<!-- Botón "Actualizar" -->
+					<button class="btn btn-info btn-actualizar">Actualizar</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
-  <!-- Tabla -->
-  <table class="table table-striped table-hover ">
-    <thead class="table-dark">
-      <!-- Encabezados de la tabla -->
-      <th class="id-column">Id</th>
-      <tr>
-        <th>Edad</th>
-        <th>Nombre</th>
-        <th>Sexo</th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Iteración sobre una lista de personas para mostrar los datos en las filas -->
-      <tr th:each="item : ${listaPersonas}" th:data-idUser="${item.idUser}">
-        <td th:text="${item.age}"></td>
-        <td th:text="${item.name}"></td>
-        <td th:text="${item.sex}"></td>
-        <td>
-          <!-- Enlace "Eliminar" -->
-          <a th:href="@{/eliminar/{idUser}(idUser=${item.idUser}, page=${currentPage})}" class="btn btn-danger">Eliminar</a>
-        </td>
-        <td>
-          <!-- Botón "Actualizar" -->
-          <button class="btn btn-info btn-actualizar">Actualizar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <nav aria-label="Page navigation"> <!-- Navegación de paginación -->
-  <ul class="pagination justify-content-center"> <!-- Lista no ordenada con estilos de paginación de Bootstrap, centrada horizontalmente -->
-    <!-- Enlace a la página anterior -->
-    <li th:if="${currentPage > 0}" class="page-item"> <!-- Si currentPage (número de página actual) es mayor que 0, muestra el elemento de lista para el enlace "Anterior" -->
-      <a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">Anterior</a> <!-- Enlace "Anterior" con estilos de paginación de Bootstrap y la URL generada por Thymeleaf para la página anterior (currentPage - 1) -->
-    </li>
+	<!--Navegacion entre paginas (Registro de Usuarios)-->
+	<nav aria-label="Page navigation">
+		<ul class="pagination justify-content-center">
+			<!-- Botón para ir a la primera página -->
+			<li th:if="${currentPage > 0}" class="page-item">
+				<a class="page-link" th:href="@{/inicio(page=0)}">&laquo;&laquo;</a>
+			</li>
 
-    <!-- Enlaces a las páginas -->
-    <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" class="page-item"> <!-- Itera sobre los números de página del 0 al totalPages - 1 y crea un elemento de lista por cada número -->
-      <a th:class="${pageNumber == currentPage ? 'page-link disabled' : 'page-link'}" 
-      th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a> 
-      <!-- Enlace a cada número de página con estilos de paginación de Bootstrap. th:class condicionalmente aplica la clase "disabled" cuando pageNumber es igual a currentPage para deshabilitar el enlace a la página actual. 
-      th:href es la URL generada por Thymeleaf para cada número de página (pageNumber). th:text muestra el número de página actual más 1 (pageNumber + 1) -->
-    </li>
+			<!-- Enlace a la página anterior -->
+			<li th:if="${currentPage > 0}" class="page-item">
+				<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">&laquo;</a>
+			</li>
 
-    <!-- Enlace a la página siguiente -->
-    <li th:if="${currentPage < totalPages - 1}" class="page-item"> <!-- Si currentPage es menor que totalPages - 1, muestra el elemento de lista para el enlace "Siguiente" -->
-      <a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">Siguiente</a> <!-- Enlace "Siguiente" con estilos de paginación de Bootstrap y la URL generada por Thymeleaf para la página siguiente (currentPage + 1) -->
-    </li>
-  </ul>
-</nav>
+			<!-- Enlaces a las páginas -->
+			<li th:each="pageNumber : ${#numbers.sequence(startPageIndex, endPageIndex)}" class="page-item">
+				<a th:class="${pageNumber == currentPage ? 'page-link disabled' : 'page-link'}"
+					th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+			</li>
 
-  <!-- Modal para actualizar los datos -->
-  <div id="myModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <table class="table">
-        <!-- Encabezados del modal -->
-        <tr class="table-secondary">
-          <th>Edad</th>
-          <th>Nombre</th>
-          <th>Sexo</th>
-        </tr>
-        <tr>
-          <!-- Campos de entrada de datos en el modal -->
-          <td><input type="number" id="modal-edad" min="1" max="150" required style="border: none;" inputmode="numeric"></td>
-          <td><input type="text" id="modal-nombre" required style="border: none;"></td>
-          <td>
-		  	<select id="modal-sexo" required style="border: none;" class="form-select" aria-label="Default select example">
-		    	<option value="Masculino">Masculino</option>
-		    	<option value="Femenino">Femenino</option>
-		    	<option value="Otro">Otro</option>
-		  	</select>
-		  </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>
-            <!-- Botón "Guardar" en el modal -->
-            <a class="btn btn-info guardar">Guardar</a>
-          </td>
-          <td>
-            <!-- Botón "Cancelar" en el modal -->
-            <a class="btn btn-danger cancelar">Cancelar</a>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
+			<!-- Enlace a la página siguiente -->
+			<li th:if="${currentPage < totalPages - 1}" class="page-item">
+				<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">&raquo;</a>
+			</li>
+
+			<!-- Botón para ir a la última página -->
+			<li th:if="${currentPage < totalPages - 1}" class="page-item">
+				<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">&raquo;&raquo;</a>
+			</li>
+		</ul>
+	</nav>
+
+
+	<!-- Modal para actualizar los datos -->
+	<div id="myModal" class="modal" style="padding-top: 15%; 	
+		padding-left: 5%;	padding-right: 5%;">
+		<div class="modal-content">
+			<!--Boton para cerrar el Modal-->
+			<span class="close" onclick="cerrarElementos()">&times;</span>
+			<!--Tabla para actualizar registros-->
+			<table class="table">
+				<!-- Encabezados de la tabla -->
+				<tr class="table-secondary">
+					<th>Edad</th>
+					<th>Nombre</th>
+					<th>Sexo</th>
+				</tr>
+				<tr>
+					<!-- Campos de entrada de datos en el modal -->
+					<td><input type="number" class="form-control" id="modal-edad" min="1" max="120" required
+							style="border: none;" inputmode="numeric"></td>
+					<td><input type="text" class="form-control" id="modal-nombre" required style="border: none;"></td>
+					<td>
+						<select id="modal-sexo" required style="border: none;" class="form-select"
+							aria-label="Default select example">
+							<option value="Masculino">Masculino</option>
+							<option value="Femenino">Femenino</option>
+							<option value="Otro">Otro</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<!-- Botón "Guardar" en el modal (Actualizar Registros)-->
+						<a class="btn btn-info guardar">Guardar</a>
+					</td>
+					<td>
+						<!-- Botón "Cancelar" en el modal -->
+						<a class="btn btn-danger cancelar">Cancelar</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<!--Modal para visualizacion de archivos .Zip-->
+	<div id="ventanaEmergente" class="modal" style="padding-top: 60px; 
+	padding-left: 7%;	padding-right: 7%;">
+		<div class="modal-content">
+			<!--Boton para cerrar el Modal-->
+			<span class="close" onclick="cerrarElementos()">&times;</span>
+			<!--Tabla para visualizar los archivos .Zip en el filesystem-->
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Nombre del Archivo</th>
+						<th colspan="2" style="text-align: center;">Acciones</th>
+					</tr>
+				</thead>
+				<!-- A continuación, utilizamos la plantilla de Thymeleaf para iterar sobre la lista de archivos y mostrarlos en la tabla. -->
+				<tbody id="archivosTableBody">
+					<tr style="vertical-align: middle;" th:each="archivo : ${listaArchivosZip}">
+						<td th:text="${archivo}"></td>
+						<td>
+							<a class="btn btn-primary" 
+							th:href="@{/descargarArchivo/{archivo}(archivo=${archivo})}">Descargar</a>
+						</td>
+						<td>
+							<a th:href="@{/eliminarArchivo/{archivo}(archivo=${archivo})}" class="btn btn-danger"
+								onclick="return confirm('¿Estás seguro que deseas eliminar este archivo?')">Eliminar</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="pagination" style="text-align: center; margin-top: 20px;">
+				<button class="pagination-button" onclick="prevPage()">&lt;</button>
+				<span id="currentPage" style="font-weight: bold; margin: 0 10px;"></span>
+				<button class="pagination-button" onclick="nextPage()">&gt;</button>
+			</div>
+		</div>
+	</div>
 </div>
+<div th:include="footer.html" name="footer"></div>
 
 
 <script>
-  // Obtener referencias a elementos HTML relevantes
-  var modal = document.getElementById("myModal"); // Referencia al modal
-  var botonesActualizar = document.querySelectorAll('.btn-actualizar'); // Referencia a los botones "Actualizar"
-  var span = document.getElementsByClassName("close")[0]; // Referencia al botón de cierre en el modal
-  var inputsEdad = document.getElementById('modal-edad'); // Referencia al campo de entrada de edad en el modal
-  var inputsNombre = document.getElementById('modal-nombre'); // Referencia al campo de entrada de nombre en el modal
-  var inputsSexo = document.getElementById('modal-sexo'); // Referencia al campo de entrada de sexo en el modal
-  
-  
-  // Función para ordenar la tabla por el ID de manera descendente
-function ordenarTablaPorId() {
-  // Obtener las filas de la tabla
-  var tableBody = document.querySelector('tbody');
-  var rows = Array.from(tableBody.getElementsByTagName('tr'));
+	// Obtener referencias a elementos HTML relevantes
+	var modal = document.getElementById("myModal"); // Referencia al modal
+	var botonesActualizar = document.querySelectorAll('.btn-actualizar'); // Referencia a los botones "Actualizar"
+	var span = document.getElementsByClassName("close")[0]; // Referencia al botón de cierre en el modal
+	var inputsEdad = document.getElementById('modal-edad'); // Referencia al campo de entrada de edad en el modal
+	var inputsNombre = document.getElementById('modal-nombre'); // Referencia al campo de entrada de nombre en el modal
+	var inputsSexo = document.getElementById('modal-sexo'); // Referencia al campo de entrada de sexo en el modal
+	var ventanaEmergente = document.getElementById('ventanaEmergente');
 
-  // Ordenar las filas por el ID de manera descendente
-  rows.sort(function (a, b) {
-    var idA = parseInt(a.getAttribute('data-idUser'));
-    var idB = parseInt(b.getAttribute('data-idUser'));
-    return idA - idB;
-  });
+//------------------------------------------------ PUTMAPPING ------------------------------------------------
 
-  // Reordenar las filas en la tabla
-  rows.forEach(function (row) {
-    tableBody.appendChild(row);
-  });
-}
-  
-  // Agregar eventos a los botones "Actualizar"
-  botonesActualizar.forEach(function (boton) {
-    boton.addEventListener('click', function () {
-      // Obtener los datos de la fila seleccionada
-      var filaSeleccionada = this.parentNode.parentNode; // Fila padre del botón "Actualizar"
-      var idUser = filaSeleccionada.getAttribute('data-idUser'); // Obtener el atributo "data-idUser" de la fila
-      var edad = filaSeleccionada.querySelector('td:nth-child(1)').textContent; // Obtener el contenido de la primera celda de la fila (edad)
-      var nombre = filaSeleccionada.querySelector('td:nth-child(2)').textContent; // Obtener el contenido de la segunda celda de la fila (nombre)
-      var sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent; // Obtener el contenido de la tercera celda de la fila (sexo)
+	//---------- Actualizar ----------
+	// Agregar eventos a los botones "Actualizar"
+	botonesActualizar.forEach(function (boton) {
+		boton.addEventListener('click', function () {
 
-      // Rellenar los campos del formulario con los datos actuales
-      inputsEdad.value = edad;
-      inputsNombre.value = nombre;
-      inputsSexo.value = sexo;
+			// Obtener los datos de la fila seleccionada
+			var filaSeleccionada = this.parentNode.parentNode; // Fila padre del botón "Actualizar"
+			var idUser = filaSeleccionada.getAttribute('data-idUser'); // Obtener el atributo "data-idUser" de la fila
+			var edad = filaSeleccionada.querySelector('td:nth-child(1)').textContent; // Obtener el contenido de la primera celda de la fila (edad)
+			var nombre = filaSeleccionada.querySelector('td:nth-child(2)').textContent; // Obtener el contenido de la segunda celda de la fila (nombre)
+			var sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent; // Obtener el contenido de la tercera celda de la fila (sexo)
 
-      // Almacenar la id del usuario en el botón de guardar
-      document.querySelector('.guardar').setAttribute('data-idUser', idUser);
+			// Rellenar los campos del formulario con los datos actuales
+			inputsEdad.value = edad;
+			inputsNombre.value = nombre;
+			inputsSexo.value = sexo;
 
-      // Mostrar el modal
-      modal.style.display = "block";
-    });
-  });
+			// Almacenar la id del usuario en el botón de guardar
+			document.querySelector('.guardar').setAttribute('data-idUser', idUser);
 
-  // Cerrar el modal cuando se hace clic en la "X"
-  span.onclick = function () {
-    modal.style.display = "none";
-  };
+			// Mostrar el modal
+			modal.style.display = "block";
+		});
+	});
 
-  // Cerrar el modal cuando se hace clic fuera de él
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
+	//---------- Guardar Registros (Actualizar) ----------
+	// Escuchar el evento "click" en el botón "Guardar"
+	document.querySelector('.guardar').addEventListener('click', function () {
+		var edad = inputsEdad.value; // Obtener el valor del campo de entrada de edad
+		var sexo = inputsSexo.value; // Obtener el valor del campo de entrada de sexo
+		
+		// Validar el campo de entrada de edad
+		if (isNaN(edad) || edad < 1 || edad > 120) {
+			alert('La edad debe ser un número entre 1 y 120.');
+			return;
+		}
+
+		// Validar el campo de selección de sexo
+		if (!['Masculino', 'Femenino', 'Otro'].includes(sexo)) {
+			alert('El sexo seleccionado no es válido.');
+			return;
+		}
+		
+		//Validar que no sea nulo
+		if (nombre.trim() === "") {
+        alert('Por favor, ingrese un nombre.');
+        return;
     }
-  };
+    
+		var nombre = inputsNombre.value; // Obtener el valor del campo de entrada de nombre
+		var idUser = this.getAttribute('data-idUser'); // Obtener la id del usuario del botón "Guardar"
+		var filaSeleccionada = document.querySelector('tr[data-idUser="' + idUser + '"]'); // Obtener la fila seleccionada
 
-  // Escuchar el evento "click" en el botón "Guardar"
-document.querySelector('.guardar').addEventListener('click', function () {
-  var edad = inputsEdad.value; // Obtener el valor del campo de entrada de edad
-  var sexo = inputsSexo.value; // Obtener el valor del campo de entrada de sexo
-  
-   // Validar el campo de entrada de edad
-  if (isNaN(edad) || edad < 1 || edad > 150) {
-    alert('La edad debe ser un número entre 1 y 150.');
-    return;
-  }
+		// Construir el objeto de datos a enviar al servidor
+		var data = {
+			idUser: idUser,
+			name: nombre,
+			age: edad,
+			sex: sexo
+		};
 
-  // Validar el campo de selección de sexo
-  if (!['Masculino', 'Femenino', 'Otro'].includes(sexo)) {
-    alert('El sexo seleccionado no es válido.');
-    return;
-  }
-  
-  var nombre = inputsNombre.value; // Obtener el valor del campo de entrada de nombre
-  var idUser = this.getAttribute('data-idUser'); // Obtener la id del usuario del botón "Guardar"
-  var filaSeleccionada = document.querySelector('tr[data-idUser="' + idUser + '"]'); // Obtener la fila seleccionada
+		// Realizar una petición AJAX para actualizar los datos en el servidor
+		fetch('/person?idUser=' + idUser, {
+			method: 'PUT', // Método HTTP: PUT (actualización)
+			headers: {
+				'Content-Type': 'application/json' // Tipo de contenido: JSON
+			},
+			body: JSON.stringify(data) // Cuerpo de la petición: objeto de datos convertido a JSON
+		})
+			.then(function (response) {
+				if (response.ok) {
+					// Actualizar los datos en la tabla si la petición es exitosa
+					filaSeleccionada.querySelector('td:nth-child(1)').textContent = edad;
+					filaSeleccionada.querySelector('td:nth-child(2)').textContent = nombre;
+					filaSeleccionada.querySelector('td:nth-child(3)').textContent = sexo;
+					modal.style.display = "none"; // Cerrar el modal
+				} else {
+					console.error('Error al realizar la petición');
+				}
+			})
+			.catch(function (error) {
+				console.error('Error en la petición:', error);
+			});
+	});
 
-  // Construir el objeto de datos a enviar al servidor
-  var data = {
-    idUser: idUser,
-    name: nombre,
-    age: edad,
-    sex: sexo
-  };
+	//---------- Cancelar (Actualización) ----------
+	// Escuchar el evento "click" en el botón "Cancelar"
+	document.querySelector('.cancelar').addEventListener('click', function () {
+		modal.style.display = "none";
+	});
+	
+	
+	
+	
+//------------------------------------------------ Ventana(s) Emergente(s) ------------------------------------------------
+	//---------- Funcion para mostrar la Ventana Emergente (Archivos .zip) ----------	
+	function mostrarVentanaEmergente() {
+		ventanaEmergente.style.display = 'block';
+	}
 
-  // Realizar una petición AJAX para actualizar los datos en el servidor
-  fetch('/person?idUser=' + idUser, {
-    method: 'PUT', // Método HTTP: PUT (actualización)
-    headers: {
-      'Content-Type': 'application/json' // Tipo de contenido: JSON
-    },
-    body: JSON.stringify(data) // Cuerpo de la petición: objeto de datos convertido a JSON
-  })
-    .then(function (response) {
-      if (response.ok) {
-        // Actualizar los datos en la tabla si la petición es exitosa
-        filaSeleccionada.querySelector('td:nth-child(1)').textContent = edad;
-        filaSeleccionada.querySelector('td:nth-child(2)').textContent = nombre;
-        filaSeleccionada.querySelector('td:nth-child(3)').textContent = sexo;
-        modal.style.display = "none"; // Cerrar el modal
-      } else {
-        console.error('Error al realizar la petición');
-      }
-    })
-    .catch(function (error) {
-      console.error('Error en la petición:', error);
-    });
-});
+	// Función para cerrar tanto el modal como el div "ventanaEmergente"
+	function cerrarElementos() {
+		// Cerrar el modal
+		modal.style.display = "none";
+		// Cerrar el div "ventanaEmergente"
+		ventanaEmergente.style.display = "none";
+	}
 
-  // Escuchar el evento "click" en el botón "Cancelar"
-  document.querySelector('.cancelar').addEventListener('click', function () {
-    modal.style.display = "none";
-  });
+	// Cerrar el modal y la ventanaEmergente cuando se hace clic fuera de él
+	window.onclick = function (event) {
+		if (event.target == modal || event.target == ventanaEmergente) {
+			modal.style.display = "none";
+			ventanaEmergente.style.display = "none";
+		}
+	};
+
+//------------------------------------------------ Paginación Ventana Emergente (Archivos .zip) ------------------------------------------------
+	const itemsPerPage = 8; //Archivos visibles por página (Recomendado)
+	let currentPage = 0;	//Página actual
+	const totalItems = document.querySelectorAll("#archivosTableBody tr").length; //Total de archivos en la tabla
+	const totalPages = Math.ceil(totalItems / itemsPerPage);	// Cálculo de cuantas páginas se tendran que "crear" (número redondeado al positivo superior)
+	const currentPageSpan = document.getElementById("currentPage"); // Obtenemos el elemento span llamado "currentPage"
+
+	// Función para mostrar una página específica (parametro page)
+	function showPage(page) {
+		const rows = document.querySelectorAll("#archivosTableBody tr"); //Ontención de los elementos en la tabla (archivos .zip)
+		const startIndex = page * itemsPerPage; 	//Posición inicial
+		const endIndex = startIndex + itemsPerPage; //Posición final
+	
+	//Se recorre cada elemento de toda la tabla y se obtiene el nombre y la posición
+		rows.forEach((row, index) => {
+			if (index >= startIndex && index < endIndex) {	//Si la posicion esta entre la posicion inicial y final
+				row.style.display = "table-row"; // Mostrar la fila en la tabla
+			} else {
+				row.style.display = "none"; // Ocultar la fila en la tabla
+			}
+		});
+	}
+
+	// Función para actualizar la información de paginación (número de página actual)
+	function updatePageInfo() {
+		currentPageSpan.textContent = `${currentPage + 1}/${totalPages}`;
+	}
+
+	// Función para ir a la página siguiente
+	function nextPage() {
+		if (currentPage < totalPages - 1) {
+			currentPage++; // Incrementar el número de la página actual
+			showPage(currentPage); // Mostrar la página actual
+			updatePageInfo(); // Actualizar la información de paginación
+		}
+	}
+
+	// Función para ir a la página anterior
+	function prevPage() {
+		if (currentPage > 0) {
+			currentPage--; // Decrementar el número de la página actual
+			showPage(currentPage); // Mostrar la página actual
+			updatePageInfo(); // Actualizar la información de paginación
+		}
+	}
+
+	// Mostrar la primera página inicialmente (al abrir ventana emergente)
+	showPage(currentPage);
+	updatePageInfo();
 </script>
-
-
-<script src="extensions/editable/bootstrap-table-editable.js"></script>
-	<div th:include="footer.html" name="footer"></div>

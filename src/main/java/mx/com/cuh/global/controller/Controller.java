@@ -1,91 +1,112 @@
 package mx.com.cuh.global.controller;
 
+import java.io.IOException;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import mx.com.cuh.global.dto.PersonasDTO;
-import mx.com.cuh.global.dto.Respuesta;
-import mx.com.cuh.global.entity.TbPersonas;
 import mx.com.cuh.global.service.User;
 
 @org.springframework.stereotype.Controller
 public class Controller {
 	@Autowired
 	private User user;
+
+	@GetMapping("/")
+    public String redirectInicio() {
+        return "redirect:/inicio";
+    }
 	
- @RequestMapping("/")
-	 public String index() {
-		 return "index";
-	 }
-/* 
- @GetMapping("inicio")
-	 public String inicio(Model model) {
-		 List<TbPersonas> listaPersonas= 
-		user.obtenerRegistros().getListaPersonas();		 	 
-		 model.addAttribute("listaPersonas",listaPersonas);
-	 return "inicio";
- 	}*/
- 
- @GetMapping("inicio")
- public String inicio(Model model, @RequestParam(defaultValue = "0") int page) {
-	 if (page < 0) {
-	        return "redirect:/inicio";
-	    }
-	 
-     int pageSize = 10;
-     PageRequest pageRequest = PageRequest.of(page, pageSize);
-     Page<TbPersonas> personasPage = user.obtenerRegistrosPaginados(pageRequest);
-     
-     int totalPages = personasPage.getTotalPages();
-     if (page >= totalPages) {
-         return "redirect:/inicio?page=" + (totalPages - 1);
-     }
-     
-     model.addAttribute("listaPersonas", personasPage.getContent());
-     model.addAttribute("currentPage", page);
-     model.addAttribute("totalPages", personasPage.getTotalPages());
+	@GetMapping("index")
+	public String index() {
+		return "index";
+	}
 
-     return "inicio";
- }
+	@GetMapping("/inicio")
+    public String inicio(Model model, @RequestParam(defaultValue = "0") int page) {
+        return user.inicio(model, page);
+    }
 
- 
- @PostMapping(value = "/saveperson")
- public String insertarPersona(
-         @ModelAttribute PersonasDTO persona) {
-     user.insertarPersona(persona);
-     return  "user";
- 	} 
- 
-/* 
-@GetMapping("/eliminar/{idUser}")
-	public String eliminar(@PathVariable
-        Long idUser) {
-     user.borrar(idUser);
+	@PostMapping(value = "/saveperson")
+	public String insertarPersona(@ModelAttribute PersonasDTO persona) {
+		user.insertarPersona(persona);
+		return "index";
+	}
+
+	@GetMapping("/eliminar/{idUser}")
+	public String eliminar(@PathVariable Long idUser, @RequestParam(defaultValue = "0") int page) {
+		user.borrar(idUser);
+		return "redirect:/inicio?page=" + page;
+	}
+
+	@PostMapping(value = "/actualizar/{idUser}")
+	public String actualizarPersona(@PathVariable Long idUser, @ModelAttribute PersonasDTO persona) {
+		user.actualizarPersona(idUser, persona);
 		return "redirect:/inicio";
-	}*/
+	}
 
- @GetMapping("/eliminar/{idUser}")
- public String eliminar(@PathVariable Long idUser, 
-		 @RequestParam(defaultValue = "0") int page) {
-	 user.borrar(idUser);
-     return "redirect:/inicio?page=" + page;
- }
+	
+	@GetMapping("/exportar-pdf")
+    public String exportarPdf(HttpServletRequest request) {
+        // Llamar al método exportarPdf de la instancia de UserImpl
+        user.exportarPdf();
+        String referer = request.getHeader("referer");
+        return "redirect:" + referer;
+    }
 
-@PostMapping(value = "/actualizar/{idUser}")
-public String actualizarPersona(@PathVariable Long idUser, 
-	@ModelAttribute PersonasDTO persona) {
-	user.actualizarPersona(idUser, persona);
-    return "redirect:/inicio";
+	
+	@ModelAttribute("listaArchivosZip")
+    public List<String> obtenerListaArchivosZip() {
+        return user.obtenerListaArchivosZip();
+    }
+	
+	@GetMapping("/descargarArchivo/{archivo}")
+    public ResponseEntity<Resource> descargarArchivo(@PathVariable String archivo) throws IOException {
+        Resource resource = user.descargarArchivo(archivo);
+        if (resource != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + archivo);
+            return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+	
+	@GetMapping("/eliminarArchivo/{archivo}")
+    public String eliminarArchivo(@PathVariable String archivo, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+        String mensaje;
+        String referer = request.getHeader("referer");
+        try {
+            boolean eliminado = user.eliminarArchivo(archivo);
+            if (eliminado) {
+                mensaje = "Archivo eliminado exitosamente.";
+            } else {
+                mensaje = "Error al eliminar el archivo.";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mensaje = "Error al eliminar el archivo.";
+        }
+        redirectAttributes.addFlashAttribute("mensaje", mensaje);
+        return "redirect:" + referer;
+    }
+	
 }
-
- }
