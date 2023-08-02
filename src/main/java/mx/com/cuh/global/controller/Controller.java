@@ -1,26 +1,20 @@
 package mx.com.cuh.global.controller;
 
-import java.io.ByteArrayOutputStream;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -28,14 +22,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import mx.com.cuh.global.dto.PersonasDTO;
+import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPersonas;
-import mx.com.cuh.global.repository.TbPersonasRepository;
 import mx.com.cuh.global.service.User;
 
 @org.springframework.stereotype.Controller
@@ -45,6 +37,10 @@ public class Controller {
 
 	@Value("${cosa.cosa")
 	private String valor;
+
+	private String archivo;
+
+	private ByteArrayResource resource;
 
 	@RequestMapping("/")
 	public String index() {
@@ -90,5 +86,61 @@ public class Controller {
 	@GetMapping("/exportar-pdf-zip")
 	public ResponseEntity<ByteArrayResource> exportarPdfZip() {
 		return user.exportarPdfZip();
+	}
+
+	
+	
+
+	@GetMapping("/obtener-nombres-zip-descargados")
+	public ResponseEntity<List<String>> obtenerNombresArchivosZipDescargados() {
+	    String rutaDirectorio = "C:\\Users\\DILLAN\\Desktop\\pruebas\\pdf";
+	    List<String> nombresArchivos = obtenerNombresArchivosZipDescargados(rutaDirectorio);
+	    if (!nombresArchivos.isEmpty()) {
+	        return ResponseEntity.ok(nombresArchivos);
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
+	}
+
+	// Función para obtener los nombres de los archivos ZIP descargados en el directorio especificado
+	private List<String> obtenerNombresArchivosZipDescargados(String rutaDirectorio) {
+	    List<String> nombresArchivos = new ArrayList<>();
+
+	    File directorio = new File(rutaDirectorio);
+	    if (directorio.exists() && directorio.isDirectory()) {
+	        File[] archivos = directorio.listFiles();
+	        if (archivos != null) {
+	            for (File archivo : archivos) {
+	                if (archivo.isFile() && archivo.getName().endsWith(".zip")) {
+	                    nombresArchivos.add(archivo.getName());
+	                }
+	            }
+	        }
+	    }
+
+	    return nombresArchivos;    
+  
+}
+	
+	@GetMapping("/descargar-zip/{nombreArchivo}")
+	public ResponseEntity<FileSystemResource> descargarZip(@PathVariable String nombreArchivo) {
+	    String rutaDirectorio = "C:\\Users\\DILLAN\\Desktop\\pruebas\\pdf";
+	    String rutaArchivo = rutaDirectorio + "\\" + nombreArchivo;
+
+	    File archivo = new File(rutaArchivo);
+	    if (archivo.exists()) {
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+	        headers.setContentDispositionFormData("attachment", nombreArchivo);
+	        headers.setContentLength(archivo.length());
+
+	        FileSystemResource resource = new FileSystemResource(archivo);
+
+	        return ResponseEntity.ok()
+	                .headers(headers)
+	                .body(resource);
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
 	}
 }
