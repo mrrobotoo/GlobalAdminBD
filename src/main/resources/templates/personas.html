@@ -36,18 +36,139 @@
 		<!--TABLA DE PERSONAS-->
 		<div class="row">
 			<div class="col-lg-3">
-				<a th:href="@{/personas/nuevo}" class="btn btn-primary btn-sm mb3">
-					<h5>Registrar</h5>
-				</a>
-				<p></p>
-				<!--BOTON DE CONVERCION-->
-				<a type="button" class="btn btn-success" href="/exportar-pdf-zip"><b>Exportar Usuarios registrados</b></a>
-				<!--FIN DEL BOTON DE CONVERSION-->
-				<p></p>
+
+				<table class="table table-bordered border-dark">
+					<thead class="table-light">
+						<tr>
+							<th>
+								<a th:href="@{/personas/nuevo}" class="btn btn-primary"><b>Registrar</b></a>
+							</th>
+							<th>
+								<button onclick="mostrarPopup()" class="btn btn-info"><b>Archivos</b></button>
+							</th>
+							<th></th>
+							<th></th>
+							<th>
+								<!--BOTON DE CONVERCION-->
+								<a type="button" class="btn btn-warning" href="/exportar-pdf-zip"><b>Exportar
+										Tablas</b></a>
+								<!--FIN DEL BOTON DE CONVERSION-->
+							</th>
+				</table>
+				<!--POPUP CODIGO-->
+				<style>
+					.popup {
+						display: none;
+						position: fixed;
+						top: 0;
+						left: 0;
+						width: 100%;
+						height: 100%;
+						background-color: rgba(0, 0, 0, 0.5);
+					}
+
+					.popup-content {
+						position: absolute;
+						top: 50%;
+						left: 50%;
+						transform: translate(-50%, -50%);
+						background-color: white;
+						padding: 20px;
+						border-radius: 5px;
+					}
+
+					.popup-content button {
+						margin-right: 10px;
+					}
+				</style>
+				<br>
+
+				<div id="popup" class="popup">
+					<div class="popup-content">
+						<!--____________________Codigo de visualizacion____________________-->
+						<button onclick="cerrarPopup()">
+							<h5><b> X </b></h5>
+						</button>
+						<!--<Ttable class="table table-bordered border-dark">
+							<thead class="table-dark">
+								
+								<tr>
+									<th>#</th>
+									<th>Archivo</th>
+									<th>Accion 1</th>
+									<th>Accion 2</th>
+								</tr>
+							</thead>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</Ttable>-->
+
+						<body>
+							<h5>Lista de Archivos ZIP</h5>
+							<table class="table table-bordered border-dark">
+								<thead class="table-dark">
+
+									<tr>
+										<th>File Name</th>
+										<th>Accion 1</th>
+										<th>Accion 2</th>
+									</tr>
+								</thead>
+									<tbody id="zipList">
+										<!-- The list of zip file names will be displayed here -->
+									</tbody>
+							</table>
+
+							<script>
+								// Function to fetch the data from the backend and populate the table
+								function fetchZipFileNames() {
+									fetch('/nombreDeLosArchivos')
+										.then(response => response.json())
+										.then(data => {
+											const zipList = document.getElementById('zipList');
+											data.forEach(fileName => {
+												const row = document.createElement('tr');
+												const cell = document.createElement('td');
+												cell.textContent = fileName;
+												row.appendChild(cell);
+												zipList.appendChild(row);
+											});
+										})
+										.catch(error => console.error('Error fetching data:', error));
+								}
+
+								// Load the data on page load
+								window.addEventListener('load', fetchZipFileNames);
+							</script>
+						</body>
+
+
+						<!--____________________Fin de codigo de visualizacion____________________-->
+
+
+					</div>
+				</div>
+
+				<script>
+					function mostrarPopup() {
+						var popup = document.getElementById('popup');
+						popup.style.display = 'block';
+					}
+
+					function cerrarPopup() {
+						var popup = document.getElementById('popup');
+						popup.style.display = 'none';
+					}					
+				</script>
+				<!--FIN POPUP CODIGO-->
 			</div>
-			<br>
-			<br>
 		</div>
+
+		<!--PERSONAS REGISTRADAS-->
 		<table class="table table-bordered border-dark">
 			<thead class="table-dark">
 				<tr>
@@ -79,12 +200,14 @@
 									th:data-bs-target="'#modalContainer-' + ${personas.id}"
 									th:attr="data-id=${personas}"><b>EDITAR</b></button>
 							</center>
+							<!--_____CONTENIDO DENTRO DEL POPUP DE EDITAR_____-->
 							<div class="modal fade" th:id="'modalContainer-' + ${personas.id}" tabindex="-1"
 								role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
 										<div class="modal-header">
-											<h5 class="modal-title" style="color: black;" id="modalTitle"><b>Actualizar
+											<h5 class="modal-title" style="color: black;" id="modalTitle">
+												<b>Actualizar
 													Datos</b>
 											</h5>
 											<button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -94,30 +217,33 @@
 											<center>
 												<form style="padding: 10px;"
 													th:action="@{/personas/{id}(id=${personas.id})}"
-													class="p-3 mb-2 bg-dark text-white" method="post">
+													class="p-3 mb-2 bg-secondary text-white" method="post">
 													<input type="hidden" name="id" th:value="${personas.id}" />
-													<table border="10px" style="padding: 10px; border-style: solid;">
+													<table class="table-dark" border="2px" style="padding: 2px; ">
 														<tr>
 															<td style="text-align: right; padding: 10px;">
 																<label for="nombre" class="label label-primary"
 																	style="text-align: right">Nombre: </label>
 															</td>
-															<td style="padding-right: 10px; padding-top: 10px;"><input
-																	style="text-align: center;" id="NombreInput"
+															<td style="padding-right: 10px; padding-top: 10px;">
+																<input style="text-align: center;" id="NombreInput"
 																	placeholder="Ingresa un nombre" type="text"
-																	name="nombre" th:value="${personas.nombre}" /></td>
+																	name="nombre" th:value="${personas.nombre}" />
+															</td>
 														</tr>
 														<tr>
 															<td style="text-align: right; padding: 10px;"><label
-																	for="edad" style="text-align: right">Edad: </label>
+																	for="edad" style="text-align: right">Edad:
+																</label>
 															</td>
 															<td><input style="text-align: center"
-																	placeholder="Ingresa la edad" type="text"
+																	placeholder="Ingresa la edad" type="number"
 																	name="edad" th:value="${personas.edad}" /></td>
 														</tr>
 														<tr>
 															<td style="text-align: right; padding: 10px;"><label
-																	for="sexo" style="text-align: right">Sexo: </label>
+																	for="sexo" style="text-align: right">Sexo:
+																</label>
 															</td>
 															<td><input style="text-align: center"
 																	placeholder="Ingresa tu sexo" type="text"
@@ -127,25 +253,30 @@
 														<tr>
 															<td>
 																<div>
-																	<input type="submit" value="Actualizar"
-																		class="btn btn-success" />
+																	<button type="button" class="btn btn-secondary"
+																		data-bs-dismiss="modal">Cancelar</button>
 																</div>
 															</td>
+															<td>
+																<div>
+																	<center>
+																		<input type="submit" value="Actualizar"
+																			class="btn btn-success">
 
-
-
+																	</center>
+																</div>
+															</td>
 														</tr>
 													</table>
 												</form>
 											</center>
 										</div>
-										<div class="modal-footer">
-											<center><button type="button" class="btn btn-secondary"
-													data-bs-dismiss="modal">Cancelar</button></center>
-										</div>
 									</div>
 								</div>
 							</div>
+
+							<!--_____CONTENIDO DENTRO DEL POPUP DE EDITAR_____-->
+
 						</div>
 					</td>
 				</tr>
