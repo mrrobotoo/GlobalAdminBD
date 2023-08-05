@@ -155,7 +155,13 @@
 			border: 1px solid #17a2b8;
 			color: #fff;
 		}
+		
+		     .btn-separator {
+            margin-right: 10px;
+        }
 	</style>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 </head>
 
 <body>
@@ -265,14 +271,16 @@
 
 		</div>
 	</div>
-<button type="button" class="btn btn-primary" onclick="abrirPopup2()">Descargar PDF descargados anteriormente</button>
 
-<!-- The Popup 2 (Descargar) -->
+
+
+<button type="button" class="btn btn-primary" onclick="abrirPopup2()">Abrir Gestor de Descargas</button>
+
+<!-- Popup para Gestión de Descargas -->
 <div id="popup2" class="popup">
     <div class="popup-content">
-        <h2>Descargar Archivo</h2>
+        <h2>Gestor de Descargas</h2>
         <div class="archivo-zip-descargados">
-            <!-- Aquí se mostrarán los nombres de los archivos .zip descargados en una tabla -->
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -281,7 +289,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Aquí se agregarán las filas con los nombres de archivos .zip descargados y los botones de acciones -->
+                    <!-- Itera sobre los nombres de archivos .zip y crea una fila por cada uno -->
+                    <tr th:each="nombreArchivo : ${nombresArchivos}">
+                        <td>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>${nombreArchivo}</span>
+                                <div class="btn-group" role="group">
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-descargar btn-separator"
+                                        data-nombre-archivo="${nombreArchivo}">Descargar</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-eliminar"
+   data-nombre-archivo="${nombreArchivo}">Eliminar</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -293,11 +314,9 @@
 
 
 
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
@@ -305,64 +324,108 @@
 
 	<script>
   
- // Función para abrir el "popup2"
-    function abrirPopup2() {
-        var popup2 = document.getElementById("popup2");
-        popup2.style.display = "block";
 
-        // Agregar un evento de clic al botón "Cancelar" dentro del "popup2" para cerrarlo
-        var btnCancelarPopup2 = document.querySelector('.btn-cancelar-popup2');
-        btnCancelarPopup2.addEventListener('click', function () {
-            cerrarPopup2();
+    // Función para abrir el "popup2"
+function abrirPopup2() {
+    var popup2 = document.getElementById("popup2");
+    popup2.style.display = "block";
+
+    // Agregar un evento de clic al botón "Cancelar" dentro del "popup2" para cerrarlo
+    var btnCancelarPopup2 = document.querySelector('.btn-cancelar-popup2');
+    btnCancelarPopup2.addEventListener('click', function () {
+        cerrarPopup2();
+    });
+
+    // Obtener los nombres de los archivos ZIP descargados mediante una solicitud AJAX al controlador
+    obtenerNombresArchivosZipDescargados();
+}
+
+// Función para cerrar el "popup2"
+function cerrarPopup2() {
+    var popup2 = document.getElementById("popup2");
+    popup2.style.display = "none";
+}
+
+// Función para eliminar un archivo ZIP
+function eliminarArchivoZip(nombreArchivo) {
+    // Realizar una solicitud AJAX para eliminar el archivo ZIP en el servidor
+    fetch('/eliminarArchivo/' + nombreArchivo, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Mostrar un mensaje o realizar alguna acción después de eliminar el archivo
+        console.log(data.mensaje);
+        // Volver a obtener los nombres de archivos después de eliminar
+        obtenerNombresArchivosZipDescargados();
+    })
+    .catch(error => console.error('Error al eliminar el archivo ZIP:', error));
+}
+
+// Función para obtener los nombres de archivos ZIP descargados
+function obtenerNombresArchivosZipDescargados() {
+    fetch('/obtener-nombres-zip-descargados')
+        .then(response => response.json())
+        .then(data => mostrarNombresArchivos(data))
+        .catch(error => console.error('Error al obtener los nombres de archivos ZIP:', error));
+}
+
+// Función para mostrar los nombres de los archivos ZIP descargados en una tabla
+function mostrarNombresArchivos(nombresArchivos) {
+    var tbody = document.querySelector('.archivo-zip-descargados tbody');
+    tbody.innerHTML = '';
+
+    nombresArchivos.forEach(nombreArchivo => {
+        var tr = document.createElement('tr');
+
+        var tdNombre = document.createElement('td');
+        tdNombre.textContent = nombreArchivo;
+        tr.appendChild(tdNombre);
+
+        var tdAcciones = document.createElement('td');
+
+        var btnDescargar = document.createElement('a');
+        btnDescargar.href = '/descargar-zip/' + nombreArchivo; // Enlace para descargar el archivo ZIP
+        btnDescargar.textContent = 'Descargar';
+        btnDescargar.classList.add('btn', 'btn-primary', 'btn-descargar');
+        tdAcciones.appendChild(btnDescargar);
+
+        var btnEliminar = document.createElement('a');
+        btnEliminar.href = 'javascript:void(0);';
+        btnEliminar.textContent = 'Eliminar';
+        btnEliminar.classList.add('btn', 'btn-danger', 'btn-eliminar');
+        btnEliminar.setAttribute('data-nombre-archivo', nombreArchivo); // Agregar el atributo
+        btnEliminar.addEventListener('click', function () {
+            var nombreArchivo = this.getAttribute('data-nombre-archivo');
+            eliminarArchivoZip(nombreArchivo);
         });
+        tdAcciones.appendChild(btnEliminar);
 
-        // Obtener los nombres de los archivos ZIP descargados mediante una solicitud AJAX al controlador
-        fetch('/obtener-nombres-zip-descargados')
-            .then(response => response.json())
-            .then(data => mostrarNombresArchivos(data))
-            .catch(error => console.error('Error al obtener los nombres de archivos ZIP:', error));
-    }
+        tr.appendChild(tdAcciones);
 
-    // Función para cerrar el "popup2"
-    function cerrarPopup2() {
-        var popup2 = document.getElementById("popup2");
-        popup2.style.display = "none";
-    }
+        tbody.appendChild(tr);
+    });
 
-    // Función para mostrar los nombres de los archivos ZIP descargados en una tabla
-    function mostrarNombresArchivos(nombresArchivos) {
-        var tbody = document.querySelector('.archivo-zip-descargados tbody');
-        tbody.innerHTML = '';
-
-        nombresArchivos.forEach(nombreArchivo => {
-            var tr = document.createElement('tr');
-
-            var tdNombre = document.createElement('td');
-            tdNombre.textContent = nombreArchivo;
-            tr.appendChild(tdNombre);
-
-            var tdAcciones = document.createElement('td');
-
-            var btnDescargar = document.createElement('a');
-            btnDescargar.href = '/descargar-zip/' + nombreArchivo; // Enlace para descargar el archivo ZIP
-            btnDescargar.textContent = 'Descargar';
-            btnDescargar.classList.add('btn', 'btn-primary');
-            tdAcciones.appendChild(btnDescargar);
-
-            tr.appendChild(tdAcciones);
-
-            tbody.appendChild(tr);
+    // Obtener todos los botones de eliminar y agregar un evento click
+    var botonesEliminar = document.querySelectorAll('.btn-eliminar');
+    botonesEliminar.forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            var nombreArchivo = this.getAttribute('data-nombre-archivo');
+            eliminarArchivoZip(nombreArchivo);
         });
-    }
+    });
+
+    // Obtener todos los botones de descargar y agregar un evento click
+    var botonesDescargar = document.querySelectorAll('.btn-descargar');
+    botonesDescargar.forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            var nombreArchivo = this.getAttribute('data-nombre-archivo');
+            // Aquí puedes agregar la lógica para descargar el archivo .zip si es necesario
+        });
+    });
+}
 
 
-
-
-
-
-
-    
-    
     
     
 		var popup = document.getElementById("popup");

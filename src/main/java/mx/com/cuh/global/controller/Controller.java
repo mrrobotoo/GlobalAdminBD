@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -143,4 +146,23 @@ public class Controller {
 	        return ResponseEntity.notFound().build();
 	    }
 	}
+	
+
+	@PostMapping("/eliminarArchivo/{nombreArchivo}")
+	public ResponseEntity<String> eliminarArchivo(@PathVariable String nombreArchivo) {
+	    String rutaDirectorio = "C:\\Users\\DILLAN\\Desktop\\pruebas\\pdf"; // Ruta del directorio donde están los archivos ZIP
+	    String rutaArchivo = rutaDirectorio + "\\" + nombreArchivo;
+
+	    File archivo = new File(rutaArchivo);
+	    if (archivo.exists()) {
+	        if (archivo.delete()) {
+	            return ResponseEntity.ok("{\"mensaje\": \"Archivo eliminado exitosamente.\"}");
+	        } else {
+	            return ResponseEntity.badRequest().body("{\"mensaje\": \"Error al eliminar el archivo.\"}");
+	        }
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
+	}
+
 }
