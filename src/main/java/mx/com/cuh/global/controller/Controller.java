@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.io.File;
-import java.util.ArrayList;
 
 import java.util.zip.ZipOutputStream;
 
@@ -21,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -218,56 +215,29 @@ public class Controller {
 	}
 	/* FIN DEL CODIGO */
 
-/*----------CODIGO DE VISUALIZACION - ZIP ----------*/
-	@GetMapping("/nombreDeLosArchivos")
-	public ResponseEntity<List<String>> zipDescargados(){
-		String directorio = "C:\\Users\\Javier HDZ M\\Desktop\\Registros de Personas";
-		List<String> nombreDeLosArchivos = nombreDeZipDescargados(directorio);
-		if(!nombreDeLosArchivos.isEmpty()) {
-			return ResponseEntity.ok(nombreDeLosArchivos);
-		}else {
+	/*----------CODIGO DE VISUALIZACION - ZIP ----------*/
+
+	@GetMapping("/obtener-nombres-zip-descargados")
+	public ResponseEntity<List<String>> obtenerNombreArchivosZIPDescargados() {
+		String rutaDirectorio = "C:\\Users\\Javier HDZ M\\Desktop\\Registros de Personas";
+		List<String> nombresArchivos = servicio.obtenerNombreArchivosZIPDescargados(rutaDirectorio);
+		if (!nombresArchivos.isEmpty()) {
+			return ResponseEntity.ok(nombresArchivos);
+		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
-
-	private List<String> nombreDeZipDescargados(String directorio) {
-		List<String> nombreDeLosArchivos = new ArrayList<>();
-		File directorioRuta = new File(directorio);
-		if (directorioRuta.exists() && directorioRuta.isDirectory()) {
-			File[] Documentos = directorioRuta.listFiles();
-			if (Documentos != null) {
-				for (File documento : Documentos) {
-					if (documento.isFile()&& documento.getName().endsWith(".zip")) {
-						nombreDeLosArchivos.add(documento.getName());
-					}
-				}
-			}
-		}
-		return nombreDeLosArchivos;
-	}
 	
-	@GetMapping("/descargarZIP/{nombreDelArchivo}")
-	public ResponseEntity<FileSystemResource> descargarArchivoZIP(@PathVariable String nombreDelArchivo){
-		String rutaCarpeta = "C:\\Users\\Javier HDZ M\\Desktop\\Registros de Personas";
-		String rutaDelZIP = rutaCarpeta + "\\" + nombreDelArchivo;
-		
-		File archivoZIP = new File(rutaDelZIP);
-		if (archivoZIP.exists()) {
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-			headers.setContentDispositionFormData("attachment", rutaDelZIP);
-			headers.setContentLength(archivoZIP.length());
-			
-			FileSystemResource resource = new FileSystemResource(archivoZIP);
-			
-			return ResponseEntity.ok()
-					.headers(headers)
-					.body(resource);
-		}else {
-			return ResponseEntity.noContent().build();
-		}
+	/*----------DESCARGA DE ARCHIVOS ZIP----------*/
+
+	@GetMapping("/descargar-zip/{nombreArchivo}")
+	public ResponseEntity<FileSystemResource> descargarZip(@PathVariable String nombreArchivo) {
+		return servicio.descargarZip(nombreArchivo);
 	}
 
-
-
+	/*----------ELIMINAR DE ARCHIVOS ZIP----------*/
+	@PostMapping("/eliminarArchivo/{nombreArchivo}")
+	public ResponseEntity<String> eliminarArchivo(@PathVariable String nombreArchivo) {
+		return servicio.eliminarArchivo(nombreArchivo);
+	}
 }
