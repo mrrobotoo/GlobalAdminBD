@@ -10,7 +10,8 @@ import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.repository.TbPersonRepository;
 import org.springframework.data.domain.Page; //SE IMPORTAN LIBRERIAS
-import org.springframework.data.domain.PageRequest; // SE IMPORTAN LIBRERIAS PARA EL PAGEREQUEST
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort; // SE IMPORTAN LIBRERIAS PARA EL PAGEREQUEST
 
 
 
@@ -90,5 +91,11 @@ public class UsuarioImpl implements Usuario {
 		}
 		return response;
 	}
-
+	
+	//FILTRO 
+	
+	@Override 
+	public Page<TbPerson> obtenerPersonasPorNombre(String nombre, PageRequest pageRequest) {
+	    return tbPersonRepository.findByNombreContainingIgnoreCase(nombre, pageRequest);
+	}
 }

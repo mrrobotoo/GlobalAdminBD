@@ -10,10 +10,53 @@
 	<link rel="stylesheet" href="styles.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
 	<title>Registros</title>
+
+	<style>
+		/* Estilos para los botones de descargar y eliminar dentro del modal de descargas */
+		#modalDescargas .btn {
+			padding: 5px 10px;
+			font-size: 14px;
+
+		}
+
+		#modalDescargas .btn-descargar {
+			background-color: #28a745;
+			color: #fff;
+		}
+
+		#modalDescargas .btn-descargar:hover {
+			background-color: #218838;
+			align-items: center;
+		}
+
+		#modalDescargas .btn-eliminar {
+			background-color: #dc3545;
+			color: #fff;
+
+		}
+
+		#modalDescargas .btn-eliminar:hover {
+			background-color: #c82333;
+		}
+	</style>
+
+
+
 </head>
 
 <body>
 	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
+
+	<div style="align-items: center;">
+		<form action="/buscar" method="get" style="background-color: #212529;">
+			<b style="color: white; padding-left: 20px; padding-right: 10px;">Filtrar: </b>
+			<input type="text" name="nombre" placeholder="Buscar por nombre"
+				style="text-align: center; margin-top: 15px;">
+			<input type="submit" value="Buscar" class="btn btn-info"
+				style="padding-left: 7px; padding-right: 7px; padding-top: 2px; padding-bottom: 2px; margin-bottom: 3px;">
+		</form>
+	</div>
+
 
 	<table class="table table-dark" id="data-table" style="margin-bottom: 3.95%;">
 		<thead class="thead-dark">
@@ -21,10 +64,17 @@
 				<th style="text-align: center;">Nombre</th>
 				<th style="text-align: center;">Edad</th>
 				<th style="text-align: center;">Sexo</th>
-				<th class="hide-on-pdf"></th>
 				<th class="hide-on-pdf">
 					<center>
-						<a class="btn btn-warning" href="/exportar-pdf">Exportar</a> <!-- BUTTON PARA EXPORTAR CANTIDAD DE ELEMENTOS -->
+						<a id="export-button" class="btn btn-warning">Exportar</a>
+						<!-- BUTTON PARA EXPORTAR CANTIDAD DE ELEMENTOS -->
+					</center>
+				</th>
+				<th class="hide-on-pdf">
+					<center>
+						<button class="btn btn-success" data-bs-toggle="modal"
+							data-bs-target="#modalDescargas">Descargas</button> <!-- BUTTON PARA DESCARGAR PDFs -->
+
 					</center>
 				</th>
 			</tr>
@@ -37,8 +87,10 @@
 				<!-- BUTTON ELIMINAR PERSONAS -->
 				<td class="hide-on-pdf">
 					<center>
-						<a style="text-align: center;" th:href="@{/eliminar/{id}(id=${item.id})}" class="btn btn-danger">Eliminar</a>
+						<a style="text-align: center;" th:href="@{/eliminar/{id}(id=${item.id})}" class="btn btn-danger"
+							onclick="mensajeEliminar()">Eliminar</a>
 					</center>
+
 				</td>
 				<!-- MODAL -->
 				<td class="hide-on-pdf">
@@ -46,7 +98,8 @@
 						<center>
 							<button class="btn btn-primary" data-bs-toggle="modal"
 								th:data-bs-target="'#modalContainer-' + ${item.id}"
-								th:attr="data-id=${item.id}">Actualizar</button> <!-- BUTTON ACTUALIZAR PARA CADA FILA -->
+								th:attr="data-id=${item.id}">Actualizar</button>
+							<!-- BUTTON ACTUALIZAR PARA CADA FILA -->
 						</center>
 						<!-- EL 'TH:ATTR' HACE QUE SE LE ASIGNE UN VALOR DINÁMICO AL 'DATA-ID' QUE ES EL ATRIBUTO DE DATOS Y REPRESENTA EL ID ÚNICO DE LA PERSONA DEPENDIENDO DE LA FILA EN LA QUE SE ENCUENTRA EL BOTÓN -->
 						<div class="modal fade" th:id="'modalContainer-' + ${item.id}" tabindex="-1" role="dialog"
@@ -54,8 +107,8 @@
 							<div class="modal-dialog" role="document">
 								<div class="modal-content"> <!-- CONTENEDOR DE MODAL -->
 									<div class="modal-header" style="text-align: center;"> <!-- CABECERA DEL MODAL -->
-										<h4 class="modal-title"
-											style="color: black; text-align: center; margin: auto auto;;">Actualizar Datos</h4>
+										<h4 class="modal-title" style="color: black;">Actualizar
+											Datos</h4>
 										<button type="button" class="btn-close" data-bs-dismiss="modal"
 											aria-label="Close"></button> <!-- BUTTON 'X' PARA CERRAR EL MODAL -->
 									</div>
@@ -100,7 +153,8 @@
 														<td
 															style="padding-left: 0px; padding-top: 10px; padding-bottom: 10px;">
 															<input type="submit" value="Actualizar"
-																class="btn btn-success" />
+																class="btn btn-success"
+																onclick="mensajeUserActualizado()" />
 														</td>
 													</tr>
 												</table>
@@ -116,132 +170,244 @@
 		</tbody>
 	</table>
 
-	<!-- PAGINADOR -->
+	<!-- PARTE DEL FILTRO -->
+	<div th:if="${mensaje}" class="alert alert-warning" role="alert">
+		<p th:text="${mensaje}"></p>
+	</div>
+	<!-- FIN PARTE DE FILTRO -->
 
-	<div class="d-flex justify-content-center" style="margin-bottom: 10%; position: relative; z-index: 0">
-		<!-- CENTRAR EL PAGINADOR -->
-		<ul class="pagination"> <!-- 'ul' DEFINE UNA LISTA NO ORDENADA QUE CONTIENE LOS ELEMENTOS DEL PAGINADOR -->
-			<li th:if="${currentPage > 0}" class="page-item">
-				<!-- VALIDA SI MI PÁGINA ACTUAL ES SUPERIOR A CERO, ENTONCES APARECERÁ EL BOTÓN DE INICIO (PÁGINA 1) -->
-				<a class="page-link" th:href="@{/inicio(page=0)}">Inicio</a>
-				<!-- REFERENCIA QUE DIRIGE A MI PÁGINA POR DEFAULT, EN ESTE CASO, LA SETEAMOS CON EL NÚMERO CERO EN NUESTRO CONTROLLER -->
-			</li>
-			<li th:if="${currentPage > 0}" class="page-item">
-				<!-- VALIDA SI MI PÁGINA ACTUAL ES SUPERIOR A CERO, SE MUESTRA EL BOTÓN DE ANTERIOR -->
-				<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">Anterior</a>
-				<!-- VERIFICA LA PÁGINA ACTUAL Y LE RESTA UN NÚMERO PARA IR A LA PÁGINA ANTERIOR -->
-			</li>
-			<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
-				th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'"> <!-- ITERA SOBRE EL NÚMERO TOTAL DE PÁGINAS DESDE EL CERO
-																																										HASTA EL NÚMERO TOTAL DE PÁGINAS Y LE RESTA 1 Y CADA NÚMERO
-																																										QUE ITERE SERÁ UNA PÁGINA EN EL PAGINADOR
-																																										SI LA PAGINA ACTUAL ES IGUAL AL NUMERO QUE ITERÓ, ENTONCES
-																																										LE DAREMOS LA PROPIEDAD DE 'page-item active' AL NÚMERO DE
-																																										PÁGINA DENTRO DEL PÁGINADOR Y HARÁ QUE SEA RESALTADO -->
-				<a class="page-link" th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}">1</a> <!-- UTILIZAMOS LA VARIABLE 'pageNumber' PARA GENERAR UN NÚMERO
-																														CON LA PÁGINA CORRECTA Y SE LO SETEAMOS A "th:href" PARA
-																														MOSTRAR EL NÚMERO CORRECTO DE PÁGINA, DESPUÉS SETEAMSO EL TEXTO DENTRO
-																														DE LOS BOTONES DEL PAGINADOR Y LE SUMAMOS UNO, YA QUE AL MOMENTO DE
-																														DECLARARLO EN EL CONTROLLER LO HICIMOS CON UN CERO (DEFAULT) Y LE SETEAMOS
-																														EL NÚMERO 1 PARA QUE AL USUARIO NO LE APAREZCA UN CERO COMO DEFAULT -->
-			</li>
-			<li th:if="${currentPage < totalPages - 1}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES MENOR AL NÚMERO TOTAL DE PÁGINAS
-																					Y LE RESTA UNO, DEJANDO EL MISMO NÚMERO, POR EJEMPLO: 2<(3-1) = 2<2 -->
-				<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">Siguiente</a>
-				<!-- SI SE VALIDA, ENTONCES SE VUELVE A SETEAR Y SE LE VUELVE A SUMAR, Y SE ASEGURA DE QUE NO APAREZCA EL BUTTON "SIGUIENTE" CUANDO ESTÁ EL LA ÚLTIMA PÁGINA -->
-			</li>
-			<li th:if="${currentPage < totalPages - 1}" class="page-item"> <!-- VALIDA SI MI PÁGINA ACTUAL ES MENOR AL NÚMERO TOTAL DE PÁGINAS
-																					Y LE RESTA UNO, DEJANDO EL MISMO NÚMERO, POR EJEMPLO: 2<(3-1) = 2<2 -->
-				<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">Final</a>
-				<!-- SI SE VALIDA, ENTONCES MI TOTAL DE PÁGINAS SE LE RESTARÁ UNO Y HARÁ QUE APAREZCA EL BOTÓN PARA IR A LA PÁGINA FINAL -->
-			</li>
-		</ul>
+
+	<!-- PAGINADOR CON FILTRO -->
+
+	<div th:if="${esBusqueda}" style="display: none;">
+		<div class="d-flex justify-content-center" style="margin-bottom: 10%; position: relative; z-index: 0">
+			<div id="paginator-container" class="d-flex justify-content-center"
+				style="margin-bottom: 10%; position: relative; z-index: 0">
+				<!-- CENTRAR EL PAGINADOR -->
+				<ul class="pagination">
+					<li th:if="${currentPage > 0}" class="page-item">
+						<a class="page-link" th:href="@{/inicio(page=0)}">Inicio</a>
+					</li>
+					<li th:if="${currentPage > 0}" class="page-item">
+						<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">Anterior</a>
+					</li>
+					<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+						th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'">
+						<a class="page-link" th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+					</li>
+					<li th:if="${currentPage < totalPages - 1}" class="page-item">
+						<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">Siguiente</a>
+					</li>
+					<li th:if="${currentPage < totalPages - 1}" class="page-item">
+						<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">Final</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- PARTE PAGINADOR CON FILTRO -->
+	<div th:unless="${esBusqueda}">
+		<div class="d-flex justify-content-center" style="margin-bottom: 10%; position: relative; z-index: 0">
+			<div id="paginator-container" class="d-flex justify-content-center"
+				style="margin-bottom: 10%; position: relative; z-index: 0">
+				<!-- CENTRAR EL PAGINADOR -->
+				<ul class="pagination">
+					<li th:if="${currentPage > 0}" class="page-item">
+						<a class="page-link" th:href="@{/inicio(page=0)}">Inicio</a>
+					</li>
+					<li th:if="${currentPage > 0}" class="page-item">
+						<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">Anterior</a>
+					</li>
+					<li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+						th:classappend="${pageNumber} == ${currentPage} ? 'page-item active' : 'page-item'">
+						<a class="page-link" th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+					</li>
+					<li th:if="${currentPage < totalPages - 1}" class="page-item">
+						<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">Siguiente</a>
+					</li>
+					<li th:if="${currentPage < totalPages - 1}" class="page-item">
+						<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">Final</a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 
 	<!-- FIN PAGINADOR -->
 
-
-
+	<!-- MODAL DESCARGAS -->
+	<div class="modal fade" id="modalDescargas" tabindex="-1" role="dialog" aria-labelledby="modalDescargasLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalDescargasLabel">Descargas</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p>Archivos temporales disponibles:</p>
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th style="text-align: center;">Nombre del Archivo</th>
+								<th style="text-align: center;">Descargar</th>
+								<th style="text-align: center;">Eliminar</th>
+							</tr>
+						</thead>
+						<tbody id="descargaLinkContainer" style="text-align: center; align-items: center;">
+							<!-- Las filas de la tabla se generarán aquí -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- FIN MODAL DESCARGAS -->
 
 	<div th:include="footer.html"></div> <!-- SE INCLUYE EL FOOTER -->
 
+	<!-- SCRIPT PARA DESCARGAR PDF TEMPORALMENTE -->
 	<script>
-		const openModalButtons = document.querySelectorAll('.btn-primary[data-bs-toggle="modal"]');
-		const closeModalButtons = document.querySelectorAll('.btn-close[data-bs-dismiss="modal"]');
+		// Agregar evento click al botón de exportar
+		document.getElementById("export-button").addEventListener("click", function () {
+			// Obtener el número de página actual
+			const currentPage = document.querySelector(".page-item.active .page-link").textContent - 1;
 
-		openModalButtons.forEach((button) => {
-			button.addEventListener('click', (event) => {
-				const id = event.currentTarget.getAttribute('data-id');
-				const modalContainer = document.getElementById(`modalContainer-${id}`);
-				const form = modalContainer.querySelector('form');
-				form.action = `/actualizar/${id}`;
-				form.reset();
+			// Definir el valor deseado para la cantidad de registros por página
+			const registrosCount = 100; // Por ejemplo, aquí se muestra 100 registros por página
 
-				const nombreInput = form.querySelector('input[name="nombre"]');
-				const edadInput = form.querySelector('input[name="edad"]');
-				const sexoInput = form.querySelector('input[name="sexo"]');
+			// Realizar la petición AJAX al servidor, enviando el número de página y registrosCount como parámetros
+			fetch(`/exportar?page=${currentPage}&registrosCount=${registrosCount}`, {
+				method: 'GET',
+			})
+				.then(response => {
+					// La petición ha sido exitosa
+					if (response.ok) {
+						return response.blob(); // Convertir la respuesta en un objeto blob
+					}
+					// La petición ha fallado
+					throw new Error('Error al exportar la tabla.');
+				})
+				.then(blob => {
+					// Crear el enlace de descarga en el modal
+					const url = URL.createObjectURL(blob);
+					const downloadLink = document.createElement('a');
+					downloadLink.href = url;
+					downloadLink.download = 'registros.pdf';
+					downloadLink.textContent = 'Descargar PDF';
+					const descargaLinkContainer = document.getElementById('descargaLinkContainer');
+					descargaLinkContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar el enlace
+					descargaLinkContainer.appendChild(downloadLink);
 
-				const filaSeleccionada = event.currentTarget.closest('tr');
-				const nombre = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
-				const edad = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
-				const sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent;
-
-				nombreInput.value = nombre;
-				edadInput.value = edad;
-				sexoInput.value = sexo;
-			});
-		});
-
-		closeModalButtons.forEach((button) => {
-			button.addEventListener('click', () => {
-				const modalContainer = button.closest('.modal-container');
-				modalContainer.classList.remove('show');
-			});
+					// Mostrar la alerta de que los archivos se han guardado temporalmente.
+					alert('Los archivos se han guardado temporalmente. Haz clic en "Descargas" para descargar el PDF.');
+				})
+				.catch(error => {
+					// Mostrar el error en caso de falla
+					alert(error.message);
+				});
 		});
 	</script>
 
-	<!-- Al final del cuerpo del documento HTML -->
+
 	<script>
-        document.getElementById('exportPdfButton').addEventListener('click', function () {
-            // Clonar la tabla original
-            const originalTable = document.getElementById('data-table');
-            const clonedTable = originalTable.cloneNode(true);
+		// Función para cargar los enlaces de descarga dentro de la tabla del modal de descargas
+		function cargarEnlacesDescargas() {
+			fetch('/descargas')
+				.then(response => response.json())
+				.then(data => {
+					const descargaLinkContainer = document.getElementById('descargaLinkContainer');
+					descargaLinkContainer.innerHTML = '';
 
-            // Eliminar las columnas de botones del clon
-            const rows = clonedTable.querySelectorAll('tr');
-            rows.forEach((row) => {
-                const cellsToRemove = row.querySelectorAll('.hide-on-pdf');
-                cellsToRemove.forEach((cell) => {
-                    cell.parentNode.removeChild(cell);
-                });
-            });
+					data.forEach(archivo => {
+						const row = document.createElement('tr');
+						const nombreCell = document.createElement('td');
+						nombreCell.textContent = archivo;
+						row.appendChild(nombreCell);
 
-            // Crear una instancia de la librería html2pdf
-            const opt = {
-                margin: 10,
-                filename: 'registros.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
-            };
+						const descargarCell = document.createElement('td');
+						const descargarButton = document.createElement('button');
+						descargarButton.textContent = 'Descargar';
+						descargarButton.classList.add('btn', 'btn-descargar');
+						descargarButton.setAttribute('data-nombre', archivo); // Configuramos el atributo data-nombre con el nombre del archivo
+						descargarButton.addEventListener('click', () => {
+							window.location.href = `/descargas/${archivo}`;
+						});
+						descargarCell.appendChild(descargarButton);
+						row.appendChild(descargarCell);
 
-            const pdfPromise = html2pdf().set(opt).from(clonedTable).outputPdf();
+						const eliminarCell = document.createElement('td');
+						const eliminarButton = document.createElement('button');
+						eliminarButton.textContent = 'Eliminar';
+						eliminarButton.classList.add('btn', 'btn-eliminar');
+						eliminarButton.addEventListener('click', () => {
+							eliminarArchivoTemporal(archivo);
+						});
+						eliminarCell.appendChild(eliminarButton);
+						row.appendChild(eliminarCell);
 
-            // Crear el archivo ZIP y agregar el PDF dentro de él
-            const zip = new JSZip();
-            zip.file('registros.pdf', pdfPromise);
+						descargaLinkContainer.appendChild(row);
+					});
+				})
+				.catch(error => {
+					console.error('Error al obtener la lista de archivos temporales:', error);
+				});
+		}
 
-            // Generar el archivo ZIP y descargarlo
-            zip.generateAsync({ type: 'blob' }).then((content) => { //Se crea un archivo ZIP en formato Binaty Large Object.
-                const linkDescarga = document.createElement('a'); //En la constante 'linkDescarga' creamos nuevo documento de tipo 'a' (enlace).
-                linkDescarga.href = URL.createObjectURL(content); //Creamos un enlace y lo asignamos a nuestra variable.
-                linkDescarga.download = 'registros.zip'; //Al momento de descargarlo se le asigna el nombre.
-                linkDescarga.click(); //Activamos el enlace recien creado.
-            });
-        });
-    </script>	 
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		// Función para eliminar el archivo temporal en el servidor
+		function eliminarArchivoTemporal(archivo) {
+			fetch(`/eliminar-archivo?nombre=${archivo}`, {
+				method: 'DELETE',
+			})
+				.then(response => {
+					if (response.ok) {
+						// El archivo se ha eliminado correctamente, recargar la lista de archivos temporales
+						cargarEnlacesDescargas();
+						alert(`El archivo ${archivo} ha sido eliminado.`);
+					} else {
+						throw new Error('Error al eliminar el archivo.');
+					}
+				})
+				.catch(error => {
+					console.error('Error al eliminar el archivo temporal:', error);
+				});
+		}
+
+		// Evento que se dispara cuando se abre el modal de descargas
+		document.getElementById('modalDescargas').addEventListener('show.bs.modal', cargarEnlacesDescargas);
+
+		// Evento delegado para el clic en el botón de descarga dentro del modal
+		document.getElementById('descargaLinkContainer').addEventListener('click', function (event) {
+			if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn-descargar')) {
+				const archivoDescargado = event.target.dataset.nombre;
+				if (archivoDescargado) {
+					// Aquí mostramos la alerta cuando se ha descargado exitosamente
+					alert(`Archivo descargado exitosamente: ${archivoDescargado}`);
+					// Actualizar la lista de archivos temporales en el modal
+					cargarEnlacesDescargas();
+				}
+			}
+		});
+	</script>
+
+
+	<script type="text/javascript"> //ALERTA DE ELIMINAR USUARIO
+		function mensajeEliminar() {
+			alert("Usuario eliminado correctamente.");
+		}
+	</script>
+
+	<script type="text/javascript"> //ALERTA DE ACTUALIZAR USUARIO
+		function mensajeUserActualizado() {
+			alert("Datos actualizados correctamente.");
+		}
+	</script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+		integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </body>
 

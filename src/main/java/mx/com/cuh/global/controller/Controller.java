@@ -1,167 +1,289 @@
 package mx.com.cuh.global.controller;
 
 import java.util.List;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.data.domain.PageRequest;
+import java.io.FileOutputStream;
+import java.util.stream.Collectors;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import mx.com.cuh.global.dto.PersonaDTO;
-import mx.com.cuh.global.dto.Respuesta;
 import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.service.Usuario;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-
-/*import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;*/
 
 @org.springframework.stereotype.Controller
 
 public class Controller {
-	
+
 	@Autowired
 	private Usuario usuario;
-	
-	@RequestMapping("/index") //INICIO / INDEX
+
+	@RequestMapping("/index") // INICIO / INDEX
 	public String index() {
 		return "index";
 	}
-	
-	//SE MODIFICÓ PARA LA IMPLEMENTACIÓN DEL PAGINADOR
+
+	// SE MODIFICÓ PARA LA IMPLEMENTACIÓN DEL PAGINADOR
 	@GetMapping("/inicio")
-	public String inicio(Model model, @RequestParam(defaultValue = "0") int page) { //MÉTODO QUE TOMA DOS PARAMETROS (MODEL) QUE TOMA DATOS AL MODELO PARA SU REPRESENTACIÓN GRÁFICA.
-																					//EL VALOR POR DEFAULT SERÁ DE CERO
-																					//"INT PAGE" ES UN PARAMETRO DE CONSULTA PARA ESPECIFICAR LA PÁGINA QUE SE VAMOS A CONSULTAR
-	    int registrosCount = 100; //VARIABLE QUE ALMACENA LA CANTIDAD DE REGISTROS POR PÁGINA
-	    Page<TbPerson> paginaPersonas = usuario.obtenerPersonasPorPagina(PageRequest.of(page, registrosCount)); //MANDAMOS LLAMAR A NUESTRO MÉTODO 'ObtenerPersonasPorPagina' QUE IMPLEMENTAMOS EN 'Usuario.java'
-	    																										//UTILIZAMOS 'PageRequest' PARA ESPECIFICAR LA PÁGINA A LA QUE VAMOS A ENTRAR (USAMOS 'page' PARA ESPECIFICAR ESTO
-	    																										//FINALMENTE, USAMOS 'registrosCount' PARA ESPECIFICAR LA CANTIDAD DE REGISTROS POR PÁGINA.
-	    List<TbPerson> listaPersonas = paginaPersonas.getContent(); //OBTIENE LISTA DE USUARIOS REQUERIDOS
-	    model.addAttribute("listaPersonas", listaPersonas); //SE AGREGA LISTA DE USUARIOS AL MODELO DE VISTA PARA QUE EL USUARIO PUEDA VERLO
-	    model.addAttribute("currentPage", page); //MUESTRA LA PÁGINA ACTUAL EN LA QUE SE ENCUENTRA EL USUARIO
-	    model.addAttribute("totalPages", paginaPersonas.getTotalPages()); //PERMITE QUE LA VISTA MUESTRE EL TOTAL DE PÁGINAS DISPONIBLES EN EL PÁGINADOR
-	    return "inicio"; //RETORNA LA LISTAS DE PERSONAS
+	public String inicio(Model model, @RequestParam(defaultValue = "0") int page) { 
+		int registrosCount = 100; // VARIABLE QUE ALMACENA LA CANTIDAD DE REGISTROS POR PÁGINA
+		Page<TbPerson> paginaPersonas = usuario.obtenerPersonasPorPagina(PageRequest.of(page, registrosCount)); 
+		List<TbPerson> listaPersonas = paginaPersonas.getContent(); // OBTIENE LISTA DE USUARIOS REQUERIDOS
+		model.addAttribute("listaPersonas", listaPersonas); // SE AGREGA LISTA DE USUARIOS AL MODELO DE VISTA PARA QUE EL USUARIO PUEDA VERLO
+		model.addAttribute("currentPage", page); // MUESTRA LA PÁGINA ACTUAL EN LA QUE SE ENCUENTRA EL USUARIO
+		model.addAttribute("totalPages", paginaPersonas.getTotalPages()); // PERMITE QUE LA VISTA MUESTRE EL TOTAL DE PÁGINAS DISPONIBLES EN EL PÁGINADOR
+		return "inicio"; // RETORNA LA LISTAS DE PERSONAS
 	}
-	
-	@PostMapping(value = "/saveperson") //INSERTAR PERSONA
-	public String insertarPersonas(
-			@ModelAttribute PersonaDTO persona) {
+
+	@GetMapping("/buscar") // FILTRO
+	public String buscar(Model model, @RequestParam(defaultValue = "") String nombre, @RequestParam(defaultValue = "0") int page) { //USAMOS 3 PARAMETROS, MODEL: AGREGAR ATRIBUTOS Y QUE EL USUARIO LOS PUEDA VER (EN ESTE CASO, LOS REGISTROS), NOMBRE: LO USAMOS COMO PARAMETRO DE CONSULTA PARA FILTRAR A LAS PERSONAS, PAGE: NÚMERO DE PÁGINA QUE SE MOSTRARÁ EN LA PÁGINACIÓN.
+		int registrosCount = 100; //CANTIDAD DE REGISTROS QUE SE MOSTRARÁN EN LA PAGINACIÓN
+		Page<TbPerson> paginaPersonas; //ALMACENAMOS LOS RESULTADOS DE LAS PERSONAS
+
+		if (nombre.isEmpty()) { //CONDICIÓNAL QUE DICE QUE SI 'nombre' (QUE ES LA VARIBLE QUE FILTRA EL NOMBRE DEL USUARIO) ENTONCES:
+			paginaPersonas = usuario.obtenerPersonasPorPagina(PageRequest.of(page, registrosCount)); //EN CASO DE ESTAR VACÍO, OBTENDRÁ LAS PAGINAS COMPLETAS
+		} else { //EN CASO CONTRARIO:
+			paginaPersonas = usuario.obtenerPersonasPorNombre(nombre, PageRequest.of(page, registrosCount)); //SE OBTIENEN LAS PERSONAS FILTRADAS POR NOMBRE Y PÁGINADAS
+		}
+
+		List<TbPerson> listaPersonas = paginaPersonas.getContent(); //OBTENEMOS LA LISTA DE PERSONAS DE LA PÁGINA OBTENIDA
+		model.addAttribute("listaPersonas", listaPersonas); //AGREGAMOS LA LISTA DE PERSONAS AL MODELO DECLARADO AL PRINCIPIO PARA QUE EL USUARIO PUEDA VERLA.
+
+		//VERIFICAMOS SI EL NÚMERO SOLICITADO ESTÁ DENTRO DE LOS LÍMITES
+		int totalPages = paginaPersonas.getTotalPages(); //OBTENEMOS EL NÚMERO TOTAL DE PÁGINAS DISPONIBLES DENTRO DE NUESTRO PÁGINADOR
+		int currentPage = Math.min(page, totalPages > 0 ? totalPages - 1 : 0); //DETERMINAMOS LA PÁGINA ACTUAL Y NOS ASEGURAMOS QUE ESTÉ DENTRO DE LOS LÍMITES DISPONIBLES, EN CASO DE QUE LA PÁGINA SOLICITADA SEA MAYOR AL NÚMERO TOTAL DE PÁGINAS, SE RESTA UNA PARA AJUSTARLA AL NÚMERO TOTAL DE PÁGINAS.
+		model.addAttribute("currentPage", currentPage); //AGREGAMOS EL NÚMERO DE PÁGINA ACTUAL AL MODELO PARA QUE EL USUARIO LO PUEDA VER.
+		model.addAttribute("totalPages", totalPages); //AGREFAMOS EL NÚMERO TOTAL DE PÁGINAS PARA QUE EL USUARIO LO PUEDA VER.
+
+		boolean esBusqueda = !nombre.isEmpty(); //VERIFICAMOS SI LA BUSQUEDA SE REALIZA EVALUANDO QUE EL PARÁMETRO "nombre" NO ESTÉ VACIO.
+		model.addAttribute("esBusqueda", esBusqueda); //AGREGAMOS EL ATRIBUTO "esBusqueda" PARA INDICAR SI LA BUSQUEDA FUE REALIZADA O NO.
+
+		//VERIFICAMOS SI LA LISTA DE PERSONAS ESTÁ VACÍA PARA MOSTRAR EL MENSAJE DE ALERTA
+		if (listaPersonas.isEmpty() && esBusqueda) { //VALIDAMOS SI LA LISTA DE PERSONAS ESTÁ VACÍA Y SI LA BUSQUEDA FUE REALIZADA O NO.
+			model.addAttribute("mensaje", "No se encontraron registros para la búsqueda: " + nombre); //EN CASO DE QUE NO ENCUENTRE EL NOMBRE FILTRADO
+		} else if (nombre.isEmpty()) { //EN CASO DE QUE EL PARAMETRO "nombre" SE ENCUENTRE VACÍO
+			//model.addAttribute("mensaje", "No se ingresó un nombre para la búsqueda."); //MENSAJE CUANDO NO SE REALIZA UNA BUSQUEDA VACÍA.
+			return "inicio";
+		}
+		return "inicio"; //RETORNAMOS LA VISTA "inicio" DONDE SE MUESTRAN LOS RESULTADOS DE LA BUSQUEDA.
+	}
+
+	@PostMapping(value = "/saveperson") // INSERTAR PERSONA
+	public String insertarPersonas(@ModelAttribute PersonaDTO persona) {
 		usuario.insertarPersona(persona);
 		return "user";
 	}
-	
-	@GetMapping("/eliminar/{id}") //ELIMINAR PERSONA
-	public String eliminar(Model model, @PathVariable Long id){
+
+	@GetMapping("/eliminar/{id}") // ELIMINAR PERSONA
+	public String eliminar(Model model, @PathVariable Long id) {
 		usuario.borrarPersona(id);
 		List<TbPerson> listaPersonas = usuario.obtenerPersonas().getListasPersona();
 		model.addAttribute("listaPersonas", listaPersonas);
 		return "redirect:/inicio";
 	}
-	
-	@PostMapping(value = "/actualizar/{id}") //ACTUALIZAR PERSONA
+
+	@PostMapping(value = "/actualizar/{id}") // ACTUALIZAR PERSONA
 	public String actualizarPersona(@PathVariable("id") Long id, @ModelAttribute PersonaDTO persona) {
 		usuario.actualizarPersona(id, persona);
 		return "redirect:/inicio";
 	}
+
 	
-	@GetMapping("/exportar-pdf")
-	public void exportarPdf(HttpServletResponse response) {
+	@GetMapping("/exportar") //MÉTODO EXPORTAR PARA EXPORTAR EL PDF COMPLETO
+	public ResponseEntity<byte[]> exportarTablaToZip(Model model, @RequestParam(defaultValue = "0") int page) {
 	    try {
-	        byte[] pdfContent = generarPdf();
-	        response.setContentType("application/zip");
-	        response.setHeader("Content-Disposition", "attachment; filename = registros.zip");
-	        ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
-	        ZipEntry pdfEntry = new ZipEntry("registros.pdf");
-	        zipOut.putNextEntry(pdfEntry);
-	        zipOut.write(pdfContent);
-	        zipOut.closeEntry();
-	        zipOut.finish();
-	        zipOut.close();
-	    } catch (IOException e) {
+	        // Crear el documento PDF
+	        Document document = new Document();
+	        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	        PdfWriter.getInstance(document, byteArrayOutputStream);
+
+	        // Abrir el documento antes de agregar contenido
+	        document.open();
+
+	        // Agregar contenido al PDF
+	        PdfPTable table = new PdfPTable(3); // Cambiamos el número de columnas a 3 (nombre, edad y sexo)
+	        table.setWidthPercentage(100);
+	        table.addCell("Nombre");
+	        table.addCell("Edad");
+	        table.addCell("Sexo");
+
+	        int registrosCount = 100;
+	        // Obtener la página 0 (primera página) con 100 registros por página
+	        PageRequest pageRequest = PageRequest.of(page, registrosCount);
+	        Page<TbPerson> paginaPersonas = usuario.obtenerPersonasPorPagina(pageRequest);
+	        List<TbPerson> listaPersonas = paginaPersonas.getContent();
+
+	        for (TbPerson persona : listaPersonas) {
+	            // Excluimos la columna ID y solo agregamos nombre, edad y sexo a la tabla
+	            table.addCell(persona.getNombre());
+	            table.addCell(persona.getEdad().toString());
+	            table.addCell(persona.getSexo());
+	        }
+
+	        document.add(table);
+
+	        // Cerrar el documento después de agregar todo el contenido
+	        document.close();
+
+	        // Obtener los bytes del PDF generado
+	        byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+
+	        // Generar un nombre para el archivo ZIP almacenado temporalmente
+	        String tempZipFileName = "registros_pagina_" + (page + 1) + "_temp.zip";
+	        String tempZipFilePath = "C:\\temp/" + tempZipFileName;
+
+	        // Guardar el PDF en un archivo temporal
+	        String tempPdfFileName = "registros_pagina_" + (page + 1) + ".pdf";
+	        String tempPdfFilePath = "C:\\temp/" + tempPdfFileName;
+	        try (FileOutputStream fileOutputStream = new FileOutputStream(tempPdfFilePath)) {
+	            fileOutputStream.write(pdfBytes);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+
+	        // Comprimir el PDF temporal en un archivo ZIP
+	        try (FileOutputStream fileOutputStream = new FileOutputStream(tempZipFilePath);
+	                ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+	                FileInputStream pdfFileInputStream = new FileInputStream(tempPdfFilePath)) {
+
+	            ZipEntry zipEntry = new ZipEntry("registros_pagina_" + (page + 1) + ".pdf");
+	            zipOutputStream.putNextEntry(zipEntry);
+
+	            byte[] buffer = new byte[1024];
+	            int len;
+	            while ((len = pdfFileInputStream.read(buffer)) > 0) {
+	                zipOutputStream.write(buffer, 0, len);
+	            }
+
+	            zipOutputStream.closeEntry();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+
+	        // Eliminar el archivo temporal del PDF
+	        File tempPdfFile = new File(tempPdfFilePath);
+	        tempPdfFile.delete();
+
+	        // Leer los bytes del archivo ZIP temporal
+	        Path tempZipFile = Paths.get(tempZipFilePath);
+	        byte[] zipBytes = Files.readAllBytes(tempZipFile);
+
+	        // Retornar los bytes del archivo ZIP en la respuesta HTTP con el nombre adecuado para la descarga
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+	        headers.setContentDispositionFormData("attachment", "registros_pagina_" + (page + 1) + ".zip"); // Establecer el nombre del archivo ZIP para la descarga
+	        return new ResponseEntity<>(zipBytes, headers, HttpStatus.OK);
+
+	    } catch (DocumentException | IOException e) {
+	        // En caso de error al crear el documento PDF o al guardar el archivo temporal
 	        e.printStackTrace();
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
 
-    private byte[] generarPdf() {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Document document = new Document();
-            PdfWriter.getInstance(document, baos);
-            document.open();
-            Respuesta<TbPerson> respuesta = usuario.obtenerPersonas();
-            PdfPTable table = new PdfPTable(3);
-            addTableHeader(table);
-            addRows(table, respuesta.getListasPersona());
-            document.add(table);
-            document.close();
+	
+	@GetMapping("/descargas")
+	public ResponseEntity<List<String>> obtenerArchivosTemporales() {
+		File carpetaTemp = new File("C:\\temp/"); // Ruta de la carpeta temporal en tu sistema
+		if (carpetaTemp.exists() && carpetaTemp.isDirectory()) {
+			File[] archivosTemporales = carpetaTemp.listFiles();
+			if (archivosTemporales != null) {
+				List<String> nombresArchivos = Arrays.stream(archivosTemporales).map(File::getName).collect(Collectors.toList());
+				return ResponseEntity.ok(nombresArchivos);
+			}
+		}
+		return ResponseEntity.ok(Collections.emptyList());
+	}
+	
+	
+	@GetMapping("/descargas/{nombreArchivo:.+}")
+	public ResponseEntity<Resource> descargarArchivoTemporal(@PathVariable String nombreArchivo) {
+	    String rutaArchivo = "C:\\temp/" + nombreArchivo;
 
-            return baos.toByteArray();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
+	    try {
+	        File archivo = new File(rutaArchivo);
+	        if (archivo.exists()) {
+	            String zipFileName = nombreArchivo.replace("_temp", ""); // Removemos el "_temp" del nombre del archivo ZIP para la descarga
 
-        return new byte[0];
-    }
+	            // Leer los bytes del archivo
+	            byte[] archivoBytes = Files.readAllBytes(archivo.toPath());
 
-    private void addTableHeader(PdfPTable table) {
-        PdfPCell cell = new PdfPCell();
-        cell.setPhrase(new Paragraph("Nombre"));
-        table.addCell(cell);
+	            // Crear un ByteArrayResource con los bytes del archivo
+	            ByteArrayResource recurso = new ByteArrayResource(archivoBytes);
 
-        cell = new PdfPCell();
-        cell.setPhrase(new Paragraph("Edad"));
-        table.addCell(cell);
+	            HttpHeaders headers = new HttpHeaders();
+	            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipFileName); // Establece el nombre del archivo ZIP para la descarga
 
-        cell = new PdfPCell();
-        cell.setPhrase(new Paragraph("Sexo"));
-        table.addCell(cell);
-    }
+	            // Enviar la respuesta HTTP con el archivo ZIP para que el usuario lo descargue
+	            ResponseEntity<Resource> response = new ResponseEntity<>(recurso, headers, HttpStatus.OK);
 
-    private void addRows(PdfPTable table, List<TbPerson> personas) {
-        int registrosMaximos = 20; //LIMITA CANTIDAD DE ELEMENTOS AL REGISTRAR
-        int registrosAgregados = 0;
+	            // Eliminar el archivo ZIP después de enviar la respuesta
+	            if (archivo.delete()) {
+	                System.out.println("Archivo eliminado correctamente: " + rutaArchivo);
+	            } else {
+	                System.out.println("Error al eliminar el archivo: " + rutaArchivo);
+	            }
 
-        for (TbPerson persona : personas) {
-            if (registrosAgregados >= registrosMaximos) {
-                break;
-            }
+	            return response;
+	        } else {
+	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
 
-            table.addCell(persona.getNombre());
-            table.addCell(String.valueOf(persona.getEdad()));
-            table.addCell(persona.getSexo());
+	@DeleteMapping("/eliminar-archivo")
+	public ResponseEntity<?> eliminarArchivoTemporal(@RequestParam String nombre) {
+		String rutaArchivo = "C:\\temp/" + nombre; // Ruta completa del archivo temporal en tu sistema
+		File archivo = new File(rutaArchivo);
+		if (archivo.exists()) {
+			if (archivo.delete()) {
+				return ResponseEntity.ok().build(); // El archivo se ha eliminado correctamente
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Error al eliminar el archivo
+			}
+		} else {
+			return ResponseEntity.notFound().build(); // El archivo no existe
+		}
+	}
+	
+	
 
-            registrosAgregados++;
-        }
-    }
-    /* ALMACENAR ARCHIVOS PDF EN CARPETAS TEMPORALES DENTRO DEL DISCO DURO C:
-    private void guardarPdfEnServidor(byte[] pdfContent) {
-        try {
-            Path tempDirectory = Paths.get("C:\\pdf_files");
-            Path pdfPath = tempDirectory.resolve("registros.pdf");
-            Files.write(pdfPath, pdfContent);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 }
-

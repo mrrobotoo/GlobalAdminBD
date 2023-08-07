@@ -20,5 +20,7 @@ public interface Usuario {
 	Page<TbPerson> obtenerPersonasPorPagina(PageRequest pageRequest); //TOMA EL OBJETO "PageRequest" COMO PARAMETRO Y REPRESENTA LA CONFIGURACIÓN
 																		// DE LAS PÁGINAS, COMO SU NUMERO DE PÁGINA Y TAMAÑO DE REGISTROS DENTRO DE ELLA.
 																		// FINALMENTE, DEVUELVE UNA INSTANCIA QUE CONTIENE LA PÁGINA CON LOS REGISTROS
-
+	
+	Page<TbPerson> obtenerPersonasPorNombre(String nombre, PageRequest pageRequest); //FILTRO
+	
 }
