@@ -19,7 +19,7 @@
 
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<a class="navbar-brand" th:href="@{/personas/nuevo}">Registro</a>
+		<a class="navbar-brand" th:href="@{/personas/nuevo}"><b>Registrar</b></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">x
 			<span class="navbar-toggler-icon"></span>
@@ -28,7 +28,7 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item active">
-					<a class="nav-link" th:href="@{/personas}">Lista de personas<span class="sr-only"></span></a>
+					<a class="nav-link" th:href="@{/personas}"><b>Lista de personas</b><span class="sr-only"></span></a>
 				</li>
 		</div>
 	</nav>
@@ -52,8 +52,7 @@
 								<button onclick="mostrarPopup()" class="btn btn-info"><b>Archivos</b></button>
 							</th>-->
 							<th>
-								<button type="button" class="btn btn-primary" onclick="abrirPopup2()">Descargar
-									Archivos</button>
+								<button type="button" class="btn btn-success" onclick="abrirPopup2()"><b>Descargar Archivos</b></button>
 							</th>
 							<th>
 								<!--BOTON DE CONVERCION-->
@@ -72,6 +71,7 @@
 						width: 100%;
 						height: 100%;
 						background-color: rgba(0, 0, 0, 0.5);
+						backdrop-filter: blur(10px);
 					}
 
 					.popup-content {
@@ -79,6 +79,8 @@
 						top: 50%;
 						left: 50%;
 						transform: translate(-50%, -50%);
+						width: 550px; /* Ajusta el ancho que prefieras */
+						height: 450px; /* Ajusta el alto que prefieras */
 						background-color: white;
 						padding: 20px;
 						border-radius: 5px;
@@ -90,44 +92,56 @@
 				</style>
 			</div>
 		</div>
+
 		<!--____________________Codigo de visualizacion____________________-->
 
 		<div id="popup2" class="popup">
 			<div class="popup-content">
 				<h2>Gestor de Descargas</h2>
 				<div class="archivo-zip-descargados">
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th>Nombre de Archivo ZIP</th>
-								<th>Acciones</th>
-							</tr>
-						</thead>
-						<tbody>
-							<!-- Itera sobre los nombres de archivos .zip y crea una fila por cada uno -->
-							<tr th:each="nombreArchivo : ${nombresArchivos}">
-								<td>
-									<div class="d-flex justify-content-between align-items-center">
-										<span>${nombreArchivo}</span>
-										<div class="btn-group" role="group">
-											<a href="javascript:void(0);"
-												class="btn btn-primary btn-descargar btn-separator"
-												data-nombre-archivo="${nombreArchivo}">Descargar</a>
-											<a href="javascript:void(0);" class="btn btn-danger btn-eliminar"
-												data-nombre-archivo="${nombreArchivo}">Eliminar</a>
+					<div class="table-container">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Nombre de Archivo ZIP</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Itera sobre los nombres de archivos .zip y crea una fila por cada uno -->
+								<tr th:each="nombreArchivo : ${nombresArchivos}">
+									<td>
+										<div class="d-flex justify-content-between align-items-center">
+											<span>${nombreArchivo}</span>
+											<div class="btn-group" role="group">
+												<a href="/descargar-zip/${nombreArchivo}" download="${nombreArchivo}"
+													class="btn btn-primary btn-descargar btn-separator"
+													data-nombre-archivo="${nombreArchivo}"><b>Descargar</b></a>
+												<a href="javascript:void(0);" class="btn btn-danger btn-eliminar"
+													data-nombre-archivo="${nombreArchivo}"><b>Eliminar</b></a>
+											</div>
 										</div>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
+				<br>
 				<div class="form-actions">
-					<button type="button" class="btn btn-secondary btn-cancelar-popup2">Cancelar</button>
+					<button type="button" class="btn btn-dark btn-cancelar-popup2"><b>Cancelar</b></button>
 				</div>
 			</div>
 		</div>
 
+		<style>
+			.table-container {
+				max-height: 300px;
+				overflow-y: auto;
+			}
+		</style>
+
+		<!--SCRIPT DE VISUALIZACION-->
 		<script>
 			function abrirPopup2() {
 				const popup2 = document.getElementById("popup2");
@@ -140,11 +154,15 @@
 				document.getElementById("popup2").style.display = "none";
 			}
 
-			function eliminarArchivoZip(nombreArchivo) {
+			function eliminarArchivoZip(nombreArchivo, fila) {
 				fetch('/eliminarArchivo/' + nombreArchivo, {method: 'POST'})
 					.then(response => response.json())
 					.then(data => {
 						console.log(data.mensaje);
+						// Eliminar la fila de la tabla
+						if (fila && fila.parentNode) {
+							fila.parentNode.removeChild(fila);
+						}
 						obtenerNombresArchivosZipDescargados();
 					})
 					.catch(error => console.error('Error al eliminar el archivo ZIP:', error));
@@ -171,27 +189,18 @@
 					const tdAcciones = document.createElement('td');
 
 					const btnDescargar = document.createElement('a');
-					btnDescargar.href = '/descargar-zip/' + nombreArchivo;
+					btnDescargar.href = '#';
 					btnDescargar.textContent = 'Descargar';
 					btnDescargar.classList.add('btn', 'btn-primary', 'btn-descargar');
 					btnDescargar.setAttribute('data-nombre-archivo', nombreArchivo);
-					btnDescargar.setAttribute('download', ''); // Agregar el atributo "download" para la descarga
 					tdAcciones.appendChild(btnDescargar);
-
-					btnDescargar.addEventListener('click', () => {
-						const nombreArchivo = btnDescargar.getAttribute('data-nombre-archivo');
-						// Lógica para descargar el archivo .zip si es necesario
-
-						eliminarArchivoZip(nombreArchivo); // Eliminar el archivo después de la descarga
-					});
-
 
 					const btnEliminar = document.createElement('a');
 					btnEliminar.href = 'javascript:void(0);';
 					btnEliminar.textContent = 'Eliminar';
 					btnEliminar.classList.add('btn', 'btn-danger', 'btn-eliminar');
 					btnEliminar.setAttribute('data-nombre-archivo', nombreArchivo);
-					btnEliminar.addEventListener('click', () => eliminarArchivoZip(nombreArchivo));
+					btnEliminar.addEventListener('click', () => eliminarArchivoZip(nombreArchivo, tr));
 					tdAcciones.appendChild(btnEliminar);
 
 					tr.appendChild(tdAcciones);
@@ -205,14 +214,32 @@
 				document.querySelectorAll('.btn-descargar').forEach(boton => {
 					boton.addEventListener('click', () => {
 						const nombreArchivo = boton.getAttribute('data-nombre-archivo');
-						// Lógica para descargar el archivo .zip si es necesario
+						descargarArchivoZip(nombreArchivo);
 					});
 				});
 			}
+
+			function descargarArchivoZip(nombreArchivo) {
+				if (nombreArchivo !== 'null.txt') {
+					const link = document.createElement('a');
+					link.href = '/descargar-zip/' + nombreArchivo;
+					link.download = nombreArchivo;
+					link.click();
+
+					const row = document.querySelector(`[data-nombre-archivo="${nombreArchivo}"]`).closest('tr');
+					if (row && row.parentNode) {
+						row.parentNode.removeChild(row);
+					}
+				}
+			}
 		</script>
+
+		<!--FIN DE SCRIPT DE VISUALIZACION-->
 		<!--____________________Fin de codigo de visualizacion____________________-->
 
-		<!--____________________TABLA____________________-->
+
+
+		<!--____________________CONTENIDO DE LA TABLA-PERSONAS____________________-->
 		<div>
 			<!--PERSONAS REGISTRADAS-->
 			<table class="table table-bordered border-dark">
@@ -330,42 +357,8 @@
 			</table>
 
 
-			<script>
-				const openModalButtons = document.querySelectorAll('.btn-primary[data-bs-toggle="modal"]');
-				const closeModalButtons = document.querySelectorAll('.btn-close[data-bs-dismiss="modal"]');
-
-				openModalButtons.forEach((button) => {
-					button.addEventListener('click', (event) => {
-						const id = event.currentTarget.getAttribute('data-id');
-						const modalContainer = document.getElementById(`modalContainer-${id}`);
-						const form = modalContainer.querySelector('form');
-						form.action = `/actualizar/${id}`;
-						form.reset();
-
-						const nombreInput = form.querySelector('input[name="nombre"]');
-						const edadInput = form.querySelector('input[name="edad"]');
-						const sexoInput = form.querySelector('input[name="sexo"]');
-
-						const filaSeleccionada = event.currentTarget.closest('tr');
-						const nombre = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
-						const edad = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
-						const sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent;
-
-						nombreInput.value = nombre;
-						edadInput.value = edad;
-						sexoInput.value = sexo;
-					});
-				});
-
-				closeModalButtons.forEach((button) => {
-					button.addEventListener('click', () => {
-						const modalContainer = button.closest('.modal-container');
-						modalContainer.classList.remove('show');
-					});
-				});
-			</script>
-
 			<br>
+
 			<!--INICIO DEL CODIGO DE PAGINACION-->
 			<nav aria-label="Page navigation">
 				<ul class="pagination justify-content-center">
