@@ -159,6 +159,21 @@
 		     .btn-separator {
             margin-right: 10px;
         }
+        
+         /* Centrar botones de paginación */
+        .pagination-popup {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        /* Estilos adicionales para los botones de paginación */
+        .btn-prev-page,
+        .btn-next-page {
+            margin: 0 5px;
+        }
+        
+        
 	</style>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -274,7 +289,7 @@
 
 
 
-<button type="button" class="btn btn-primary" onclick="abrirPopup2()">Abrir Gestor de Descargas</button>
+    <button type="button" class="btn btn-primary" onclick="abrirPopup2()">Abrir Gestor de Descargas</button>
 
 <!-- Popup para Gestión de Descargas -->
 <div id="popup2" class="popup">
@@ -298,7 +313,7 @@
                                     <a href="javascript:void(0);" class="btn btn-primary btn-descargar btn-separator"
                                         data-nombre-archivo="${nombreArchivo}">Descargar</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-eliminar"
-   data-nombre-archivo="${nombreArchivo}">Eliminar</a>
+                                        data-nombre-archivo="${nombreArchivo}">Eliminar</a>
                                 </div>
                             </div>
                         </td>
@@ -306,7 +321,23 @@
                 </tbody>
             </table>
         </div>
-        <div class="form-actions">
+        <!-- Paginación -->
+<nav class="pagination-popup" aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="btn btn-prev-page" href="javascript:void(0);" onclick="cambiarPaginaPopup2(currentPage - 1)" id="btnPrevPage"
+                    >Anterior</a>
+                </li>
+                <li class="page-item">
+                    <span class="page-numbers mx-3" id="pageNumbers">Página 1 de 1</span>
+                </li>
+                <li class="page-item">
+                    <a class="btn btn-next-page" href="javascript:void(0);" onclick="cambiarPaginaPopup2(currentPage + 1)" id="btnNextPage">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+  
+        <div class="form-actions mt-3">
             <button type="button" class="btn btn-secondary btn-cancelar-popup2">Cancelar</button>
         </div>
     </div>
@@ -324,68 +355,62 @@
 
 	<script>
   
+var currentPage = 0;
+var pageSize = 10;
+var totalArchivos = 0; // Variable para almacenar el total de archivos
 
-    // Función para abrir el "popup2"
 function abrirPopup2() {
     var popup2 = document.getElementById("popup2");
     popup2.style.display = "block";
 
-    // Agregar un evento de clic al botón "Cancelar" dentro del "popup2" para cerrarlo
     var btnCancelarPopup2 = document.querySelector('.btn-cancelar-popup2');
     btnCancelarPopup2.addEventListener('click', function () {
         cerrarPopup2();
     });
 
-    // Obtener los nombres de los archivos ZIP descargados mediante una solicitud AJAX al controlador
     obtenerNombresArchivosZipDescargados();
 }
 
-// Función para cerrar el "popup2"
 function cerrarPopup2() {
     var popup2 = document.getElementById("popup2");
     popup2.style.display = "none";
 }
 
-// Función para eliminar un archivo ZIP
 function eliminarArchivoZip(nombreArchivo) {
-    // Realizar una solicitud AJAX para eliminar el archivo ZIP en el servidor
     fetch('/eliminarArchivo/' + nombreArchivo, {
         method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
-        // Mostrar un mensaje o realizar alguna acción después de eliminar el archivo
         console.log(data.mensaje);
-        // Volver a obtener los nombres de archivos después de eliminar
         obtenerNombresArchivosZipDescargados();
     })
     .catch(error => console.error('Error al eliminar el archivo ZIP:', error));
 }
 
-// Función para obtener los nombres de archivos ZIP descargados
 function obtenerNombresArchivosZipDescargados() {
-    fetch('/obtener-nombres-zip-descargados')
+    fetch('/obtener-nombres-zip-descargados-popup2?page=' + currentPage)
         .then(response => response.json())
-        .then(data => mostrarNombresArchivos(data))
+        .then(data => {
+            totalArchivos = data.totalPages * pageSize;
+            mostrarNombresArchivos(data.archivosPaginados);
+        })
         .catch(error => console.error('Error al obtener los nombres de archivos ZIP:', error));
 }
 
-// Función para mostrar los nombres de los archivos ZIP descargados en una tabla
 function mostrarNombresArchivos(nombresArchivos) {
     var tbody = document.querySelector('.archivo-zip-descargados tbody');
     tbody.innerHTML = '';
 
     nombresArchivos.forEach(nombreArchivo => {
         var tr = document.createElement('tr');
-
         var tdNombre = document.createElement('td');
         tdNombre.textContent = nombreArchivo;
         tr.appendChild(tdNombre);
 
         var tdAcciones = document.createElement('td');
-
         var btnDescargar = document.createElement('a');
-        btnDescargar.href = '/descargar-zip/' + nombreArchivo; // Enlace para descargar el archivo ZIP
+        btnDescargar.href = '/descargar-zip/' + nombreArchivo;
         btnDescargar.textContent = 'Descargar';
         btnDescargar.classList.add('btn', 'btn-primary', 'btn-descargar');
         tdAcciones.appendChild(btnDescargar);
@@ -394,7 +419,7 @@ function mostrarNombresArchivos(nombresArchivos) {
         btnEliminar.href = 'javascript:void(0);';
         btnEliminar.textContent = 'Eliminar';
         btnEliminar.classList.add('btn', 'btn-danger', 'btn-eliminar');
-        btnEliminar.setAttribute('data-nombre-archivo', nombreArchivo); // Agregar el atributo
+        btnEliminar.setAttribute('data-nombre-archivo', nombreArchivo);
         btnEliminar.addEventListener('click', function () {
             var nombreArchivo = this.getAttribute('data-nombre-archivo');
             eliminarArchivoZip(nombreArchivo);
@@ -402,31 +427,61 @@ function mostrarNombresArchivos(nombresArchivos) {
         tdAcciones.appendChild(btnEliminar);
 
         tr.appendChild(tdAcciones);
-
         tbody.appendChild(tr);
     });
 
-    // Obtener todos los botones de eliminar y agregar un evento click
-    var botonesEliminar = document.querySelectorAll('.btn-eliminar');
-    botonesEliminar.forEach(function (boton) {
-        boton.addEventListener('click', function () {
-            var nombreArchivo = this.getAttribute('data-nombre-archivo');
-            eliminarArchivoZip(nombreArchivo);
-        });
-    });
-
-    // Obtener todos los botones de descargar y agregar un evento click
-    var botonesDescargar = document.querySelectorAll('.btn-descargar');
-    botonesDescargar.forEach(function (boton) {
-        boton.addEventListener('click', function () {
-            var nombreArchivo = this.getAttribute('data-nombre-archivo');
-            // Aquí puedes agregar la lógica para descargar el archivo .zip si es necesario
-        });
-    });
+    actualizarPaginacionPopup2();
 }
 
+function cambiarPaginaPopup2(pagina) {
+    currentPage = pagina;
+    obtenerNombresArchivosZipDescargados();
+}
 
-    
+function actualizarPaginacionPopup2() {
+    var pagination = document.querySelector('.pagination-popup');
+    pagination.innerHTML = '';
+
+    var totalPaginas = Math.ceil(totalArchivos / pageSize);
+
+    for (var i = 0; i < totalPaginas; i++) {
+        var btnPage = document.createElement('button');
+        btnPage.textContent = (i + 1).toString();
+        btnPage.classList.add('btn', 'btn-secondary', 'btn-page');
+        btnPage.addEventListener('click', function () {
+            var pagina = parseInt(this.textContent) - 1;
+            cambiarPaginaPopup2(pagina);
+        });
+        pagination.appendChild(btnPage);
+    }
+
+    var btnPrevPage = document.createElement('button');
+    btnPrevPage.textContent = '< Anterior';
+    btnPrevPage.classList.add('btn', 'btn-secondary', 'btn-prev-page');
+    btnPrevPage.disabled = currentPage === 0;
+    btnPrevPage.addEventListener('click', function () {
+        if (currentPage > 0) {
+            cambiarPaginaPopup2(currentPage - 1);
+        }
+    });
+    pagination.insertBefore(btnPrevPage, pagination.firstChild);
+
+    var btnNextPage = document.createElement('button');
+    btnNextPage.textContent = 'Siguiente >';
+    btnNextPage.classList.add('btn', 'btn-secondary', 'btn-next-page');
+    btnNextPage.disabled = currentPage === totalPaginas - 1 || totalArchivos === 0;
+    btnNextPage.addEventListener('click', function () {
+        if (currentPage < totalPaginas - 1) {
+            cambiarPaginaPopup2(currentPage + 1);
+        }
+    });
+    pagination.appendChild(btnNextPage);
+}
+
+obtenerNombresArchivosZipDescargados();
+
+
+
     
 		var popup = document.getElementById("popup");
 		var botonesActualizar = document.querySelectorAll('.btn-actualizar');
@@ -543,6 +598,7 @@ function mostrarNombresArchivos(nombresArchivos) {
 		// Llama a la función renderPagination con los valores adecuados
 		renderPagination(50, 10); // Cambia los valores según corresponda
 	</script>
+
 
 </body>
 
