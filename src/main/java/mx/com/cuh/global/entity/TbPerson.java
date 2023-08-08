@@ -8,17 +8,17 @@ import javax.persistence.Table;
 @Entity
 @Table (name = "Personas")
 public class TbPerson {
-	
+
 	@Id
 	@Column (name = "ID")
 	private Long id;
-	
+
 	@Column (name = "NOMBRE")
 	private String nombre;
-	
+
 	@Column (name = "EDAD")
 	private Integer edad;
-	
+
 	@Column (name = "SEXO")
 	private String sexo;
 

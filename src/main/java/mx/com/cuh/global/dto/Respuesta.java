@@ -1,6 +1,7 @@
 package mx.com.cuh.global.dto;
 
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -8,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class Respuesta<T>{
 	private String mensaje;
     private List<T> listasPersona;
-    
+
 	public String getMensaje() {
 		return mensaje;
 	}
@@ -20,5 +21,5 @@ public class Respuesta<T>{
 	}
 	public void setListasPersona(List<T> listasPersona) {
 		this.listasPersona = listasPersona;
-	} 
+	}
 }

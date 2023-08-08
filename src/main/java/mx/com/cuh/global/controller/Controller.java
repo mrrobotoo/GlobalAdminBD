@@ -1,49 +1,46 @@
 package mx.com.cuh.global.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import org.springframework.data.domain.PageRequest;
-import java.io.FileOutputStream;
-import java.util.stream.Collectors;
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import mx.com.cuh.global.dto.PersonaDTO;
 import mx.com.cuh.global.entity.TbPerson;
 import mx.com.cuh.global.service.Usuario;
-import org.springframework.data.domain.Page;
 
 @org.springframework.stereotype.Controller
 
@@ -59,9 +56,9 @@ public class Controller {
 
 	// SE MODIFICÓ PARA LA IMPLEMENTACIÓN DEL PAGINADOR
 	@GetMapping("/inicio")
-	public String inicio(Model model, @RequestParam(defaultValue = "0") int page) { 
+	public String inicio(Model model, @RequestParam(defaultValue = "0") int page) {
 		int registrosCount = 100; // VARIABLE QUE ALMACENA LA CANTIDAD DE REGISTROS POR PÁGINA
-		Page<TbPerson> paginaPersonas = usuario.obtenerPersonasPorPagina(PageRequest.of(page, registrosCount)); 
+		Page<TbPerson> paginaPersonas = usuario.obtenerPersonasPorPagina(PageRequest.of(page, registrosCount));
 		List<TbPerson> listaPersonas = paginaPersonas.getContent(); // OBTIENE LISTA DE USUARIOS REQUERIDOS
 		model.addAttribute("listaPersonas", listaPersonas); // SE AGREGA LISTA DE USUARIOS AL MODELO DE VISTA PARA QUE EL USUARIO PUEDA VERLO
 		model.addAttribute("currentPage", page); // MUESTRA LA PÁGINA ACTUAL EN LA QUE SE ENCUENTRA EL USUARIO
@@ -122,7 +119,7 @@ public class Controller {
 		return "redirect:/inicio";
 	}
 
-	
+
 	@GetMapping("/exportar") //MÉTODO EXPORTAR PARA EXPORTAR EL PDF COMPLETO
 	public ResponseEntity<byte[]> exportarTablaToZip(Model model, @RequestParam(defaultValue = "0") int page) {
 	    try {
@@ -217,7 +214,7 @@ public class Controller {
 	    }
 	}
 
-	
+
 	@GetMapping("/descargas")
 	public ResponseEntity<List<String>> obtenerArchivosTemporales() {
 		File carpetaTemp = new File("C:\\temp/"); // Ruta de la carpeta temporal en tu sistema
@@ -230,8 +227,8 @@ public class Controller {
 		}
 		return ResponseEntity.ok(Collections.emptyList());
 	}
-	
-	
+
+
 	@GetMapping("/descargas/{nombreArchivo:.+}")
 	public ResponseEntity<Resource> descargarArchivoTemporal(@PathVariable String nombreArchivo) {
 	    String rutaArchivo = "C:\\temp/" + nombreArchivo;
@@ -283,7 +280,7 @@ public class Controller {
 			return ResponseEntity.notFound().build(); // El archivo no existe
 		}
 	}
-	
-	
+
+
 
 }

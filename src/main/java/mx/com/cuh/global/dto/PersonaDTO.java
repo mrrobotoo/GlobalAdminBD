@@ -5,7 +5,7 @@ public class PersonaDTO {
 	private String nombre;
 	private Integer edad;
 	private String sexo;
-	
+
 	public Long getId() {
 		return id;
 	}

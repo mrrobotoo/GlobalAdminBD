@@ -259,6 +259,10 @@
 							<!-- Las filas de la tabla se generarán aquí -->
 						</tbody>
 					</table>
+					<!-- Agregar el paginador aquí -->
+					<ul class="pagination justify-content-center" id="modalPaginator">
+						<!-- Los elementos de paginación se generarán aquí -->
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -320,40 +324,87 @@
 					const descargaLinkContainer = document.getElementById('descargaLinkContainer');
 					descargaLinkContainer.innerHTML = '';
 
-					data.forEach(archivo => {
-						const row = document.createElement('tr');
-						const nombreCell = document.createElement('td');
-						nombreCell.textContent = archivo;
-						row.appendChild(nombreCell);
+					const archivosPorPagina = 5;
+					const totalPaginas = Math.ceil(data.length / archivosPorPagina);
 
-						const descargarCell = document.createElement('td');
-						const descargarButton = document.createElement('button');
-						descargarButton.textContent = 'Descargar';
-						descargarButton.classList.add('btn', 'btn-descargar');
-						descargarButton.setAttribute('data-nombre', archivo); // Configuramos el atributo data-nombre con el nombre del archivo
-						descargarButton.addEventListener('click', () => {
-							window.location.href = `/descargas/${archivo}`;
+					const modalPaginator = document.getElementById('modalPaginator');
+					modalPaginator.innerHTML = ''; // Limpiar el paginador antes de rellenarlo
+
+					for (let pagina = 0; pagina < totalPaginas; pagina++) {
+						const paginaItem = document.createElement('li');
+						paginaItem.classList.add('page-item');
+						const paginaLink = document.createElement('a');
+						paginaLink.classList.add('btn','page-link');
+						paginaLink.textContent = pagina + 1;
+						paginaLink.addEventListener('click', () => {
+							mostrarArchivosPagina(data, pagina, archivosPorPagina);
 						});
-						descargarCell.appendChild(descargarButton);
-						row.appendChild(descargarCell);
+						paginaItem.appendChild(paginaLink);
+						modalPaginator.appendChild(paginaItem);
+					}
 
-						const eliminarCell = document.createElement('td');
-						const eliminarButton = document.createElement('button');
-						eliminarButton.textContent = 'Eliminar';
-						eliminarButton.classList.add('btn', 'btn-eliminar');
-						eliminarButton.addEventListener('click', () => {
-							eliminarArchivoTemporal(archivo);
-						});
-						eliminarCell.appendChild(eliminarButton);
-						row.appendChild(eliminarCell);
-
-						descargaLinkContainer.appendChild(row);
-					});
+					// Mostrar archivos de la primera página por defecto
+					mostrarArchivosPagina(data, 0, archivosPorPagina);
 				})
 				.catch(error => {
 					console.error('Error al obtener la lista de archivos temporales:', error);
 				});
 		}
+
+		function mostrarArchivosPagina(data, pagina, archivosPorPagina) {
+			const descargaLinkContainer = document.getElementById('descargaLinkContainer');
+			descargaLinkContainer.innerHTML = ''; // Limpiar los archivos actuales
+
+			const inicio = pagina * archivosPorPagina;
+			const fin = inicio + archivosPorPagina;
+
+			const archivosPagina = data.slice(inicio, fin);
+
+			archivosPagina.forEach(archivo => {
+				const fila = document.createElement('tr');
+
+				const nombreCelda = document.createElement('td');
+				nombreCelda.textContent = archivo;
+				fila.appendChild(nombreCelda);
+
+				const descargarCelda = document.createElement('td');
+				const descargarBoton = document.createElement('button');
+				descargarBoton.textContent = 'Descargar';
+				descargarBoton.classList.add('btn', 'btn-descargar');
+				descargarBoton.dataset.nombre = archivo;
+				descargarCelda.appendChild(descargarBoton);
+                fila.appendChild(descargarCelda);
+				descargarBoton.addEventListener('click', () => {
+					window.location.href = `/descargas/${archivo}`;
+				});
+				descargarCelda.appendChild(descargarBoton);
+				fila.appendChild(descargarCelda);
+
+				const eliminarCelda = document.createElement('td');
+				const eliminarBoton = document.createElement('button');
+				eliminarBoton.textContent = 'Eliminar';
+				eliminarBoton.classList.add('btn', 'btn-eliminar');
+				eliminarBoton.addEventListener('click', () => {
+					eliminarArchivoTemporal(archivo);
+				});
+				eliminarCelda.appendChild(eliminarBoton);
+				fila.appendChild(eliminarCelda);
+
+				descargaLinkContainer.appendChild(fila);
+			});
+
+			// Actualizar clases para resaltar la página activa
+			const modalPaginator = document.getElementById('modalPaginator');
+			const paginas = modalPaginator.querySelectorAll('.page-item');
+			paginas.forEach((paginaItem, index) => {
+				if (index === pagina) {
+					paginaItem.classList.add('active');
+				} else {
+					paginaItem.classList.remove('active');
+				}
+			});
+		}
+
 
 
 		// Función para eliminar el archivo temporal en el servidor
@@ -378,19 +429,27 @@
 		// Evento que se dispara cuando se abre el modal de descargas
 		document.getElementById('modalDescargas').addEventListener('show.bs.modal', cargarEnlacesDescargas);
 
+		
 		// Evento delegado para el clic en el botón de descarga dentro del modal
-		document.getElementById('descargaLinkContainer').addEventListener('click', function (event) {
-			if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn-descargar')) {
-				const archivoDescargado = event.target.dataset.nombre;
-				if (archivoDescargado) {
-					// Aquí mostramos la alerta cuando se ha descargado exitosamente
-					alert(`Archivo descargado exitosamente: ${archivoDescargado}`);
-					// Actualizar la lista de archivos temporales en el modal
-					cargarEnlacesDescargas();
-				}
-			}
-		});
+    document.getElementById('descargaLinkContainer').addEventListener('click', function (event) {
+        if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn-descargar')) {
+            const archivoDescargado = event.target.dataset.nombre;
+            if (archivoDescargado) {
+                // Descargar el archivo
+                window.location.href = `/descargas/${archivoDescargado}`;
+                
+                // Mostrar la alerta de descarga exitosa
+                alert(`Archivo descargado exitosamente: ${archivoDescargado}`);
+                
+                // Actualizar la lista de archivos temporales en el modal
+                cargarEnlacesDescargas();
+            }
+        }
+    });
+
+
 	</script>
+
 
 
 	<script type="text/javascript"> //ALERTA DE ELIMINAR USUARIO

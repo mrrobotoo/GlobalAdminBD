@@ -3,15 +3,14 @@ package mx.com.cuh.global.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import mx.com.cuh.global.dto.Respuesta;
-import mx.com.cuh.global.dto.PersonaDTO;
-import mx.com.cuh.global.entity.TbPerson;
-import mx.com.cuh.global.repository.TbPersonRepository;
 import org.springframework.data.domain.Page; //SE IMPORTAN LIBRERIAS
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort; // SE IMPORTAN LIBRERIAS PARA EL PAGEREQUEST
+import org.springframework.stereotype.Service;
+
+import mx.com.cuh.global.dto.PersonaDTO;
+import mx.com.cuh.global.dto.Respuesta;
+import mx.com.cuh.global.entity.TbPerson;
+import mx.com.cuh.global.repository.TbPersonRepository;
 
 
 
@@ -48,7 +47,7 @@ public class UsuarioImpl implements Usuario {
 
 	@Override
 	public Respuesta<TbPerson> obtenerPersonas() {
-		Respuesta<TbPerson> response = new Respuesta<TbPerson>();
+		Respuesta<TbPerson> response = new Respuesta<>();
 		response.setListasPersona(tbPersonRepository.findAll());
 		response.setMensaje("ok");
 		return response;
@@ -91,10 +90,10 @@ public class UsuarioImpl implements Usuario {
 		}
 		return response;
 	}
-	
-	//FILTRO 
-	
-	@Override 
+
+	//FILTRO
+
+	@Override
 	public Page<TbPerson> obtenerPersonasPorNombre(String nombre, PageRequest pageRequest) {
 	    return tbPersonRepository.findByNombreContainingIgnoreCase(nombre, pageRequest);
 	}
