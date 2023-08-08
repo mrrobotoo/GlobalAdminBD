@@ -66,38 +66,36 @@ public class Controller {
 		return "inicio"; // RETORNA LA LISTAS DE PERSONAS
 	}
 
-	@GetMapping("/buscar") // FILTRO
-	public String buscar(Model model, @RequestParam(defaultValue = "") String nombre, @RequestParam(defaultValue = "0") int page) { //USAMOS 3 PARAMETROS, MODEL: AGREGAR ATRIBUTOS Y QUE EL USUARIO LOS PUEDA VER (EN ESTE CASO, LOS REGISTROS), NOMBRE: LO USAMOS COMO PARAMETRO DE CONSULTA PARA FILTRAR A LAS PERSONAS, PAGE: NÚMERO DE PÁGINA QUE SE MOSTRARÁ EN LA PÁGINACIÓN.
-		int registrosCount = 100; //CANTIDAD DE REGISTROS QUE SE MOSTRARÁN EN LA PAGINACIÓN
-		Page<TbPerson> paginaPersonas; //ALMACENAMOS LOS RESULTADOS DE LAS PERSONAS
+	@GetMapping("/buscar")
+	public String buscar(Model model, @RequestParam(defaultValue = "") String nombre, @RequestParam(defaultValue = "0") int page) {
+	    int registrosCount = 100;
+	    Page<TbPerson> paginaPersonas;
 
-		if (nombre.isEmpty()) { //CONDICIÓNAL QUE DICE QUE SI 'nombre' (QUE ES LA VARIBLE QUE FILTRA EL NOMBRE DEL USUARIO) ENTONCES:
-			paginaPersonas = usuario.obtenerPersonasPorPagina(PageRequest.of(page, registrosCount)); //EN CASO DE ESTAR VACÍO, OBTENDRÁ LAS PAGINAS COMPLETAS
-		} else { //EN CASO CONTRARIO:
-			paginaPersonas = usuario.obtenerPersonasPorNombre(nombre, PageRequest.of(page, registrosCount)); //SE OBTIENEN LAS PERSONAS FILTRADAS POR NOMBRE Y PÁGINADAS
-		}
+	    if (!nombre.trim().isEmpty()) { //VERIFICAMOS SI EL NOMBRE NO ESTÁ VACÍO DESPUÉS DE ELIMINAR ESPACIOS EN BLANCO AL INICIO Y AL FINAL.
+	        paginaPersonas = usuario.obtenerPersonasPorNombre(nombre, PageRequest.of(page, registrosCount));
+	    } else {
+	        paginaPersonas = usuario.obtenerPersonasPorPagina(PageRequest.of(page, registrosCount));
+	    }
 
-		List<TbPerson> listaPersonas = paginaPersonas.getContent(); //OBTENEMOS LA LISTA DE PERSONAS DE LA PÁGINA OBTENIDA
-		model.addAttribute("listaPersonas", listaPersonas); //AGREGAMOS LA LISTA DE PERSONAS AL MODELO DECLARADO AL PRINCIPIO PARA QUE EL USUARIO PUEDA VERLA.
+	    List<TbPerson> listaPersonas = paginaPersonas.getContent();
+	    model.addAttribute("listaPersonas", listaPersonas);
 
-		//VERIFICAMOS SI EL NÚMERO SOLICITADO ESTÁ DENTRO DE LOS LÍMITES
-		int totalPages = paginaPersonas.getTotalPages(); //OBTENEMOS EL NÚMERO TOTAL DE PÁGINAS DISPONIBLES DENTRO DE NUESTRO PÁGINADOR
-		int currentPage = Math.min(page, totalPages > 0 ? totalPages - 1 : 0); //DETERMINAMOS LA PÁGINA ACTUAL Y NOS ASEGURAMOS QUE ESTÉ DENTRO DE LOS LÍMITES DISPONIBLES, EN CASO DE QUE LA PÁGINA SOLICITADA SEA MAYOR AL NÚMERO TOTAL DE PÁGINAS, SE RESTA UNA PARA AJUSTARLA AL NÚMERO TOTAL DE PÁGINAS.
-		model.addAttribute("currentPage", currentPage); //AGREGAMOS EL NÚMERO DE PÁGINA ACTUAL AL MODELO PARA QUE EL USUARIO LO PUEDA VER.
-		model.addAttribute("totalPages", totalPages); //AGREFAMOS EL NÚMERO TOTAL DE PÁGINAS PARA QUE EL USUARIO LO PUEDA VER.
+	    int totalPages = paginaPersonas.getTotalPages();
+	    int currentPage = Math.min(page, totalPages > 0 ? totalPages - 1 : 0);
+	    model.addAttribute("currentPage", currentPage);
+	    model.addAttribute("totalPages", totalPages);
 
-		boolean esBusqueda = !nombre.isEmpty(); //VERIFICAMOS SI LA BUSQUEDA SE REALIZA EVALUANDO QUE EL PARÁMETRO "nombre" NO ESTÉ VACIO.
-		model.addAttribute("esBusqueda", esBusqueda); //AGREGAMOS EL ATRIBUTO "esBusqueda" PARA INDICAR SI LA BUSQUEDA FUE REALIZADA O NO.
+	    boolean esBusqueda = !nombre.trim().isEmpty(); //VERIFICAMOS SI EL NOMBRE NO ESTÁ VACÍO DESPUÉS DE ELIMINAR ESPACIOS EN BLANCO AL INICIO Y AL FINAL.
+	    model.addAttribute("esBusqueda", esBusqueda);
 
-		//VERIFICAMOS SI LA LISTA DE PERSONAS ESTÁ VACÍA PARA MOSTRAR EL MENSAJE DE ALERTA
-		if (listaPersonas.isEmpty() && esBusqueda) { //VALIDAMOS SI LA LISTA DE PERSONAS ESTÁ VACÍA Y SI LA BUSQUEDA FUE REALIZADA O NO.
-			model.addAttribute("mensaje", "No se encontraron registros para la búsqueda: " + nombre); //EN CASO DE QUE NO ENCUENTRE EL NOMBRE FILTRADO
-		} else if (nombre.isEmpty()) { //EN CASO DE QUE EL PARAMETRO "nombre" SE ENCUENTRE VACÍO
-			//model.addAttribute("mensaje", "No se ingresó un nombre para la búsqueda."); //MENSAJE CUANDO NO SE REALIZA UNA BUSQUEDA VACÍA.
-			return "inicio";
-		}
-		return "inicio"; //RETORNAMOS LA VISTA "inicio" DONDE SE MUESTRAN LOS RESULTADOS DE LA BUSQUEDA.
+	    if (listaPersonas.isEmpty() && esBusqueda) {
+	        model.addAttribute("mensaje", "No se encontraron registros para la búsqueda: " + nombre);
+	    } else if (nombre.isEmpty()) {
+	        return "inicio";
+	    }
+	    return "inicio";
 	}
+
 
 	@PostMapping(value = "/saveperson") // INSERTAR PERSONA
 	public String insertarPersonas(@ModelAttribute PersonaDTO persona) {
@@ -123,29 +121,29 @@ public class Controller {
 	@GetMapping("/exportar") //MÉTODO EXPORTAR PARA EXPORTAR EL PDF COMPLETO
 	public ResponseEntity<byte[]> exportarTablaToZip(Model model, @RequestParam(defaultValue = "0") int page) {
 	    try {
-	        // Crear el documento PDF
+	        //CREAR EL DOCUEMTNO PDF
 	        Document document = new Document();
 	        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 	        PdfWriter.getInstance(document, byteArrayOutputStream);
 
-	        // Abrir el documento antes de agregar contenido
+	        //ABRIR EL DOCUMENTO ANTES DE AGREGAR CONTENIDO
 	        document.open();
 
-	        // Agregar contenido al PDF
-	        PdfPTable table = new PdfPTable(3); // Cambiamos el número de columnas a 3 (nombre, edad y sexo)
+	        //AGREGAMOS CONTENIDO AL PDF
+	        PdfPTable table = new PdfPTable(3); //CAMBIAMOS EL NÚMERO DE COLUMNAS A 3 (NOMBRE, EDAD Y SEXO) ELIMINANDO EL ID
 	        table.setWidthPercentage(100);
 	        table.addCell("Nombre");
 	        table.addCell("Edad");
 	        table.addCell("Sexo");
 
 	        int registrosCount = 100;
-	        // Obtener la página 0 (primera página) con 100 registros por página
+	        //AGREGAMOS LA PÁGINA 0 (PRIMERA PÁGINA) CON 100 REGISTROS POR PÁGINA.
 	        PageRequest pageRequest = PageRequest.of(page, registrosCount);
 	        Page<TbPerson> paginaPersonas = usuario.obtenerPersonasPorPagina(pageRequest);
 	        List<TbPerson> listaPersonas = paginaPersonas.getContent();
 
 	        for (TbPerson persona : listaPersonas) {
-	            // Excluimos la columna ID y solo agregamos nombre, edad y sexo a la tabla
+	            //EXCLUIMOS LA COLUMNA ID Y SOLO AGREGAMOS NOMBRE, EDAD Y SEXO A LA TABLA.
 	            table.addCell(persona.getNombre());
 	            table.addCell(persona.getEdad().toString());
 	            table.addCell(persona.getSexo());
@@ -153,17 +151,17 @@ public class Controller {
 
 	        document.add(table);
 
-	        // Cerrar el documento después de agregar todo el contenido
+	        //CERRAMOS EL DOCUMENTO DESPUÉS DE AGREGAR EL CONTENIDO
 	        document.close();
 
-	        // Obtener los bytes del PDF generado
+	        //OBTENEMOS LO BYTES DEL PDF GENERADO
 	        byte[] pdfBytes = byteArrayOutputStream.toByteArray();
 
-	        // Generar un nombre para el archivo ZIP almacenado temporalmente
+	        //GENERAMOS UN NOMBRE PARA EL ACHIVO ZIP ALMACENADO TEMPORALMENTE
 	        String tempZipFileName = "registros_pagina_" + (page + 1) + "_temp.zip";
 	        String tempZipFilePath = "C:\\temp/" + tempZipFileName;
 
-	        // Guardar el PDF en un archivo temporal
+	        //GUARDAMOS EL PDF EN UN ARCHIVO TEMPORAL
 	        String tempPdfFileName = "registros_pagina_" + (page + 1) + ".pdf";
 	        String tempPdfFilePath = "C:\\temp/" + tempPdfFileName;
 	        try (FileOutputStream fileOutputStream = new FileOutputStream(tempPdfFilePath)) {
@@ -173,7 +171,7 @@ public class Controller {
 	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	        }
 
-	        // Comprimir el PDF temporal en un archivo ZIP
+	        //COMPRIMIMOS EL PDF TEMPORAL EN UN ARCHIVO ZIP
 	        try (FileOutputStream fileOutputStream = new FileOutputStream(tempZipFilePath);
 	                ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 	                FileInputStream pdfFileInputStream = new FileInputStream(tempPdfFilePath)) {
@@ -193,64 +191,63 @@ public class Controller {
 	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	        }
 
-	        // Eliminar el archivo temporal del PDF
+	        //ELIMINAMOS EL ARCHIVO TEMPORAL DEL PDF
 	        File tempPdfFile = new File(tempPdfFilePath);
 	        tempPdfFile.delete();
 
-	        // Leer los bytes del archivo ZIP temporal
+	        //LEEMOS LOS BYTES DEL ARCHIVO ZIP TEMPORAL
 	        Path tempZipFile = Paths.get(tempZipFilePath);
 	        byte[] zipBytes = Files.readAllBytes(tempZipFile);
 
-	        // Retornar los bytes del archivo ZIP en la respuesta HTTP con el nombre adecuado para la descarga
+	        //REPORTNAMOS LOS BYTES DEL ARCHIVO ZIP EN LA RESPUESTA HTTP CON EL NOMBRE ADECUADO PARA LA DESCARGA
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-	        headers.setContentDispositionFormData("attachment", "registros_pagina_" + (page + 1) + ".zip"); // Establecer el nombre del archivo ZIP para la descarga
+	        headers.setContentDispositionFormData("attachment", "registros_pagina_" + (page + 1) + ".zip"); //ESTABLECEMOS EL NOMBRE DEL ARCHIVO ZIP PARA LA DESCARGA
 	        return new ResponseEntity<>(zipBytes, headers, HttpStatus.OK);
 
 	    } catch (DocumentException | IOException e) {
-	        // En caso de error al crear el documento PDF o al guardar el archivo temporal
+	        //EN CASO DE ERROR AL CREAR EL DOCUMENTO PDF O GUARDAR EL ARCHIVO TEMPORAL
 	        e.printStackTrace();
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
 
 
-	@GetMapping("/descargas")
-	public ResponseEntity<List<String>> obtenerArchivosTemporales() {
-		File carpetaTemp = new File("C:\\temp/"); // Ruta de la carpeta temporal en tu sistema
-		if (carpetaTemp.exists() && carpetaTemp.isDirectory()) {
-			File[] archivosTemporales = carpetaTemp.listFiles();
-			if (archivosTemporales != null) {
-				List<String> nombresArchivos = Arrays.stream(archivosTemporales).map(File::getName).collect(Collectors.toList());
-				return ResponseEntity.ok(nombresArchivos);
+	@GetMapping("/descargas") //MAPEO DEL MÉTODO "DESCARGAS" (LISTA DE ARCHIVOS)
+	public ResponseEntity<List<String>> obtenerArchivosTemporales() { 
+		File carpetaTemp = new File("C:\\temp/"); //RUTA DE LA CARPETA DE ARCHIVOS TEMPORALES
+		if (carpetaTemp.exists() && carpetaTemp.isDirectory()) { //VERIFICAMOS SI LA CARPETA EXISTE Y ES UN DIRECTORIO VALIDO
+			File[] archivosTemporales = carpetaTemp.listFiles(); //OBTENEMOS UN ARREGLO DE ARCHIVOS Y SUBDIRECTORIOS DENTRO DE LA CARPETA TEMPORAL
+			if (archivosTemporales != null) { //VERIFICAMOS SI SE ENCUENTRAN ARCHIVOS EN LA CARPETA
+				List<String> nombresArchivos = Arrays.stream(archivosTemporales).map(File::getName).collect(Collectors.toList()); //CONVERTIMOS NUESTRO ARREGLO EN UNA SECUENCIA
+				return ResponseEntity.ok(nombresArchivos); //RETORNAMOS LA LISTA DE NOMBRES DE ARCHIVOS
 			}
 		}
-		return ResponseEntity.ok(Collections.emptyList());
+		return ResponseEntity.ok(Collections.emptyList()); //EN CASO DE QUE NO SE ENCUENTREN ARCHIVOS, RETORNAMOS UNA LISTA VACÍA
 	}
-
 
 	@GetMapping("/descargas/{nombreArchivo:.+}")
 	public ResponseEntity<Resource> descargarArchivoTemporal(@PathVariable String nombreArchivo) {
-	    String rutaArchivo = "C:\\temp/" + nombreArchivo;
+	    String rutaArchivo = "C:\\temp/" + nombreArchivo; //RUTA ARCHIVOS TEMPORALES DENTRO DE NUESTRA CARPETA
 
 	    try {
 	        File archivo = new File(rutaArchivo);
 	        if (archivo.exists()) {
-	            String zipFileName = nombreArchivo.replace("_temp", ""); // Removemos el "_temp" del nombre del archivo ZIP para la descarga
+	            String zipFileName = nombreArchivo.replace("_temp", ""); //REMOVEMOS EL "_TEMP" DEL NOMBRE DEL ARCHIVO ZIP PARA LA DESCARGA
 
-	            // Leer los bytes del archivo
+	            //LEEMOS LOS BYTES DEL ARCHIVO
 	            byte[] archivoBytes = Files.readAllBytes(archivo.toPath());
 
-	            // Crear un ByteArrayResource con los bytes del archivo
+	            //CREAMOS UN BYTEARRAYRESOURCE CON LOS BYTES DEL ARCHIVO
 	            ByteArrayResource recurso = new ByteArrayResource(archivoBytes);
 
 	            HttpHeaders headers = new HttpHeaders();
-	            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipFileName); // Establece el nombre del archivo ZIP para la descarga
+	            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipFileName); //ESTABLECEMOS EL NOMBRE DEL ARCHIVO ZIP PARA LA DESCARGA
 
-	            // Enviar la respuesta HTTP con el archivo ZIP para que el usuario lo descargue
+	            //ENVIAMOS LA RESPUESTA HTTP CON EL ARCHIVO ZIP PARA QUE EL USUARIO LO DESCARGUE
 	            ResponseEntity<Resource> response = new ResponseEntity<>(recurso, headers, HttpStatus.OK);
 
-	            // Eliminar el archivo ZIP después de enviar la respuesta
+	            //ELIMINAMOS EL ARCHIVO ZIP DESPUÉS DE ENVIAR LA RESPUESTA
 	            if (archivo.delete()) {
 	                System.out.println("Archivo eliminado correctamente: " + rutaArchivo);
 	            } else {
@@ -268,16 +265,16 @@ public class Controller {
 
 	@DeleteMapping("/eliminar-archivo")
 	public ResponseEntity<?> eliminarArchivoTemporal(@RequestParam String nombre) {
-		String rutaArchivo = "C:\\temp/" + nombre; // Ruta completa del archivo temporal en tu sistema
+		String rutaArchivo = "C:\\temp/" + nombre; //RUTA COMPLETA DEL ARCHIVO TEMPORAL
 		File archivo = new File(rutaArchivo);
 		if (archivo.exists()) {
 			if (archivo.delete()) {
-				return ResponseEntity.ok().build(); // El archivo se ha eliminado correctamente
+				return ResponseEntity.ok().build(); //SI EL ARCHIVO SE ELIMINA CORRECTAMENTE
 			} else {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Error al eliminar el archivo
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); //CUANDO OCURRA UN ERROR AL ELIMINAR EL ARCHIVO
 			}
 		} else {
-			return ResponseEntity.notFound().build(); // El archivo no existe
+			return ResponseEntity.notFound().build(); //EN CASO DE QUE EL ARCHIVO NO EXISTA
 		}
 	}
 

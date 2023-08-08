@@ -2,8 +2,11 @@
 <html lang="en">
 
 <head>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+		crossorigin="anonymous"></script>
 	<title>Index Page</title>
 	<link rel="stylesheet" href="styles.css">
 </head>
@@ -20,15 +23,16 @@
 							<label for="user-name" class="label label-pimary" style="text-align: right">Nombre: </label>
 						</td>
 						<td style="padding-right: 10px; padding-top: 10px;">
-							<input style="text-align: center;" placeholder="Ingresa un nombre" type="text" name="nombre"></input>
+							<input style="text-align: center;" placeholder="Ingresa un nombre" type="text" name="nombre"
+								required></input>
 						</td>
 					</tr>
 					<tr>
 						<td style="text-align: right; padding: 10px;">
-							<label align="right" for="edad" style="text-align: right" required>Edad: </label>
+							<label for="edad" style="text-align: right">Edad: </label>
 						</td>
 						<td>
-							<input style="text-align: center" placeholder="Ingresa la edad" type="number" name="edad"></input> <!---->
+							<input style="width: 95%; text-align: center;" placeholder="Ingresa la edad" type="number" name="edad" required min="1" max ="120"></input>
 						</td>
 					</tr>
 					<tr>
@@ -36,7 +40,12 @@
 							<label for="sexo" style="text-align: right">Sexo: </label>
 						</td>
 						<td>
-							<input style="text-align: center" placeholder="H/M/NB" type="text" name="sexo"></input>
+							<select name="sexo" class="form-select-sm" required style="border-radius: 0%; width: 95%;">
+								<option value="" disabled selected>Selecciona un sexo</option>
+								<option value="H">Hombre</option>
+								<option value="M">Mujer</option>
+								<option value="NB">No Binario</option>
+							</select>
 						</td>
 					</tr>
 					<tr>

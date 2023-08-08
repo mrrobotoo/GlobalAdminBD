@@ -10,13 +10,11 @@
 	<link rel="stylesheet" href="styles.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
 	<title>Registros</title>
-
 	<style>
-		/* Estilos para los botones de descargar y eliminar dentro del modal de descargas */
+		/* ESTILOS PARA LOS BOTONES DE DESCARGAR Y ELIMINAR DENTRO DEL MODAL DE DESCARGAS */
 		#modalDescargas .btn {
 			padding: 5px 10px;
 			font-size: 14px;
-
 		}
 
 		#modalDescargas .btn-descargar {
@@ -32,7 +30,6 @@
 		#modalDescargas .btn-eliminar {
 			background-color: #dc3545;
 			color: #fff;
-
 		}
 
 		#modalDescargas .btn-eliminar:hover {
@@ -40,13 +37,10 @@
 		}
 	</style>
 
-
-
 </head>
 
 <body>
 	<div th:include="navbar.html"></div> <!-- IMPORTAMOS EL NAVBAR -->
-
 	<div style="align-items: center;">
 		<form action="/buscar" method="get" style="background-color: #212529;">
 			<b style="color: white; padding-left: 20px; padding-right: 10px;">Filtrar: </b>
@@ -56,8 +50,6 @@
 				style="padding-left: 7px; padding-right: 7px; padding-top: 2px; padding-bottom: 2px; margin-bottom: 3px;">
 		</form>
 	</div>
-
-
 	<table class="table table-dark" id="data-table" style="margin-bottom: 3.95%;">
 		<thead class="thead-dark">
 			<tr>
@@ -74,7 +66,6 @@
 					<center>
 						<button class="btn btn-success" data-bs-toggle="modal"
 							data-bs-target="#modalDescargas">Descargas</button> <!-- BUTTON PARA DESCARGAR PDFs -->
-
 					</center>
 				</th>
 			</tr>
@@ -176,7 +167,6 @@
 	</div>
 	<!-- FIN PARTE DE FILTRO -->
 
-
 	<!-- PAGINADOR CON FILTRO -->
 
 	<div th:if="${esBusqueda}" style="display: none;">
@@ -233,8 +223,7 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- FIN PAGINADOR -->
+	<!-- FIN PAGINADOR CON FILTRO-->
 
 	<!-- MODAL DESCARGAS -->
 	<div class="modal fade" id="modalDescargas" tabindex="-1" role="dialog" aria-labelledby="modalDescargasLabel"
@@ -256,13 +245,10 @@
 							</tr>
 						</thead>
 						<tbody id="descargaLinkContainer" style="text-align: center; align-items: center;">
-							<!-- Las filas de la tabla se generarán aquí -->
+							<!-- LAS FILAS DE LA TABLA SE GENERARÁN AQUÍ DE MANERA DÍNAMICA -->
 						</tbody>
 					</table>
-					<!-- Agregar el paginador aquí -->
-					<ul class="pagination justify-content-center" id="modalPaginator">
-						<!-- Los elementos de paginación se generarán aquí -->
-					</ul>
+					<ul class="pagination justify-content-center" id="modalPaginator"></ul>
 				</div>
 			</div>
 		</div>
@@ -273,50 +259,49 @@
 
 	<!-- SCRIPT PARA DESCARGAR PDF TEMPORALMENTE -->
 	<script>
-		// Agregar evento click al botón de exportar
+		//AGREGAMOS EVENTO CLICK AL BOTÓN DE EXPORTAR
 		document.getElementById("export-button").addEventListener("click", function () {
-			// Obtener el número de página actual
+			//OBTENEMOS EL NÚMERO DE PÁGINA ACTUAL
 			const currentPage = document.querySelector(".page-item.active .page-link").textContent - 1;
 
-			// Definir el valor deseado para la cantidad de registros por página
-			const registrosCount = 100; // Por ejemplo, aquí se muestra 100 registros por página
+			//DEFINIMOS EL VALOR DESEADO PARA LA CANTIDAD DE REGISTROS POR PÁGINA
+			const registrosCount = 100; //CANTIDAD DE REGISTROS POR PÁGINA
 
-			// Realizar la petición AJAX al servidor, enviando el número de página y registrosCount como parámetros
+			//REALIZAMOS LA PETICIÓN AJAX AL SERVIDOR, ENVIANDO EL NÚMERO DE PÁGINA Y REGISTROSCOUNT COMO PARAMETROS.
 			fetch(`/exportar?page=${currentPage}&registrosCount=${registrosCount}`, {
 				method: 'GET',
 			})
 				.then(response => {
-					// La petición ha sido exitosa
+					//EN CASO DE QUE LA PETICIÓN SEA EXITOSA
 					if (response.ok) {
-						return response.blob(); // Convertir la respuesta en un objeto blob
+						return response.blob(); //CONVERTIMOS LA RESPUESTA EN UN OBJETO BLOB
 					}
-					// La petición ha fallado
+					//EN CASO DE QUE LA PETICIÓN FALLE
 					throw new Error('Error al exportar la tabla.');
 				})
 				.then(blob => {
-					// Crear el enlace de descarga en el modal
+					//CREAMOS EL ENLACE DE DESCARGA EN EL MODAL
 					const url = URL.createObjectURL(blob);
 					const downloadLink = document.createElement('a');
 					downloadLink.href = url;
 					downloadLink.download = 'registros.pdf';
 					downloadLink.textContent = 'Descargar PDF';
 					const descargaLinkContainer = document.getElementById('descargaLinkContainer');
-					descargaLinkContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar el enlace
+					descargaLinkContainer.innerHTML = ''; //LIMPIAMOS EL CONTENEDOR ANTES DE AGREGAR EL ENLACE
 					descargaLinkContainer.appendChild(downloadLink);
 
-					// Mostrar la alerta de que los archivos se han guardado temporalmente.
+					//MOSTRAMOS LA ALERTA DE QUE LOS ARCHIVOS SE HAN GUARDADO TEMPORALMENTE
 					alert('Los archivos se han guardado temporalmente. Haz clic en "Descargas" para descargar el PDF.');
 				})
 				.catch(error => {
-					// Mostrar el error en caso de falla
+					//MOSTRAR EL ERROR EN CASO DE QUE FALLE
 					alert(error.message);
 				});
 		});
 	</script>
 
-
 	<script>
-		// Función para cargar los enlaces de descarga dentro de la tabla del modal de descargas
+		//FUNCIÓN PARA CARGAR LOS ENLACES DE DESCARGA DENTRO DE LA TABLA DEL MODAL DE DESCARGAS
 		function cargarEnlacesDescargas() {
 			fetch('/descargas')
 				.then(response => response.json())
@@ -328,13 +313,13 @@
 					const totalPaginas = Math.ceil(data.length / archivosPorPagina);
 
 					const modalPaginator = document.getElementById('modalPaginator');
-					modalPaginator.innerHTML = ''; // Limpiar el paginador antes de rellenarlo
+					modalPaginator.innerHTML = ''; //LIMPIAMOS EL PAGINADOR ANTES DE RELLENARLO
 
 					for (let pagina = 0; pagina < totalPaginas; pagina++) {
 						const paginaItem = document.createElement('li');
 						paginaItem.classList.add('page-item');
 						const paginaLink = document.createElement('a');
-						paginaLink.classList.add('btn','page-link');
+						paginaLink.classList.add('btn', 'page-link');
 						paginaLink.textContent = pagina + 1;
 						paginaLink.addEventListener('click', () => {
 							mostrarArchivosPagina(data, pagina, archivosPorPagina);
@@ -343,7 +328,7 @@
 						modalPaginator.appendChild(paginaItem);
 					}
 
-					// Mostrar archivos de la primera página por defecto
+					//MOSTRAMOS ARCHIVOS DE LA PRIMERA PÁGINA POR DEFECTO, EN ESTE CASO, ES LA PÁGINA 0.
 					mostrarArchivosPagina(data, 0, archivosPorPagina);
 				})
 				.catch(error => {
@@ -353,14 +338,14 @@
 
 		function mostrarArchivosPagina(data, pagina, archivosPorPagina) {
 			const descargaLinkContainer = document.getElementById('descargaLinkContainer');
-			descargaLinkContainer.innerHTML = ''; // Limpiar los archivos actuales
+			descargaLinkContainer.innerHTML = ''; //LIMPIAMOS LOS ARCHIVOS ACTUALES
 
 			const inicio = pagina * archivosPorPagina;
 			const fin = inicio + archivosPorPagina;
 
 			const archivosPagina = data.slice(inicio, fin);
 
-			archivosPagina.forEach(archivo => {
+			archivosPagina.forEach(archivo => { //CREACIÓN DE LOS BOTONES DE DESCARGAR Y ELIMINAR PARA CADA FILA DE MANERA DINÁMICA
 				const fila = document.createElement('tr');
 
 				const nombreCelda = document.createElement('td');
@@ -368,12 +353,12 @@
 				fila.appendChild(nombreCelda);
 
 				const descargarCelda = document.createElement('td');
-				const descargarBoton = document.createElement('button');
-				descargarBoton.textContent = 'Descargar';
-				descargarBoton.classList.add('btn', 'btn-descargar');
+				const descargarBoton = document.createElement('button'); //CREACIÓN BOTÓN DESCARGAR
+				descargarBoton.textContent = 'Descargar'; //TEXTO BUTTON
+				descargarBoton.classList.add('btn', 'btn-descargar'); //CLASES DEL BOTÓN, ESTILO Y FUNCIONALIDAD
 				descargarBoton.dataset.nombre = archivo;
 				descargarCelda.appendChild(descargarBoton);
-                fila.appendChild(descargarCelda);
+				fila.appendChild(descargarCelda);
 				descargarBoton.addEventListener('click', () => {
 					window.location.href = `/descargas/${archivo}`;
 				});
@@ -381,9 +366,9 @@
 				fila.appendChild(descargarCelda);
 
 				const eliminarCelda = document.createElement('td');
-				const eliminarBoton = document.createElement('button');
-				eliminarBoton.textContent = 'Eliminar';
-				eliminarBoton.classList.add('btn', 'btn-eliminar');
+				const eliminarBoton = document.createElement('button'); //CREACIÓN BOTÓN ELIMINAR
+				eliminarBoton.textContent = 'Eliminar'; //TEXTO BUTTON
+				eliminarBoton.classList.add('btn', 'btn-eliminar'); //CLASES DEL BOTÓN, ESTILO Y FUNCIONALIDAD
 				eliminarBoton.addEventListener('click', () => {
 					eliminarArchivoTemporal(archivo);
 				});
@@ -393,7 +378,7 @@
 				descargaLinkContainer.appendChild(fila);
 			});
 
-			// Actualizar clases para resaltar la página activa
+			//ACTUALIZAMOS CLASES PARA RESALTAR LA PÁGINA ACTIVA DENTRO DEL PAGINADOR
 			const modalPaginator = document.getElementById('modalPaginator');
 			const paginas = modalPaginator.querySelectorAll('.page-item');
 			paginas.forEach((paginaItem, index) => {
@@ -405,52 +390,44 @@
 			});
 		}
 
-
-
-		// Función para eliminar el archivo temporal en el servidor
+		//FUNCIÓN PARA ELININAR EL ARCHIVO TEMPORAL EN EL SERVIDOR
 		function eliminarArchivoTemporal(archivo) {
 			fetch(`/eliminar-archivo?nombre=${archivo}`, {
 				method: 'DELETE',
 			})
 				.then(response => {
-					if (response.ok) {
-						// El archivo se ha eliminado correctamente, recargar la lista de archivos temporales
-						cargarEnlacesDescargas();
-						alert(`El archivo ${archivo} ha sido eliminado.`);
+					if (response.ok) { //EN CASO DE QUE EL ARCHIVO SE ELIMINE CORRECTAMENTE, ACTUALIZAMOS LA LISTA DE ARCHIVOS TEMPORALES
+						cargarEnlacesDescargas(); //FUNCIÓN PARA RECARGAR LA LISTA DE ARCHIVOS TEMPORALES
+						alert(`El archivo ${archivo} ha sido eliminado.`); //ALERTA EN CASO DE QUE EL ARCHIVO SE ELIMINE DE MANERA CORRECTA
 					} else {
-						throw new Error('Error al eliminar el archivo.');
+						throw new Error('Error al eliminar el archivo.'); //EN CASO DE QUE NO SE ELIMINE DE MANERA CORRECTA
 					}
 				})
 				.catch(error => {
-					console.error('Error al eliminar el archivo temporal:', error);
+					console.error('Error al eliminar el archivo temporal:', error); //MENSAJE DENTRO DE LA CONSOLA DE SPRING
 				});
 		}
 
-		// Evento que se dispara cuando se abre el modal de descargas
+		//EVENTO QUE INICIA CUANDO SE ABRE EL MODAL DE DESCARGAS
 		document.getElementById('modalDescargas').addEventListener('show.bs.modal', cargarEnlacesDescargas);
 
-		
-		// Evento delegado para el clic en el botón de descarga dentro del modal
-    document.getElementById('descargaLinkContainer').addEventListener('click', function (event) {
-        if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn-descargar')) {
-            const archivoDescargado = event.target.dataset.nombre;
-            if (archivoDescargado) {
-                // Descargar el archivo
-                window.location.href = `/descargas/${archivoDescargado}`;
-                
-                // Mostrar la alerta de descarga exitosa
-                alert(`Archivo descargado exitosamente: ${archivoDescargado}`);
-                
-                // Actualizar la lista de archivos temporales en el modal
-                cargarEnlacesDescargas();
-            }
-        }
-    });
+		//EVENTO CUANDO SE DA CLIC EN EL BOTÓN DE DESCARGAR DENTRO DEL MODAL
+		document.getElementById('descargaLinkContainer').addEventListener('click', function (event) {
+			if (event.target.tagName === 'BUTTON' && event.target.classList.contains('btn-descargar')) {
+				const archivoDescargado = event.target.dataset.nombre;
+				if (archivoDescargado) {
+					//DESCARGAMOS EL ARCHIVO
+					window.location.href = `/descargas/${archivoDescargado}`;
 
+					//MOSTRAMOS LA ALERTA DE LA DESCARGA EXITOSA
+					alert(`Archivo descargado exitosamente: ${archivoDescargado}`);
 
+					//ACTUALIZAMOS LA LISTA DE LOS ARCHIVOS TEMPORALES DENTRO DEL MODAL
+					cargarEnlacesDescargas();
+				}
+			}
+		});
 	</script>
-
-
 
 	<script type="text/javascript"> //ALERTA DE ELIMINAR USUARIO
 		function mensajeEliminar() {
@@ -467,6 +444,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
 		integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
 		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 </body>
 
