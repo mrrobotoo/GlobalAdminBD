@@ -6,17 +6,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
 		.btn-descargar {
-			/* Float the Descargar button to the right */
 			float: left;
-			margin-left: 1px;
-			/* Add some spacing between the buttons */
 		}
 
 		.btn-eliminar {
-			/* Float the Eliminar button to the left */
 			float: right;
-			margin-right: 5px;
-			/* Add some spacing between the buttons */
 		}
 
 		.popup {
@@ -53,6 +47,76 @@
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 			max-width: 600px;
 			position: relative;
+		}
+
+		.pagination-popup {
+			display: flex;
+			justify-content: center;
+			margin-top: 20px;
+		}
+
+		.pagination-popup .btn-prev-page,
+		.pagination-popup .btn-next-page {
+			background-color: #007bff;
+			border-color: #007bff;
+			color: #fff;
+			font-weight: bold;
+			display: inline-block;
+			margin: 0 5px;
+		}
+
+		.pagination-popup .btn-prev-page:hover,
+		.pagination-popup .btn-next-page:hover {
+			background-color: #0056b3;
+			border-color: #0056b3;
+		}
+
+		.pagination-popup .btn-current-page {
+			background-color: #ccc;
+			border-color: #ccc;
+			color: #333;
+			font-weight: bold;
+			display: inline-block;
+			margin: 0 5px;
+		}
+
+		.pagination-popup .btn-current-page:hover {
+			background-color: #ccc;
+			color: #333;
+		}
+
+		.pagination-popup.hide {
+			display: none;
+		}
+
+		.pagination-popup .btn {
+			margin: 0 5px;
+			padding: 5px 10px;
+			background-color: #f0f0f0;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+			color: #333;
+			cursor: pointer;
+			transition: background-color 0.3s, color 0.3s;
+		}
+
+		.pagination-popup .btn:hover {
+			background-color: #ccc;
+			color: #000;
+		}
+
+		.pagination-popup .btn-prev-page,
+		.pagination-popup .btn-next-page {
+			background-color: #007bff;
+			border-color: #007bff;
+			color: #fff;
+			font-weight: bold;
+		}
+
+		.pagination-popup .btn-prev-page:hover,
+		.pagination-popup .btn-next-page:hover {
+			background-color: #0056b3;
+			border-color: #0056b3;
 		}
 
 		.close {
@@ -142,6 +206,7 @@
 		.pagination .page-item.active .page-link {
 			background-color: #007bff;
 		}
+		
 	</style>
 </head>
 
@@ -176,7 +241,7 @@
 
 		<div id="popup" class="popup">
 			<div class="popup-content">
-				<a onclick="closePopup()" title="Close" class="close">X</a>
+				 <span class="close" onclick="closePopup()">X</span>
 				<div class="popup-heading">
 					<h3>Actualizar Usuario</h3>
 				</div>
@@ -203,50 +268,42 @@
 
 		<nav aria-label="Page navigation">
 			<ul class="pagination justify-content-end">
-				<!-- Botón para ir a la primera página -->
 				<li th:if="${currentPage > 0}" class="page-item">
 					<a class="page-link" th:href="@{/inicio(page=0)}">&laquo;&laquo;</a>
 				</li>
 
-				<!-- Enlace a la página anterior -->
 				<li th:if="${currentPage > 0}" class="page-item">
 					<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">&laquo;</a>
 				</li>
 
-				<!-- Enlaces a las páginas -->
 				<li th:each="pageNumber : ${#numbers.sequence(startPageIndex, endPageIndex)}" class="page-item">
 					<a th:class="${pageNumber == currentPage ? 'page-link disabled' : 'page-link'}"
 						th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
 				</li>
 
-				<!-- Enlace a la página siguiente -->
 				<li th:if="${currentPage < totalPages - 1}" class="page-item">
 					<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">&raquo;</a>
 				</li>
 
-				<!-- Botón para ir a la última página -->
 				<li th:if="${currentPage < totalPages - 1}" class="page-item">
 					<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">&raquo;&raquo;</a>
 				</li>
 			</ul>
 		</nav>
 
-
-
-		<!-- Popup para Gestión de Descargas -->
 		<div id="popup2" class="popup">
 			<div class="popup-content2">
-				<h2>Gestor de Descargas</h2>
+				 <span class="close" onclick="cerrarPopup2()">X</span>
+				<h2>Descargas</h2>
 				<div class="archivo-zip-descargados">
-					<table class="table table-bordered">
+					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>Nombre de Archivo ZIP</th>
-								<th>Acciones</th>
+								<th>Archivo ZIP</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody>
-							<!-- Itera sobre los nombres de archivos .zip y crea una fila por cada uno -->
 							<tr th:each="nombreArchivo : ${nombresArchivos}">
 								<div class="d-flex  align-items-center">
 									<th><span>${nombreArchivo}</span></th>
@@ -256,13 +313,11 @@
 									<th><a href="javascript:void(0);" class="btn btn-danger btn-eliminar"
 											data-nombre-archivo="${nombreArchivo}">Eliminar</a></th>
 								</div>
-				</div>
-				</tr>
-				</tbody>
-				</table>
+							</tr>
+						</tbody>
+					</table>
 
 			</div>
-			<!-- Paginación -->
 			<nav class="pagination-popup" aria-label="Page navigation">
 				<ul class="pagination justify-content-center">
 					<li class="page-item">
@@ -270,18 +325,11 @@
 							onclick="cambiarPaginaPopup2(currentPage - 1)" id="btnPrevPage">Anterior</a>
 					</li>
 					<li class="page-item">
-						<span class="page-numbers mx-3" id="pageNumbers">Página 1 de 1</span>
-					</li>
-					<li class="page-item">
 						<a class="btn btn-next-page" href="javascript:void(0);"
 							onclick="cambiarPaginaPopup2(currentPage + 1)" id="btnNextPage">Siguiente</a>
 					</li>
 				</ul>
 			</nav>
-
-			<div class="form-actions mt-3">
-				<button type="button" class="btn btn-secondary btn-cancelar-popup2">Cancelar</button>
-			</div>
 		</div>
 	</div>
 
@@ -292,55 +340,48 @@
 
 		var currentPage = 0;
 		var pageSize = 5;
-		var totalArchivos = 1; // Variable para almacenar el total de archivos
+		var totalArchivos = 0; 
 
-		// Función para abrir el "popup2"
 		function abrirPopup2() {
 			var popup2 = document.getElementById("popup2");
 			popup2.style.display = "block";
 
-			// Agregar un evento de clic al botón "Cancelar" dentro del "popup2" para cerrarlo
 			var btnCancelarPopup2 = document.querySelector('.btn-cancelar-popup2');
 			btnCancelarPopup2.addEventListener('click', function () {
 				cerrarPopup2();
 			});
 
-			// Obtener los nombres de los archivos ZIP descargados mediante una solicitud AJAX al controlador
 			obtenerNombresArchivosZipDescargados();
 		}
 
-		// Función para cerrar el "popup2"
 		function cerrarPopup2() {
 			var popup2 = document.getElementById("popup2");
 			popup2.style.display = "none";
 		}
 
-		// Función para eliminar un archivo ZIP
 		function eliminarArchivoZip(nombreArchivo) {
-			// Realizar una solicitud AJAX para eliminar el archivo ZIP en el servidor
 			fetch('/eliminarArchivo/' + nombreArchivo, {
 				method: 'POST'
 			})
 				.then(response => response.json())
 				.then(data => {
-					// Mostrar un mensaje o realizar alguna acción después de eliminar el archivo
 					console.log(data.mensaje);
-					// Volver a obtener los nombres de archivos después de eliminar
 					obtenerNombresArchivosZipDescargados();
 				})
 				.catch(error => console.error('Error al eliminar el archivo ZIP:', error));
 		}
 
-		// Función para obtener los nombres de archivos ZIP descargados
+
 		function obtenerNombresArchivosZipDescargados() {
-			fetch('/obtener-nombres-zip-descargados')
+			fetch('/obtener-nombres-zip-descargados-popup2?page=' + currentPage)
 				.then(response => response.json())
 				.then(data => {
-					totalArchivos = data.length; // Actualizar el total de archivos
-					mostrarNombresArchivos(data);
+					totalArchivos = data.totalPages * pageSize;
+					mostrarNombresArchivos(data.archivosPaginados);
 				})
 				.catch(error => console.error('Error al obtener los nombres de archivos ZIP:', error));
 		}
+
 
 		function mostrarNombresArchivos(nombresArchivos) {
 			var tbody = document.querySelector('.archivo-zip-descargados tbody');
@@ -382,29 +423,38 @@
 			obtenerNombresArchivosZipDescargados();
 		}
 
-		function cambiarPaginaPopup2(pagina) {
-    console.log("Changing page to", pagina);
-    currentPage = pagina;
-    obtenerNombresArchivosZipDescargados();
-}
+		function actualizarPaginacionPopup2() {
+			var pagination = document.querySelector('.pagination-popup');
+			pagination.innerHTML = '';
 
-// ...
+			var btnPrevPage = document.createElement('button');
+			btnPrevPage.textContent = '< Anterior';
+			btnPrevPage.classList.add('btn', 'btn-secondary', 'btn-prev-page');
+			btnPrevPage.disabled = currentPage === 0;
+			btnPrevPage.addEventListener('click', function () {
+				if (currentPage > 0) {
+					cambiarPaginaPopup2(currentPage - 1);
+				}
+			});
+			pagination.appendChild(btnPrevPage);
 
-btnPrevPage.addEventListener('click', function () {
-    console.log("Prev page clicked");
-    if (currentPage > 0) {
-        cambiarPaginaPopup2(currentPage - 1);
-    }
-});
+			var btnPage = document.createElement('button');
+			btnPage.textContent = (currentPage + 1).toString();
+			btnPage.classList.add('btn', 'btn-secondary', 'btn-page', 'btn-current-page');
+			pagination.appendChild(btnPage);
 
-btnNextPage.addEventListener('click', function () {
-    console.log("Next page clicked");
-    if (currentPage < totalPaginas - 1) {
-        cambiarPaginaPopup2(currentPage + 1);
-    }
-}); 
+			var btnNextPage = document.createElement('button');
+			btnNextPage.textContent = 'Siguiente >';
+			btnNextPage.classList.add('btn', 'btn-secondary', 'btn-next-page');
+			btnNextPage.disabled = currentPage === totalArchivos / pageSize - 1;
+			btnNextPage.addEventListener('click', function () {
+				if (currentPage < totalArchivos / pageSize - 1) {
+					cambiarPaginaPopup2(currentPage + 1);
+				}
+			});
+			pagination.appendChild(btnNextPage);
+		}
 		obtenerNombresArchivosZipDescargados();
-
 
 		var popup = document.getElementById("popup");
 		var botonesActualizar = document.querySelectorAll('.btn-actualizar');

@@ -126,36 +126,30 @@ public String exportarPdfZip(Model model) {
     ZipOutputStream zipOut = null;
 
     try {
-        String destino = "C:\\Users\\wlemm\\Desktop\\pdfs_prueba"; // Ruta específica de destino
-        int zipCounter = 1; // Contador para el número del ZIP
-        String zipFileName = destino + "\\registros_" + zipCounter + ".zip"; // Nombre único del archivo ZIP
-
+        String destino = "C:\\Users\\wlemm\\Desktop\\pdfs_prueba"; 
+        int zipCounter = 001; 
+        String zipFileName = destino + "\\registros_" + String.format("%03d", zipCounter) + ".zip"; 
         while (new File(zipFileName).exists()) {
-            // Verificar si el archivo ZIP ya existe, si es así, incrementar el contador
             zipCounter++;
-            zipFileName = destino + "\\registros_" + zipCounter + ".zip";
+            zipFileName = destino + "\\registros_" + String.format("%03d", zipCounter) + ".zip"; 
         }
 
-        zipOut = new ZipOutputStream(new FileOutputStream(zipFileName)); // Abrir en modo de escritura
+        zipOut = new ZipOutputStream(new FileOutputStream(zipFileName)); 
 
-        // Crear un documento PDF para cada lote de registros
         int batchSize = 100;
         int batchNumber = 1;
         int startIndex = 0;
 
         while (startIndex < registros.size()) {
-            // Crear un ByteArrayOutputStream para el PDF actual
             ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
             Document document = new Document();
             PdfWriter.getInstance(document, pdfOutputStream);
             document.open();
 
-            // Crear una tabla para los registros en el lote actual
-            PdfPTable table = new PdfPTable(3); // 3 columnas (Name, Age, Sex)
+            PdfPTable table = new PdfPTable(3); 
 
             Font fontCabecera = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.WHITE);
 
-            // Agregar cabecera de la tabla
             table.addCell(getSyledCell("Edad", BaseColor.DARK_GRAY, fontCabecera));
             table.addCell(getSyledCell("Nombre", BaseColor.DARK_GRAY, fontCabecera));
             table.addCell(getSyledCell("Sexo", BaseColor.DARK_GRAY, fontCabecera));
@@ -170,10 +164,9 @@ public String exportarPdfZip(Model model) {
 
             document.add(table);
             document.close();
-
-            // Agregar el PDF al archivo ZIP
+            
             ByteArrayInputStream pdfInputStream = new ByteArrayInputStream(pdfOutputStream.toByteArray());
-            ZipEntry zipEntry = new ZipEntry("_registros_" + batchNumber + ".pdf"); // Nombre único con el contador
+            ZipEntry zipEntry = new ZipEntry("_registros_" + batchNumber + ".pdf"); 
             zipOut.putNextEntry(zipEntry);
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -191,7 +184,7 @@ public String exportarPdfZip(Model model) {
         return "redirect:/inicio";
     } catch (IOException | DocumentException e) {
         e.printStackTrace();
-        // Mensaje de error
+
         return "error";
     } finally {
         try {
@@ -237,7 +230,6 @@ public ResponseEntity<List<String>> obtenerNombresArchivosZipDescargados(
     return ResponseEntity.ok(archivosPaginados);
 }
 
-// Función para obtener los nombres de los archivos ZIP descargados en el directorio especificado
 private List<String> obtenerNombresArchivosZipDescargados(String rutaDirectorio) {
     List<String> nombresArchivos = new ArrayList<>();
 
@@ -278,7 +270,7 @@ public ResponseEntity<FileSystemResource> descargarZip(@PathVariable String nomb
 
 @PostMapping("/eliminarArchivo/{nombreArchivo}")
 public ResponseEntity<String> eliminarArchivo(@PathVariable String nombreArchivo) {
-    String rutaDirectorio = "C:\\Users\\wlemm\\Desktop\\pdfs_prueba"; // Ruta del directorio donde están los archivos ZIP
+    String rutaDirectorio = "C:\\Users\\wlemm\\Desktop\\pdfs_prueba"; 
     String rutaArchivo = rutaDirectorio + "\\" + nombreArchivo;
 
     File archivo = new File(rutaArchivo);
@@ -299,7 +291,7 @@ public ResponseEntity<Map<String, Object>> obtenerNombresArchivosZipDescargadosP
     String rutaDirectorio = "C:\\Users\\wlemm\\Desktop\\pdfs_prueba";
     List<String> nombresArchivos = obtenerNombresArchivosZipDescargados(rutaDirectorio);
 
-    int pageSize = 10;
+    int pageSize = 5;
     int totalPages = (int) Math.ceil((double) nombresArchivos.size() / pageSize);
 
     int startIndex = page * pageSize;
