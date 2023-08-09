@@ -5,6 +5,20 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
+		.btn-descargar {
+			/* Float the Descargar button to the right */
+			float: left;
+			margin-left: 1px;
+			/* Add some spacing between the buttons */
+		}
+
+		.btn-eliminar {
+			/* Float the Eliminar button to the left */
+			float: right;
+			margin-right: 5px;
+			/* Add some spacing between the buttons */
+		}
+
 		.popup {
 			display: none;
 			position: fixed;
@@ -28,6 +42,16 @@
 			border-radius: 5px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 			max-width: 400px;
+			position: relative;
+		}
+
+		.popup-content2 {
+			background-color: #ccc;
+			margin: 10% auto;
+			padding: 20px;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+			max-width: 600px;
 			position: relative;
 		}
 
@@ -78,6 +102,12 @@
 			cursor: pointer;
 		}
 
+		.pagination-popup {
+			display: flex;
+			justify-content: center;
+			margin-top: 20px;
+		}
+
 		.pagination {
 			display: flex;
 			justify-content: center;
@@ -124,7 +154,7 @@
 					<th>Edad</th>
 					<th>Nombre</th>
 					<th>Sexo</th>
-					<th></th>
+					<th> <button type="button" class="btn btn-warning" onclick="abrirPopup2()">Descargas</button></th>
 					<th><a href="/exportar-pdf-zip">Exportar a PDF y ZIP</a></th>
 				</tr>
 			</thead>
@@ -170,6 +200,7 @@
 			</div>
 		</div>
 
+
 		<nav aria-label="Page navigation">
 			<ul class="pagination justify-content-end">
 				<!-- Botón para ir a la primera página -->
@@ -201,84 +232,255 @@
 		</nav>
 
 
-		<div th:include="footer.html"></div>
 
-		<script>
-			var popup = document.getElementById("popup");
-			var botonesActualizar = document.querySelectorAll('.btn-actualizar');
-			var span = document.getElementsByClassName("close")[0];
-			var inputsEdad = document.getElementById('agenew');
-			var inputsNombre = document.getElementById('namenew');
-			var inputsSexo = document.getElementById('sexnew');
-			var form = document.getElementById('formupdt');
+		<!-- Popup para Gestión de Descargas -->
+		<div id="popup2" class="popup">
+			<div class="popup-content2">
+				<h2>Gestor de Descargas</h2>
+				<div class="archivo-zip-descargados">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Nombre de Archivo ZIP</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Itera sobre los nombres de archivos .zip y crea una fila por cada uno -->
+							<tr th:each="nombreArchivo : ${nombresArchivos}">
+								<div class="d-flex  align-items-center">
+									<th><span>${nombreArchivo}</span></th>
+									<th><a href="javascript:void(0);"
+											class="btn btn-primary btn-descargar btn-separator"
+											data-nombre-archivo="${nombreArchivo}">Descargar</a></th>
+									<th><a href="javascript:void(0);" class="btn btn-danger btn-eliminar"
+											data-nombre-archivo="${nombreArchivo}">Eliminar</a></th>
+								</div>
+				</div>
+				</tr>
+				</tbody>
+				</table>
 
-			botonesActualizar.forEach(function (boton) {
-				boton.addEventListener('click', function () {
-					var filaSeleccionada = this.parentNode.parentNode;
-					var idUser = filaSeleccionada.getAttribute('data-idUser');
-					var edad = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
-					var nombre = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
-					var sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent;
+			</div>
+			<!-- Paginación -->
+			<nav class="pagination-popup" aria-label="Page navigation">
+				<ul class="pagination justify-content-center">
+					<li class="page-item">
+						<a class="btn btn-prev-page" href="javascript:void(0);"
+							onclick="cambiarPaginaPopup2(currentPage - 1)" id="btnPrevPage">Anterior</a>
+					</li>
+					<li class="page-item">
+						<span class="page-numbers mx-3" id="pageNumbers">Página 1 de 1</span>
+					</li>
+					<li class="page-item">
+						<a class="btn btn-next-page" href="javascript:void(0);"
+							onclick="cambiarPaginaPopup2(currentPage + 1)" id="btnNextPage">Siguiente</a>
+					</li>
+				</ul>
+			</nav>
 
-					inputsEdad.value = edad;
-					inputsNombre.value = nombre;
-					inputsSexo.value = sexo;
+			<div class="form-actions mt-3">
+				<button type="button" class="btn btn-secondary btn-cancelar-popup2">Cancelar</button>
+			</div>
+		</div>
+	</div>
 
-					document.querySelector('.guardar').setAttribute('data-idUser', idUser);
 
-					popup.style.display = "block";
-				});
+	<div th:include="footer.html"></div>
+
+	<script>
+
+		var currentPage = 0;
+		var pageSize = 5;
+		var totalArchivos = 1; // Variable para almacenar el total de archivos
+
+		// Función para abrir el "popup2"
+		function abrirPopup2() {
+			var popup2 = document.getElementById("popup2");
+			popup2.style.display = "block";
+
+			// Agregar un evento de clic al botón "Cancelar" dentro del "popup2" para cerrarlo
+			var btnCancelarPopup2 = document.querySelector('.btn-cancelar-popup2');
+			btnCancelarPopup2.addEventListener('click', function () {
+				cerrarPopup2();
 			});
 
-			span.onclick = function () {
-				popup.style.display = "none";
-			}
+			// Obtener los nombres de los archivos ZIP descargados mediante una solicitud AJAX al controlador
+			obtenerNombresArchivosZipDescargados();
+		}
 
-			window.onclick = function (event) {
-				if (event.target == popup) {
-					popup.style.display = "none";
-				}
-			}
+		// Función para cerrar el "popup2"
+		function cerrarPopup2() {
+			var popup2 = document.getElementById("popup2");
+			popup2.style.display = "none";
+		}
 
-			form.addEventListener('submit', function (event) {
-				event.preventDefault();
-
-				var idUser = document.querySelector('.guardar').getAttribute('data-idUser');
-				var filaSeleccionada = document.querySelector('tr[data-idUser="' + idUser + '"]');
-				var edad = inputsEdad.value;
-				var nombre = inputsNombre.value;
-				var sexo = inputsSexo.value;
-
-				var data = {
-					idUser: idUser,
-					name: nombre,
-					age: edad,
-					sex: sexo
-				};
-
-				fetch('/person?idUser=' + idUser, {
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(data)
+		// Función para eliminar un archivo ZIP
+		function eliminarArchivoZip(nombreArchivo) {
+			// Realizar una solicitud AJAX para eliminar el archivo ZIP en el servidor
+			fetch('/eliminarArchivo/' + nombreArchivo, {
+				method: 'POST'
+			})
+				.then(response => response.json())
+				.then(data => {
+					// Mostrar un mensaje o realizar alguna acción después de eliminar el archivo
+					console.log(data.mensaje);
+					// Volver a obtener los nombres de archivos después de eliminar
+					obtenerNombresArchivosZipDescargados();
 				})
-					.then(function (response) {
-						if (response.ok) {
-							filaSeleccionada.querySelector('td:nth-child(1)').textContent = edad;
-							filaSeleccionada.querySelector('td:nth-child(2)').textContent = nombre;
-							filaSeleccionada.querySelector('td:nth-child(3)').textContent = sexo;
-							popup.style.display = "none";
-						} else {
-							console.error('Error al realizar la petición');
-						}
-					})
-					.catch(function (error) {
-						console.error('Error en la petición:', error);
-					});
+				.catch(error => console.error('Error al eliminar el archivo ZIP:', error));
+		}
+
+		// Función para obtener los nombres de archivos ZIP descargados
+		function obtenerNombresArchivosZipDescargados() {
+			fetch('/obtener-nombres-zip-descargados')
+				.then(response => response.json())
+				.then(data => {
+					totalArchivos = data.length; // Actualizar el total de archivos
+					mostrarNombresArchivos(data);
+				})
+				.catch(error => console.error('Error al obtener los nombres de archivos ZIP:', error));
+		}
+
+		function mostrarNombresArchivos(nombresArchivos) {
+			var tbody = document.querySelector('.archivo-zip-descargados tbody');
+			tbody.innerHTML = '';
+
+			nombresArchivos.forEach(nombreArchivo => {
+				var tr = document.createElement('tr');
+				var tdNombre = document.createElement('td');
+				tdNombre.textContent = nombreArchivo;
+				tr.appendChild(tdNombre);
+
+				var tdAcciones = document.createElement('td');
+				var btnDescargar = document.createElement('a');
+				btnDescargar.href = '/descargar-zip/' + nombreArchivo;
+				btnDescargar.textContent = 'Descargar';
+				btnDescargar.classList.add('btn', 'btn-primary', 'btn-descargar');
+				tdAcciones.appendChild(btnDescargar);
+
+				var btnEliminar = document.createElement('a');
+				btnEliminar.href = 'javascript:void(0);';
+				btnEliminar.textContent = 'Eliminar';
+				btnEliminar.classList.add('btn', 'btn-danger', 'btn-eliminar');
+				btnEliminar.setAttribute('data-nombre-archivo', nombreArchivo);
+				btnEliminar.addEventListener('click', function () {
+					var nombreArchivo = this.getAttribute('data-nombre-archivo');
+					eliminarArchivoZip(nombreArchivo);
+				});
+				tdAcciones.appendChild(btnEliminar);
+
+				tr.appendChild(tdAcciones);
+				tbody.appendChild(tr);
 			});
 
-			function closePopup() {
+			actualizarPaginacionPopup2();
+		}
+
+		function cambiarPaginaPopup2(pagina) {
+			currentPage = pagina;
+			obtenerNombresArchivosZipDescargados();
+		}
+
+		function cambiarPaginaPopup2(pagina) {
+    console.log("Changing page to", pagina);
+    currentPage = pagina;
+    obtenerNombresArchivosZipDescargados();
+}
+
+// ...
+
+btnPrevPage.addEventListener('click', function () {
+    console.log("Prev page clicked");
+    if (currentPage > 0) {
+        cambiarPaginaPopup2(currentPage - 1);
+    }
+});
+
+btnNextPage.addEventListener('click', function () {
+    console.log("Next page clicked");
+    if (currentPage < totalPaginas - 1) {
+        cambiarPaginaPopup2(currentPage + 1);
+    }
+}); 
+		obtenerNombresArchivosZipDescargados();
+
+
+		var popup = document.getElementById("popup");
+		var botonesActualizar = document.querySelectorAll('.btn-actualizar');
+		var span = document.getElementsByClassName("close")[0];
+		var inputsEdad = document.getElementById('agenew');
+		var inputsNombre = document.getElementById('namenew');
+		var inputsSexo = document.getElementById('sexnew');
+		var form = document.getElementById('formupdt');
+
+		botonesActualizar.forEach(function (boton) {
+			boton.addEventListener('click', function () {
+				var filaSeleccionada = this.parentNode.parentNode;
+				var idUser = filaSeleccionada.getAttribute('data-idUser');
+				var edad = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
+				var nombre = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
+				var sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent;
+
+				inputsEdad.value = edad;
+				inputsNombre.value = nombre;
+				inputsSexo.value = sexo;
+
+				document.querySelector('.guardar').setAttribute('data-idUser', idUser);
+
+				popup.style.display = "block";
+			});
+		});
+
+		span.onclick = function () {
+			popup.style.display = "none";
+		}
+
+		window.onclick = function (event) {
+			if (event.target == popup) {
 				popup.style.display = "none";
 			}
-		</script>
+		}
+
+		form.addEventListener('submit', function (event) {
+			event.preventDefault();
+
+			var idUser = document.querySelector('.guardar').getAttribute('data-idUser');
+			var filaSeleccionada = document.querySelector('tr[data-idUser="' + idUser + '"]');
+			var edad = inputsEdad.value;
+			var nombre = inputsNombre.value;
+			var sexo = inputsSexo.value;
+
+			var data = {
+				idUser: idUser,
+				name: nombre,
+				age: edad,
+				sex: sexo
+			};
+
+			fetch('/person?idUser=' + idUser, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+				.then(function (response) {
+					if (response.ok) {
+						filaSeleccionada.querySelector('td:nth-child(1)').textContent = edad;
+						filaSeleccionada.querySelector('td:nth-child(2)').textContent = nombre;
+						filaSeleccionada.querySelector('td:nth-child(3)').textContent = sexo;
+						popup.style.display = "none";
+					} else {
+						console.error('Error al realizar la petición');
+					}
+				})
+				.catch(function (error) {
+					console.error('Error en la petición:', error);
+				});
+		});
+
+		function closePopup() {
+			popup.style.display = "none";
+		}
+	</script>
