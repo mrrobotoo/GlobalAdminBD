@@ -4,317 +4,462 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Inicio</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-	<style>
-		body {
-			font-family: Georgia, Helvetica, sans-serif;
-			display: flex;
-			flex-direction: column;
-			min-height: 100vh;
-		}
+<style>
+    .btn-descargar {
+        float: left;
+        margin-left: 10px;
+        background-color: #3498db;
+        color: #fff;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-		.content {
-			flex: 1;
-		}
+    .btn-eliminar {
+        float: right;
+        margin-right: 10px;
+        background-color: #e74c3c;
+        color: #fff;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-		/* The Popup */
-		.popup {
-			display: none;
-			position: fixed;
-			z-index: 1;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			overflow: auto;
-			background-color: rgba(0, 0, 0, 0.4);
-		}
+    .popup {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
 
-		/* Popup Content */
-		.popup-content {
-			background-color: #fefefe;
-			margin: 10% auto;
-			padding: 20px;
-			border: 1px solid #888;
-			width: 80%;
-			max-width: 500px;
-		}
+    .popup-heading {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 28px;
+        color: #fff;
+    }
 
-		/* Table Styles */
-		.table {
-			width: 100%;
-			border-collapse: collapse;
-		}
+    .popup-content,
+    .popup-content2 {
+        background-color: #f1f1f1;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        position: relative;
+    }
 
-		.table thead th {
-			background-color: #f8f9fa;
-			border-bottom: 1px solid #dee2e6;
-			padding: 10px;
-			text-align: left;
-		}
+    .pagination-popup {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
 
-		.table tbody td {
-			padding: 10px;
-			border-bottom: 1px solid #dee2e6;
-		}
+    .pagination-popup .btn,
+    .pagination .page-link {
+        margin: 0 5px;
+        padding: 8px 16px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        color: #333;
+        transition: background-color 0.3s, color 0.3s;
+        cursor: pointer;
+    }
 
-		.table .btn {
-			padding: 6px 12px;
-			font-size: 14px;
-			border-radius: 5px;
-		}
+    .pagination-popup .page-numbers,
+    .pagination .page-link {
+        margin: 0 5px;
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-		.table .btn-danger {
-			background-color: #dc3545;
-			border-color: #dc3545;
-			color: #fff;
-		}
+    .pagination-popup .btn:hover,
+    .pagination .page-link:hover {
+        background-color: #ccc;
+        color: #000;
+    }
 
-		.table .btn-info {
-			background-color: #17a2b8;
-			border-color: #17a2b8;
-			color: #fff;
-		}
+    .pagination-popup .btn-prev-page,
+    .pagination-popup .btn-next-page,
+    .pagination .page-link {
+        background-color: #9b59b6;
+        border-color: #9b59b6;
+        color: #fff;
+        font-weight: bold;
+    }
 
-		/* Form Styles */
-		.form-row {
-			margin-bottom: 20px;
-		}
+    .pagination-popup .btn-prev-page:hover,
+    .pagination-popup .btn-next-page:hover,
+    .pagination .page-link:hover {
+        background-color: #8e44ad;
+        border-color: #8e44ad;
+    }
 
-		.form-label {
-			display: block;
-			font-weight: bold;
-			margin-bottom: 5px;
-		}
+    .close {
+        color: #ecf0f1;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-		.form-input {
-			width: 100%;
-			padding: 10px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-		}
+    .close:hover,
+    .close:focus {
+        color: #bdc3c7;
+        text-decoration: none;
+    }
 
-		.form-actions {
-			text-align: right;
-			margin-top: 20px;
-		}
+    .form-row {
+        margin-bottom: 15px;
+    }
 
-		.form-actions button {
-			padding: 10px 20px;
-			border-radius: 5px;
-			cursor: pointer;
-			transition: background-color 0.3s;
-		}
+    .form-label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
 
-		.form-actions button.btn-guardar {
-			background-color: #007bff;
-			border: 1px solid #007bff;
-			color: #fff;
-		}
+    .form-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        color: #333;
+    }
 
-		.form-actions button.btn-guardar:hover {
-			background-color: #0056b3;
-			border: 1px solid #0056b3;
-		}
+    .form-actions {
+        text-align: right;
+        margin-top: 20px;
+    }
 
-		.form-actions button.btn-cancelar {
-			background-color: #dc3545;
-			border: 1px solid #dc3545;
-			color: #fff;
-		}
+    .form-actions button {
+        padding: 10px 20px;
+        background-color: #e67e22;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-		.form-actions button.btn-cancelar:hover {
-			background-color: #a71d2a;
-			border: 1px solid #a71d2a;
-		}
+    .pagination .page-item.disabled .page-link {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 
-		/* Pagination Styles */
-		.pagination {
-			display: flex;
-			justify-content: center;
-			margin-top: 20px;
-		}
+    .pagination .page-item.active .page-link {
+        background-color: #2c3e50;
+    }
+</style>
 
-		.pagination button {
-			margin: 0 5px;
-			padding: 5px 10px;
-			border-radius: 5px;
-			cursor: pointer;
-			transition: background-color 0.3s;
-		}
 
-		.pagination button.active {
-			background-color: #007bff;
-			border: 1px solid #007bff;
-			color: #fff;
-		}
 
-		.pagination button:hover:not(.active) {
-			background-color: #17a2b8;
-			border: 1px solid #17a2b8;
-			color: #fff;
-		}
-	</style>
+
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top">
-		<a class="navbar-brand" href="http://localhost:8081/">Volver</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav">
-				<li class="nav-item active">
-					<a class="nav-link" href="inicio">Inicio</a>
+	<div th:include="navbar.html"></div>
+	<div class="container">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Edad</th>
+					<th>Nombre</th>
+					<th>Sexo</th>
+					<td style="text-align: right;">
+			<form action="/exportar-pdf-zip" method="get" style="text-align: right;">
+    <button style="margin-right: 10px;">Exportar</button>
+    <button type="button" class="btn btn-primary" onclick="abrirPopup2()">Descargar</button>
+</form>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item, index : ${listaPersonas}" th:data-idUser="${item.idUser}"
+					th:data-index="${index.index}">
+					<td th:text="${item.age}"></td>
+					<td th:text="${item.name}"></td>
+					<td th:text="${item.sex}"></td>
+					<td>
+						<a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}" class="btn btn-danger">Eliminar</a>
+					</td>
+					<td>
+						<button class="btn btn-primary btn-actualizar">Actualizar</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div id="popup" class="popup">
+			<div class="popup-content">
+				<a onclick="closePopup()" title="Close" class="close">X</a>
+				<div class="popup-heading">
+					<h3>Actualizar</h3>
+				</div>
+				<form method="put" id="formupdt">
+					<div class="form-row">
+						<label for="popup-edad" class="form-label">Edad:</label>
+						<input type="number" class="form-input" id="agenew" name="age" placeholder="age" required>
+					</div>
+					<div class="form-row">
+						<label for="popup-nombre" class="form-label">Nombre:</label>
+						<input type="text" class="form-input" id="namenew" name="name" placeholder="name" required>
+					</div>
+					<div class="form-row">
+						<label for="popup-sexo" class="form-label">Sexo:</label>
+						<input type="text" class="form-input" id="sexnew" name="sex" placeholder="sex" required>
+					</div>
+					<div class="form-actions">
+						<button type="submit" class="btn btn-info guardar">Actualizar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+		<nav aria-label="Page navigation">
+			<ul class="pagination justify-content-end">
+				<!-- Botón para ir a la primera página -->
+				<li th:if="${currentPage > 0}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=0)}">&laquo;&laquo;</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Acerca de</a>
+
+				<!-- Enlace a la página anterior -->
+				<li th:if="${currentPage > 0}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">&laquo;</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Servicios</a>
+
+				<!-- Enlaces a las páginas -->
+				<li th:each="pageNumber : ${#numbers.sequence(startPageIndex, endPageIndex)}" class="page-item">
+					<a th:class="${pageNumber == currentPage ? 'page-link disabled' : 'page-link'}"
+						th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Contacto</a>
+
+				<!-- Enlace a la página siguiente -->
+				<li th:if="${currentPage < totalPages - 1}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">&raquo;</a>
+				</li>
+
+				<!-- Botón para ir a la última página -->
+				<li th:if="${currentPage < totalPages - 1}" class="page-item">
+					<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">&raquo;&raquo;</a>
 				</li>
 			</ul>
-		</div>
-	</nav>
+		</nav>
 
-	<div class="content">
-		<div class="container">
-			<!-- Tabla -->
-			<table class="table">
-				<thead>
-					<tr>
-						<th style="width: 40%;">Nombre</th>
-						<th style="width: 20%;">Edad</th>
-						<th style="width: 30%;">Sexo</th>
-						<th style="width: 5%;"></th>
-						<th style="width: 5%;"></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="item, iterStat : ${listaPersonas}" th:data-idUser="${item.idUser}">
-						<td th:text="${item.name}"></td>
-						<td th:text="${item.age}"></td>
-						<td th:text="${item.sex}"></td>
-						<td>
-							<a th:href="@{/eliminar/{idUser}(idUser=${item.idUser})}"
-								class="btn btn-danger">Eliminar</a>
-						</td>
-						<td>
-							<button class="btn btn-info btn-actualizar">Actualizar</button>
-						</td>
-					</tr>
+
+
+		<!-- Popup para Gestión de Descargas -->
+		<div id="popup2" class="popup">
+			<div class="popup-content2">
+				<div class="archivo-zip-descargados">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Archivo ZIP</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Itera sobre los nombres de archivos .zip y crea una fila por cada uno -->
+							<tr th:each="nombreArchivo : ${nombresArchivos}">
+								<div class="d-flex  align-items-center">
+									<th><span>${nombreArchivo}</span></th>
+									<th><a href="javascript:void(0);"
+											class="btn btn-primary btn-descargar btn-separator"
+											data-nombre-archivo="${nombreArchivo}">Descargar</a></th>
+									<th><a href="javascript:void(0);" class="btn btn-danger btn-eliminar"
+											data-nombre-archivo="${nombreArchivo}">Eliminar</a></th>
+								</div>
+				</div>
+				</tr>
 				</tbody>
-			</table>
-			<form action="/exportar-pdf-zip" method="get">
-				<button href="/exportar-pdf-zip">Exportar</button>
+				</table>
 
-			</form>
-
-			<!-- Navegación de paginación -->
-			<nav aria-label="Page navigation">
+			</div>
+			<!-- Paginación -->
+			<nav class="pagination-popup" aria-label="Page navigation">
 				<ul class="pagination justify-content-center">
-					<!-- Botón para ir a la primera página -->
-					<li th:if="${currentPage > 0}" class="page-item">
-						<a class="page-link" th:href="@{/inicio(page=0)}">&laquo;&laquo;</a>
+					<li class="page-item">
+						<a class="btn btn-prev-page" href="javascript:void(0);"
+							onclick="cambiarPaginaPopup2(currentPage - 1)" id="btnPrevPage">Anterior</a>
 					</li>
-
-					<!-- Enlace a la página anterior -->
-					<li th:if="${currentPage > 0}" class="page-item">
-						<a class="page-link" th:href="@{/inicio(page=${currentPage - 1})}">&laquo;</a>
-					</li>
-
-					<!-- Enlaces a las páginas -->
-					<li th:each="pageNumber : ${#numbers.sequence(startPageIndex, endPageIndex)}" class="page-item">
-						<a th:class="${pageNumber == currentPage ? 'page-link disabled' : 'page-link'}"
-							th:href="@{/inicio(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
-					</li>
-
-					<!-- Enlace a la página siguiente -->
-					<li th:if="${currentPage < totalPages - 1}" class="page-item">
-						<a class="page-link" th:href="@{/inicio(page=${currentPage + 1})}">&raquo;</a>
-					</li>
-
-					<!-- Botón para ir a la última página -->
-					<li th:if="${currentPage < totalPages - 1}" class="page-item">
-						<a class="page-link" th:href="@{/inicio(page=${totalPages - 1})}">&raquo;&raquo;</a>
+					<li class="page-item">
+						<a class="btn btn-next-page" href="javascript:void(0);"
+							onclick="cambiarPaginaPopup2(currentPage + 1)" id="btnNextPage">Siguiente</a>
 					</li>
 				</ul>
 			</nav>
-			<!-- The Popup -->
-			<div id="popup" class="popup">
-				<div class="popup-content">
-					<form id="popup-form" class="my-4">
-						<div class="form-row">
-							<label for="popup-nombre" class="form-label">Nombre</label>
-							<input type="text" id="popup-nombre" class="form-input" required>
-						</div>
-						<div class="form-row">
-							<label for="popup-edad" class="form-label">Edad</label>
-							<input type="text" id="popup-edad" class="form-input" required>
-						</div>
-						<div class="form-row">
-							<label for="popup-sexo" class="form-label">Sexo</label>
-							<input type="text" id="popup-sexo" class="form-input" required>
-						</div>
-						<div class="form-actions">
-							<button type="submit" class="btn btn-guardar me-2">Guardar</button>
-							<button type="button" class="btn btn-cancelar cancelar">Cancelar</button>
-						</div>
-					</form>
-				</div>
+
+			<div class="form-actions mt-3">
+				<button type="button" class="btn btn-secondary btn-cancelar-popup2">Cancelar</button>
 			</div>
-
-
 		</div>
 	</div>
 
+
+	<div th:include="footer.html"></div>
+
 	<script>
-		function descargarZIP() {
-			// Hace una solicitud para obtener el archivo ZIP desde el servidor
-			fetch('/exportar-pdf-zip', {
-				method: 'GET'
-			})
-				.then(response => response.blob())
-				.then(blob => {
-					// Utiliza FileSaver.js para guardar el archivo ZIP en la ubicación seleccionada por el usuario
-					saveAs(blob, 'registros.zip');
-				})
-				.catch(error => {
-					console.error('Error al descargar el archivo ZIP:', error);
-				});
+
+		var currentPage = 0;
+		var pageSize = 5;
+		var totalArchivos = 0; // Variable para almacenar el total de archivos
+
+		function abrirPopup2() {
+			var popup2 = document.getElementById("popup2");
+			popup2.style.display = "block";
+
+			var btnCancelarPopup2 = document.querySelector('.btn-cancelar-popup2');
+			btnCancelarPopup2.addEventListener('click', function () {
+				cerrarPopup2();
+			});
+
+			obtenerNombresArchivosZipDescargados();
 		}
+
+		function cerrarPopup2() {
+			var popup2 = document.getElementById("popup2");
+			popup2.style.display = "none";
+		}
+
+		function eliminarArchivoZip(nombreArchivo) {
+			fetch('/eliminarArchivo/' + nombreArchivo, {
+				method: 'POST'
+			})
+				.then(response => response.json())
+				.then(data => {
+					console.log(data.mensaje);
+					obtenerNombresArchivosZipDescargados();
+				})
+				.catch(error => console.error('Error al eliminar el archivo ZIP:', error));
+		}
+
+		function obtenerNombresArchivosZipDescargados() {
+			fetch('/obtener-nombres-zip-descargados-popup2?page=' + currentPage)
+				.then(response => response.json())
+				.then(data => {
+					totalArchivos = data.totalPages * pageSize;
+					mostrarNombresArchivos(data.archivosPaginados);
+				})
+				.catch(error => console.error('Error al obtener los nombres de archivos ZIP:', error));
+		}
+
+		function mostrarNombresArchivos(nombresArchivos) {
+			var tbody = document.querySelector('.archivo-zip-descargados tbody');
+			tbody.innerHTML = '';
+
+			nombresArchivos.forEach(nombreArchivo => {
+				var tr = document.createElement('tr');
+				var tdNombre = document.createElement('td');
+				tdNombre.textContent = nombreArchivo;
+				tr.appendChild(tdNombre);
+
+				var tdAcciones = document.createElement('td');
+				var btnDescargar = document.createElement('a');
+				btnDescargar.href = '/descargar-zip/' + nombreArchivo;
+				btnDescargar.textContent = 'Descargar';
+				btnDescargar.classList.add('btn', 'btn-primary', 'btn-descargar');
+				tdAcciones.appendChild(btnDescargar);
+
+				var btnEliminar = document.createElement('a');
+				btnEliminar.href = 'javascript:void(0);';
+				btnEliminar.textContent = 'Eliminar';
+				btnEliminar.classList.add('btn', 'btn-danger', 'btn-eliminar');
+				btnEliminar.setAttribute('data-nombre-archivo', nombreArchivo);
+				btnEliminar.addEventListener('click', function () {
+					var nombreArchivo = this.getAttribute('data-nombre-archivo');
+					eliminarArchivoZip(nombreArchivo);
+				});
+				tdAcciones.appendChild(btnEliminar);
+
+				tr.appendChild(tdAcciones);
+				tbody.appendChild(tr);
+			});
+
+			actualizarPaginacionPopup2();
+		}
+
+		function cambiarPaginaPopup2(pagina) {
+			currentPage = pagina;
+			obtenerNombresArchivosZipDescargados();
+		}
+
+		function actualizarPaginacionPopup2() {
+			var pagination = document.querySelector('.pagination-popup');
+			pagination.innerHTML = '';
+
+			var totalPaginas = Math.ceil(totalArchivos / pageSize);
+
+			var pageNumbers = document.createElement('span');
+			pageNumbers.textContent = 'Página ' + (currentPage + 1) + ' de ' + totalPaginas;
+			pageNumbers.classList.add('page-numbers');
+			pagination.appendChild(pageNumbers);
+
+			var btnPrevPage = document.createElement('button');
+			btnPrevPage.textContent = '< Anterior';
+			btnPrevPage.classList.add('btn', 'btn-secondary', 'btn-prev-page');
+			btnPrevPage.disabled = currentPage === 0;
+			btnPrevPage.addEventListener('click', function () {
+				if (currentPage > 0) {
+					cambiarPaginaPopup2(currentPage - 1);
+				}
+			});
+			pagination.appendChild(btnPrevPage);
+
+			// Resto del código de creación de botones de página
+
+			var btnNextPage = document.createElement('button');
+			btnNextPage.textContent = 'Siguiente >';
+			btnNextPage.classList.add('btn', 'btn-secondary', 'btn-next-page');
+			btnNextPage.disabled = currentPage === totalPaginas - 1 || totalArchivos === 0;
+			btnNextPage.addEventListener('click', function () {
+				if (currentPage < totalPaginas - 1) {
+					cambiarPaginaPopup2(currentPage + 1);
+				}
+			});
+			pagination.appendChild(btnNextPage);
+		}
+
 		var popup = document.getElementById("popup");
 		var botonesActualizar = document.querySelectorAll('.btn-actualizar');
 		var span = document.getElementsByClassName("close")[0];
-		var inputsNombre = document.getElementById('popup-nombre');
-		var inputsEdad = document.getElementById('popup-edad');
-		var inputsSexo = document.getElementById('popup-sexo');
-		var form = document.getElementById('popup-form');
+		var inputsEdad = document.getElementById('agenew');
+		var inputsNombre = document.getElementById('namenew');
+		var inputsSexo = document.getElementById('sexnew');
+		var form = document.getElementById('formupdt');
 
 		botonesActualizar.forEach(function (boton) {
 			boton.addEventListener('click', function () {
 				var filaSeleccionada = this.parentNode.parentNode;
 				var idUser = filaSeleccionada.getAttribute('data-idUser');
-				var nombre = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
-				var edad = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
+				var edad = filaSeleccionada.querySelector('td:nth-child(1)').textContent;
+				var nombre = filaSeleccionada.querySelector('td:nth-child(2)').textContent;
 				var sexo = filaSeleccionada.querySelector('td:nth-child(3)').textContent;
 
-				inputsNombre.value = nombre;
 				inputsEdad.value = edad;
+				inputsNombre.value = nombre;
 				inputsSexo.value = sexo;
 
-				// Almacenar la id del usuario en el botón de guardar
-				document.querySelector('.btn-guardar').setAttribute('data-idUser', idUser);
+				document.querySelector('.guardar').setAttribute('data-idUser', idUser);
 
 				popup.style.display = "block";
 			});
 		});
+
+		span.onclick = function () {
+			popup.style.display = "none";
+		}
 
 		window.onclick = function (event) {
 			if (event.target == popup) {
@@ -325,10 +470,10 @@
 		form.addEventListener('submit', function (event) {
 			event.preventDefault();
 
-			var idUser = document.querySelector('.btn-guardar').getAttribute('data-idUser');
+			var idUser = document.querySelector('.guardar').getAttribute('data-idUser');
 			var filaSeleccionada = document.querySelector('tr[data-idUser="' + idUser + '"]');
-			var nombre = inputsNombre.value;
 			var edad = inputsEdad.value;
+			var nombre = inputsNombre.value;
 			var sexo = inputsSexo.value;
 
 			var data = {
@@ -338,7 +483,6 @@
 				sex: sexo
 			};
 
-			// Realizar petición AJAX para actualizar los datos en el servidor
 			fetch('/person?idUser=' + idUser, {
 				method: 'PUT',
 				headers: {
@@ -348,9 +492,8 @@
 			})
 				.then(function (response) {
 					if (response.ok) {
-						// Actualizar los datos en la tabla
-						filaSeleccionada.querySelector('td:nth-child(1)').textContent = nombre;
-						filaSeleccionada.querySelector('td:nth-child(2)').textContent = edad;
+						filaSeleccionada.querySelector('td:nth-child(1)').textContent = edad;
+						filaSeleccionada.querySelector('td:nth-child(2)').textContent = nombre;
 						filaSeleccionada.querySelector('td:nth-child(3)').textContent = sexo;
 						popup.style.display = "none";
 					} else {
@@ -362,50 +505,7 @@
 				});
 		});
 
-		document.querySelector('.cancelar').addEventListener('click', function () {
+		function closePopup() {
 			popup.style.display = "none";
-		});
-
-		// Función para generar los botones de paginación
-		function renderPagination(totalUsers, usersPerPage) {
-			const paginationContainer = document.getElementById("pagination");
-			paginationContainer.innerHTML = ""; // Limpiar los botones existentes
-
-			const totalPages = Math.ceil(totalUsers / usersPerPage);
-
-			if (totalPages > 1) {
-				const remainingUsers = totalUsers % usersPerPage;
-				const lastPageUsers = remainingUsers > 0 ? remainingUsers : usersPerPage;
-
-				for (let i = 1; i <= totalPages; i++) {
-					const button = document.createElement("button");
-					button.innerText = i;
-					button.addEventListener("click", function () {
-						// Redirigir a la página correspondiente al hacer clic en el botón
-						window.location.href = "/?page=" + i;
-					});
-
-					paginationContainer.appendChild(button);
-				}
-
-				if (remainingUsers > 0 && lastPageUsers >= 7) {
-					const nextPageButton = document.createElement("button");
-					nextPageButton.innerText = totalPages + 1;
-					nextPageButton.addEventListener("click", function () {
-						// Redirigir a la siguiente página al hacer clic en el botón
-						window.location.href = "/?page=" + (totalPages + 1);
-					});
-
-					paginationContainer.appendChild(nextPageButton);
-				}
-			}
 		}
-
-		// Llama a la función renderPagination con los valores adecuados
-		renderPagination(50, 10); // Cambia los valores según corresponda
 	</script>
-
-	<div th:include="footer.html"></div>
-</body>
-
-</html>

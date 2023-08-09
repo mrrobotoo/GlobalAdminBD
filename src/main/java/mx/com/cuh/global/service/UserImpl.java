@@ -1,5 +1,14 @@
 package mx.com.cuh.global.service;
 
+import java.io.IOException;
+import java.util.List;
+
+import java.util.Optional;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,26 +16,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
-import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import mx.com.cuh.global.dto.PersonasDTO;
@@ -44,6 +56,11 @@ public class UserImpl implements User{
 	public Page<TbPersonas> obtenerRegistroPaginados(Pageable pageable){
 		return tbPersonasRepository.findAll(pageable);
 	}
+	@Override
+	public List<TbPersonas> obtenerTodosLosRegistros() {
+	    return tbPersonasRepository.findAll();
+	}
+
 	
 	@Override
 	public Respuesta <TbPersonas> obtenerRegistros(){
@@ -106,8 +123,9 @@ public class UserImpl implements User{
         return response;
     }
 
+
 	@Override
-	public List<TbPersonas> obtenerTodosLosRegistros() {
+	public List<TbPersonas> obtenerlsRegistros() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -123,7 +141,7 @@ public class UserImpl implements User{
         }
 
         try {
-            String destino = "C:\\Users\\Flor Luna\\Documents\\Gestion\\PDF-ZIP"; // Ruta de destino
+            String destino = "C:\\Users\\DA\\Desktop\\pruebas\\pdf"; // Ruta de destino
             File destinoDir = new File(destino);
             if (!destinoDir.exists()) {
                 destinoDir.mkdirs(); // Crea el directorio si no existe
@@ -200,4 +218,51 @@ public class UserImpl implements User{
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+	
+
+	
+
+
+	
+
+	@Override
+	public ResponseEntity<ByteArrayResource> descargarZip() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	public Respuesta<String> eliminarArchivoZip(String nombreArchivo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<List<String>> obtenerNombresArchivosZipDescargados() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<String> eliminarZipDescargado(String nombreZip) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<FileSystemResource> descargarZip(String nombreArchivo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean eliminarArchivo(String archivo) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
+	
+	
+    }
